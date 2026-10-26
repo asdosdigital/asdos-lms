@@ -215,7 +215,10 @@
       }
     });
 
-    if (addedCount > 0) saveWhitelist(currentList);
+    if (addedCount > 0) {
+      saveWhitelist(currentList);
+      pushWhitelistToSupabase(validEmails, defaultNote);
+    }
     return { added: addedCount, total: currentList.length };
   }
 
@@ -451,18 +454,98 @@
   // ==========================================================================
   // SUPABASE CONFIG & BACKUP
   // ==========================================================================
+  const DEFAULT_SUPABASE = {
+    url: '',
+    anonKey: ''
+  };
+
   function getSupabaseConfig() {
     try {
-      return JSON.parse(localStorage.getItem(KEY_SUPABASE) || '{}');
+      const stored = JSON.parse(localStorage.getItem(KEY_SUPABASE) || '{}');
+      if (stored.url && stored.anonKey) return stored;
+      return DEFAULT_SUPABASE;
     } catch(e) {
-      return {};
+      return DEFAULT_SUPABASE;
     }
   }
 
   function saveSupabaseConfig(url, anonKey) {
     const cfg = { url: (url || '').trim(), anonKey: (anonKey || '').trim(), updatedAt: new Date().toISOString() };
     localStorage.setItem(KEY_SUPABASE, JSON.stringify(cfg));
+    if (cfg.url && cfg.anonKey) {
+      setTimeout(syncWhitelistFromSupabase, 100);
+    }
     return cfg;
+  }
+
+  async function syncWhitelistFromSupabase() {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) return false;
+    try {
+      const cleanUrl = cfg.url.replace(/\/+$/, '');
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=email,note,created_at`, {
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`
+        }
+      });
+      if (!resp.ok) return false;
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const cur = getWhitelist();
+        const existing = new Set(cur.map(x => x.email.toLowerCase()));
+        let changed = false;
+        data.forEach(item => {
+          if (item.email && !existing.has(item.email.toLowerCase())) {
+            cur.push({
+              email: item.email.toLowerCase(),
+              dateAdded: item.created_at || new Date().toISOString(),
+              note: item.note || 'Supabase Cloud'
+            });
+            existing.add(item.email.toLowerCase());
+            changed = true;
+          }
+        });
+        if (changed) {
+          saveWhitelist(cur);
+          if (typeof window !== 'undefined' && window.renderWhitelistTable) {
+            window.renderWhitelistTable();
+          }
+        }
+        return true;
+      }
+    } catch(err) {}
+    return false;
+  }
+
+  async function pushWhitelistToSupabase(emailsArray, note = 'Input Admin Lynk.id') {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) return false;
+    try {
+      const cleanUrl = cfg.url.replace(/\/+$/, '');
+      const payload = emailsArray.map(em => ({
+        email: em.toLowerCase(),
+        note: note
+      }));
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students`, {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=ignore-duplicates'
+        },
+        body: JSON.stringify(payload)
+      });
+      return resp.ok;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  // Auto-sync whitelist on load
+  if (typeof window !== 'undefined') {
+    setTimeout(syncWhitelistFromSupabase, 400);
   }
 
   const SUPABASE_SQL_SCHEMA = `-- =====================================================================
@@ -514,6 +597,9 @@ ALTER TABLE public.course_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.course_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.student_progress ENABLE ROW LEVEL SECURITY;
 
+-- Kebijakan Akses Publik (Aman dengan Anon Key)
+CREATE POLICY "Akses publik baca whitelist" ON public.whitelist_students FOR SELECT USING (true);
+CREATE POLICY "Akses publik tulis whitelist" ON public.whitelist_students FOR INSERT WITH CHECK (true);
 CREATE POLICY "Akses publik untuk kategori kursus" ON public.course_categories FOR SELECT USING (true);
 CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELECT USING (true);
 `;
@@ -568,6 +654,8 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     deletePrompt,
     getSupabaseConfig,
     saveSupabaseConfig,
+    syncWhitelistFromSupabase,
+    pushWhitelistToSupabase,
     SUPABASE_SQL_SCHEMA,
     exportAllData,
     importAllData
