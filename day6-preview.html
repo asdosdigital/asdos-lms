@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <title>Day 6 · Edit Video di Canva - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root{--ink:#172b25;--muted:#68766f;--green:#246b52;--bg:#f7f8f4;--line:#e5eae4}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+    button{font:inherit;cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1040px;padding:0 22px;margin:auto}
+    .top{position:sticky;top:0;z-index:10;background:#fffffff2;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+    .topin{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{font-weight:850;display:flex;align-items:center;gap:9px;white-space:nowrap}
+    .mark{width:34px;height:34px;border-radius:10px;background:var(--green);color:white;display:grid;place-items:center}
+    .brand small{display:block;font-size:10px;color:var(--muted);font-weight:600}
+    .sticky-progress{width:min(400px,46vw);display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center}
+    .sticky-progress strong{font-size:12px}
+    .sticky-progress span{font-size:11px;color:var(--muted)}
+    .track{grid-column:1/-1;height:5px;background:#e9eee8;border-radius:99px;overflow:hidden}
+    .fill{height:100%;width:0;background:#78aa68;transition:width .2s}
+    .back{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+    .page{padding:28px 0 60px}
+    .crumb{font-size:12px;color:var(--muted);margin-bottom:12px}
+    .hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end}
+    .eyebrow,.step-label{font-size:11px;letter-spacing:.8px;color:var(--green);font-weight:850}
+    .hero h1{font-size:clamp(32px,5vw,45px);letter-spacing:-1.4px;line-height:1.1;margin:6px 0 9px}
+    .hero p{margin:0;color:var(--muted);max-width:650px}
+    .goal{background:#e8f2e9;border:1px solid #dae8db;border-radius:15px;padding:13px 15px;max-width:230px}
+    .goal small{display:block;color:var(--muted);font-size:10px}
+    .goal strong{font-size:13px}
+    .pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+    .pill{font-size:11px;font-weight:700;background:white;border:1px solid var(--line);border-radius:99px;padding:5px 9px}
+    .card{background:white;border:1px solid var(--line);border-radius:17px;padding:16px;margin-top:20px}
+    .card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}
+    .card-head h2{font-size:18px;margin:0}
+    .card-head p{font-size:12px;color:var(--muted);margin:2px 0 0}
+    .steps-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:25px 0 12px}
+    .steps-head h2{font-size:23px;margin:0}
+    .steps-head p{font-size:13px;color:var(--muted);margin:3px 0 0}
+    .step-list{display:grid;gap:10px}
+    .lesson-step{background:white;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .lesson-step[open]{box-shadow:0 6px 22px #173d2809}
+    .lesson-step summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:15px 17px}
+    .lesson-step summary::-webkit-details-marker{display:none}
+    .step-number{width:31px;height:31px;flex:none;border-radius:50%;background:#edf4eb;color:var(--green);display:grid;place-items:center;font-size:12px;font-weight:850}
+    .lesson-step.done .step-number{background:#dcefd9}
+    .summary-text{min-width:0;flex:1}
+    .summary-text strong{display:block;font-size:14px}
+    .summary-text small{font-size:11px;color:var(--muted)}
+    .step-status{font-size:11px;font-weight:750;color:#78847c;white-space:nowrap}
+    .lesson-step.done .step-status{color:var(--green)}
+    .chevron{color:#76847a;transition:transform .2s}
+    .lesson-step[open] .chevron{transform:rotate(180deg)}
+    .step-content{border-top:1px solid #edf0ec;padding:16px;display:grid;grid-template-columns:235px 1fr;gap:17px}
+    .video-step{aspect-ratio:16/10;border-radius:12px;background:linear-gradient(145deg,#e5efe4,#c6dcc9);display:grid;place-items:center;text-align:center;color:var(--green)}
+    .step-copy h3{font-size:18px;margin:0 0 7px}
+    .step-copy p{font-size:13px;color:#53635a;margin:0 0 9px}
+    .instructions{background:#f5f7f3;border-radius:10px;padding:10px 12px;font-size:13px}
+    .instructions ol, .instructions ul{margin:0;padding-left:20px}
+    .instructions li{padding:3px 0}
+    .callout{background:#f1f6ed;border-left:3px solid #83aa6d;border-radius:8px;padding:10px 12px;font-size:12px;color:#354d3c;margin:10px 0}
+    .check-confirm{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:13px;font-weight:700;cursor:pointer}
+    .continue-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+    .continue{background:var(--green);color:white;border:0;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:800}
+    .continue:disabled{background:#b8c7be;cursor:not-allowed}
+    .continue-help{margin:0;font-size:11px;color:var(--muted)}
+    .device-switch.switch{background:#e9eee8;padding:4px;border-radius:10px;gap:4px;margin:0;display:inline-flex}
+    .device-switch.switch button{border:0;background:transparent;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:750;color:var(--muted)}
+    .device-switch.switch button.active{background:white;color:var(--green)}
+    .device-lock{width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px}
+    .bottom-card{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:24px}
+    .bottom-card h2{margin:0 0 8px;font-size:20px}
+    .bottom-card p{margin:0 0 14px;font-size:14px;color:var(--muted)}
+    .next{display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid #d5e2d4;padding-top:14px;margin-top:14px}
+    .next small{display:block;font-size:10px;color:var(--muted);font-weight:700}
+    .next strong{display:block;font-size:15px}
+    .day6-finish-button{background:var(--green);color:white;border:0;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:800}
+    .day6-finish-button:disabled{background:#b8c7be;cursor:not-allowed}
+    .help{background:#edf5ee;border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px}
+    .help strong{display:block;font-size:14px;color:var(--green)}
+    .help p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+    .wa-help-button{background:white;color:var(--green);border:1px solid #c7dec9;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;white-space:nowrap}
+    .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:35px}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#172b25;color:white;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;opacity:0;pointer-events:none;transition:opacity .2s}
+    .toast.show{opacity:1}
+    .laptop{display:none}
+
+    /* Lock icons */
+    .step-status{display:inline-flex;align-items:center;justify-content:center;color:#266a53}
+    .step-status[data-lock-state="locked"]{color:#707872}
+    .step-status .status-lock{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .lesson-step.locked>summary{cursor:not-allowed}
+
+    /* Bridging & Glossary Cards */
+    .bridging-card{background:#fdfcf7;border:1px solid #ede8d5;border-radius:14px;padding:14px 16px;margin-top:16px}
+    .b-badge{font-size:11px;font-weight:850;color:#856404;letter-spacing:.8px;margin-bottom:6px}
+    .bridging-card p{margin:0;font-size:13px;color:#554823;line-height:1.55}
+    .glossary-card{background:white;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
+    .g-head{font-size:12px;font-weight:850;color:var(--green);margin-bottom:8px}
+    .g-items{display:grid;gap:8px}
+    .g-item{font-size:12px;color:#45554d;background:#f7f9f6;padding:8px 12px;border-radius:8px}
+
+    /* Self-check card */
+    .self-check-card{background:#edf5ee;border:1px solid #c8dfcb;border-radius:12px;padding:14px 16px;margin:14px 0}
+    .self-check-card strong{display:block;font-size:13px;color:var(--green);margin-bottom:8px}
+    .self-check-card ul{margin:0;padding-left:18px}
+    .self-check-card li{font-size:12px;color:#274332;margin-bottom:4px}
+
+    /* Quiz card */
+    .quiz-card{background:white;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:22px}
+    .quiz-badge{font-size:11px;font-weight:850;color:var(--green);letter-spacing:.8px;margin-bottom:8px}
+    .quiz-question{font-weight:750;font-size:14px;margin:0 0 12px}
+    .quiz-options{display:grid;gap:8px}
+    .quiz-opt{text-align:left;background:#f7f9f6;border:1px solid var(--line);padding:10px 14px;border-radius:10px;font-size:13px;transition:.2s}
+    .quiz-opt:hover{border-color:var(--green);background:#edf5ee}
+    .quiz-feedback{margin-top:10px;padding:10px;border-radius:8px;font-size:12px;font-weight:700}
+    .quiz-feedback.correct{background:#e2f3e5;color:#185a29}
+    .quiz-feedback.wrong{background:#fbeae8;color:#922}
+
+    @media(max-width:740px){
+      .step-content{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr}
+      .goal{max-width:none}
+      .next{flex-direction:column;align-items:stretch}
+      .day6-finish-button{width:100%;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topin">
+    <a class="brand" href="dashboard.html">
+      <span class="mark">A</span>
+      <span>asdos digital<small>kelas praktik animasi AI</small></span>
+    </a>
+    <div class="sticky-progress">
+      <strong>Day 6 · Edit Video di Canva</strong>
+      <span id="progressText">0/5 langkah</span>
+      <div class="track"><div class="fill" id="progressFill"></div></div>
+    </div>
+    <a href="dashboard.html" class="back">← Ruang Belajar</a>
+  </div>
+</header>
+
+<main class="wrap page">
+  <div class="crumb">Tantangan 7 Hari &gt; <strong>Day 6</strong></div>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">DAY 6 · EDIT VIDEO DI CANVA</div>
+      <h1>Susun video dan audio jadi karya utuh</h1>
+      <p>Satukan ketiga klip video dari Day 4 dan suara Voice Over AI dari Day 5 menjadi satu file video utuh (MP4) di Canva.</p>
+      <div class="pills">
+        <span class="pill">Canva Mobile & Web</span>
+        <span class="pill">Format 9:16 Vertikal</span>
+        <span class="pill">Unduh MP4 1080p</span>
+      </div>
+    </div>
+    <div class="goal">
+      <small>HASIL AKHIR HARI INI</small>
+      <strong>Video utuh siap posting di HP</strong>
+    </div>
+  </section>
+
+  <!-- JEMBATAN KEMARIN DAY 6 -->
+  <div class="bridging-card">
+    <div class="b-badge">[JEMBATAN KEMARIN]</div>
+    <p><strong>Dari Klip & Audio Terpisah (Day 4 & 5) ke Video Utuh di Canva (Day 6):</strong> Semua bahan mentahmu sudah lengkap! Hari ini kita susun seperti menyusun puzzle di Canva: klip 1, 2, 3 diselaraskan dengan suara narator AI menjadi video animasi utuh yang siap dibagikan ke dunia!</p>
+  </div>
+
+  <!-- KAMUS SANTAI DAY 6 -->
+  <div class="glossary-card">
+    <div class="g-head">Kamus Santai Day 6</div>
+    <div class="g-items">
+      <div class="g-item"><strong>Timeline:</strong> Garis waktu horizontal tempat kita menjejerkan dan memotong urutan klip video serta lagu/suara narasi.</div>
+      <div class="g-item"><strong>Export MP4:</strong> Proses menyimpan hasil akhir editan menjadi satu file video yang bisa langsung diputar di WhatsApp, Instagram, dan TikTok.</div>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Pengantar Day 6</h2>
+        <p>Canva adalah aplikasi editing yang sangat ramah pemula. Di langkah-langkah berikut, kamu akan belajar cara mengimpor klip, menempelkan suara, memberi caption, dan mengunduh video MP4 pertamamu.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="steps-head">
+    <div>
+      <h2>Yuk, praktik bareng</h2>
+      <p>Ikuti 5 langkah berikut untuk menyelesaikan videomu.</p>
+    </div>
+    <div class="device-switch switch">
+      <button type="button" class="active" data-device="phone">Saya pakai HP</button>
+      <span class="device-laptop-tooltip" title="Coming soon">
+        <button type="button" data-device="laptop" disabled aria-label="Saya pakai laptop - Coming soon">
+          <svg class="device-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+          <span>Saya pakai laptop</span>
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <section class="step-list" id="steps">
+
+    <!-- LANGKAH 1 -->
+    <details class="lesson-step" open data-index="1">
+      <summary>
+        <span class="step-number">1</span>
+        <span class="summary-text">
+          <strong>Buka Canva dan buat desain video</strong>
+          <small>Siapkan kanvas rasio 9:16 (tegak)</small>
+        </span>
+        <span class="step-status">Belum</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/bjjGI_4Cnsc?rel=0&playsinline=1" title="Video tutorial Day 6, langkah 1" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">LANGKAH 1</span>
+          <h3>Buka Canva dan buat desain video</h3>
+          <p>Mulai proyek baru di Canva dengan ukuran yang sama seperti video dari Flow.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Buka aplikasi Canva di HP (atau buka situs canva.com di browser).</li>
+              <li>Login dengan akun Google atau email kamu.</li>
+              <li>Di halaman utama, pilih kategori <strong>Video</strong>, lalu pilih <strong>Video Seluler (Mobile Video)</strong> atau kanvas rasio <strong>9:16</strong>.</li>
+              <li>Pilih <strong>Desain Kosong (Blank)</strong>. Kanvas kerjamu siap digunakan.</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Buka Canva di browser laptop (canva.com) dan login.</li>
+              <li>Klik tombol ungu <strong>Buat desain</strong> di pojok kanan atas.</li>
+              <li>Ketik dan pilih <strong>Video Seluler (Mobile Video 1080x1920)</strong>.</li>
+              <li>Halaman kerja baru yang kosong akan terbuka di tab baru.</li>
+            </ol>
+          </div>
+          <div class="callout"><strong>Tips:</strong> Pastikan memilih ukuran 9:16 (tegak) agar videomu pas memenuhi layar ponsel.</div>
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Saya sudah membuat desain video kosong di Canva.</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Lanjut ke Langkah 2 →</button>
+            <p class="continue-help" aria-live="polite">Selesaikan tugas di langkah ini, lalu centang kotaknya untuk membuka langkah berikutnya.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- LANGKAH 2 -->
+    <details class="lesson-step" data-index="2">
+      <summary>
+        <span class="step-number">2</span>
+        <span class="summary-text">
+          <strong>Masukkan dan susun tiga klip</strong>
+          <small>Unggah klip dari Flow ke timeline Canva</small>
+        </span>
+        <span class="step-status">Terkunci</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/u0YULZ9WCE4?rel=0&playsinline=1" title="Video tutorial Day 6, langkah 2" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">LANGKAH 2</span>
+          <h3>Masukkan dan susun tiga klip</h3>
+          <p>Unggah ketiga klip yang sudah kamu unduh dari Day 4, lalu susun runtut dari adegan 1 sampai 3.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Di halaman kerja Canva, ketuk tombol <strong>+</strong> di pojok kiri bawah.</li>
+              <li>Pilih tab <strong>Unggahan (Uploads)</strong>, lalu ketuk tombol <strong>Unggah file</strong>.</li>
+              <li>Pilih ketiga video klip yang sudah kamu unduh dari Flow di Day 4.</li>
+              <li>Setelah selesai terunggah, ketuk video Adegan 1 untuk memasukkannya ke slide pertama.</li>
+              <li>Ketuk ikon <strong>+</strong> di samping slide untuk menambah halaman kedua, masukkan video Adegan 2, lalu ulangi untuk Adegan 3.</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Di panel kiri Canva, klik <strong>Unggahan (Uploads)</strong>, lalu <strong>Unggah file</strong>.</li>
+              <li>Pilih ketiga video klip Day 4 dari folder komputermu.</li>
+              <li>Tarik video Adegan 1 ke slide pertama, buat slide baru, masukkan video Adegan 2, dan ulangi untuk Adegan 3.</li>
+            </ol>
+          </div>
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Tiga klip sudah tersusun rapi di Canva.</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Lanjut ke Langkah 3 →</button>
+            <p class="continue-help" aria-live="polite">Selesaikan tugas di langkah ini, lalu centang kotaknya untuk membuka langkah berikutnya.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- LANGKAH 3 -->
+    <details class="lesson-step" data-index="3">
+      <summary>
+        <span class="step-number">3</span>
+        <span class="summary-text">
+          <strong>Masukkan audio Voice Over</strong>
+          <small>Selaraskan suara narasi dengan gambar</small>
+        </span>
+        <span class="step-status">Terkunci</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/2T5QAPIlyCI?rel=0&playsinline=1" title="Video tutorial Day 6, langkah 3" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">LANGKAH 3</span>
+          <h3>Masukkan audio Voice Over</h3>
+          <p>Unggah file audio yang sudah kamu buat di Day 5, lalu pasang di bawah timeline video.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Ketuk tombol <strong>+</strong>, pilih tab <strong>Unggahan</strong>, lalu pilih <strong>Audio</strong>.</li>
+              <li>Ketuk <strong>Unggah file</strong> dan pilih file suara narasi Day 5 dari HP-mu.</li>
+              <li>Ketuk file audio yang sudah selesai diunggah untuk memasukkannya ke bawah klip video.</li>
+              <li>Geser posisi audio agar suaranya pas mulai saat video mulai berputar.</li>
+              <li>Sesuaikan panjang durasi tiap klip video dengan cara menarik ujung batas klip agar pas dengan kalimat narasinya.</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Klik tab <strong>Unggahan</strong> di panel kiri, pilih sub-tab <strong>Audio</strong>.</li>
+              <li>Klik <strong>Unggah file</strong> dan pilih file suara narasi Day 5.</li>
+              <li>Tarik file audio ke timeline di bawah barisan video.</li>
+              <li>Putar video untuk memeriksa apakah suara narasi terdengar pas dengan pergantian gambar adegan.</li>
+            </ol>
+          </div>
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Audio Voice Over sudah terpasang dan selaras.</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Lanjut ke Langkah 4 →</button>
+            <p class="continue-help" aria-live="polite">Selesaikan tugas di langkah ini, lalu centang kotaknya untuk membuka langkah berikutnya.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- LANGKAH 4 -->
+    <details class="lesson-step" data-index="4">
+      <summary>
+        <span class="step-number">4</span>
+        <span class="summary-text">
+          <strong>Tambahkan caption / teks judul</strong>
+          <small>Bantu penonton memahami isi video</small>
+        </span>
+        <span class="step-status">Terkunci</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/iDgBRuc6yLw?rel=0&playsinline=1" title="Video tutorial Day 6, langkah 4" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">LANGKAH 4</span>
+          <h3>Tambahkan caption (opsional)</h3>
+          <p>Teks judul atau caption membantu penonton yang menonton video tanpa menyalakan suara HP.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Ketuk tombol <strong>+</strong>, lalu pilih menu <strong>Teks</strong>.</li>
+              <li>Pilih <strong>Tambahkan kotak judul</strong> atau gaya teks yang mudah dibaca.</li>
+              <li>Ketik judul fakta unikmu di atas adegan pertama (contoh: <em>Kenapa Kucing Suka Kardus?</em>).</li>
+              <li>Gunakan warna teks putih dengan efek bayangan hitam (Gaya Efek: Bayangan) agar teks selalu kontras dan terbaca jelas di atas gambar apapun.</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Klik tab <strong>Teks</strong> di panel kiri Canva.</li>
+              <li>Pilih <strong>Tambahkan judul</strong>, lalu posisikan teks di bagian tengah-atas video.</li>
+              <li>Beri efek bayangan (Effects &gt; Shadow) agar tulisan terlihat kontras dan profesional.</li>
+            </ol>
+          </div>
+          <div class="callout"><strong>Tips Tipografi:</strong> Pilih huruf yang tebal dan bersih seperti <em>Montserrat</em>, <em>Anton</em>, atau <em>League Spartan</em> agar mudah dibaca di layar HP yang kecil.</div>
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Saya sudah menambahkan teks judul pada video.</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Lanjut ke Langkah 5 →</button>
+            <p class="continue-help" aria-live="polite">Selesaikan tugas di langkah ini, lalu centang kotaknya untuk membuka langkah berikutnya.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- LANGKAH 5 -->
+    <details class="lesson-step" data-index="5">
+      <summary>
+        <span class="step-number">5</span>
+        <span class="summary-text">
+          <strong>Periksa dan unduh video MP4</strong>
+          <small>Simpan hasil akhir ke galeri perangkat</small>
+        </span>
+        <span class="step-status">Terkunci</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/u047MfoRvl8?rel=0&playsinline=1" title="Video tutorial Day 6, langkah 5" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">LANGKAH 5</span>
+          <h3>Periksa dan unduh video</h3>
+          <p>Tonton hasilnya sekali lagi dari awal. Jika semua sudah pas, unduh videomu dalam format MP4.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Putar video dari awal sampai akhir. Pastikan urutan klip benar dan suara terdengar jernih.</li>
+              <li>Ketuk ikon <strong>Bagikan (Share)</strong> di pojok kanan atas layar HP (ikon panah ke atas).</li>
+              <li>Pilih menu <strong>Unduh (Download)</strong>.</li>
+              <li>Pastikan jenis file adalah <strong>Video MP4</strong>, lalu ketuk tombol ungu <strong>Unduh</strong>.</li>
+              <li>Tunggu beberapa saat sampai proses penyimpanan selesai. Video final akan otomatis tersimpan di Galeri HP-mu!</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Putar video untuk memeriksa hasil akhir.</li>
+              <li>Klik tombol <strong>Bagikan (Share)</strong> di pojok kanan atas, lalu klik <strong>Unduh (Download)</strong>.</li>
+              <li>Pastikan jenis file: <strong>Video MP4</strong> dan kualitas: <strong>1080p</strong>.</li>
+              <li>Klik <strong>Unduh</strong> dan tunggu file selesai tersimpan di komputermu.</li>
+            </ol>
+          </div>
+
+          <!-- CEK MANDIRI KUALITAS DAY 6 -->
+          <div class="self-check-card">
+            <strong>Cek Kesiapan Akhir Karya Day 6:</strong>
+            <ul>
+              <li>[✓] Apakah video MP4 sudah berhasil tersimpan di Galeri HP dan bisa diputar lancar?</li>
+              <li>[✓] Apakah gambar ketiga adegan dan suara narasi berpadu selaras tanpa tabrakan?</li>
+              <li>[✓] Apakah teks judul terbaca dengan jelas?</li>
+            </ul>
+          </div>
+
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Video karya utuh saya sudah tersimpan di Galeri!</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Selesaikan Day 6 →</button>
+            <p class="continue-help" aria-live="polite">Selesaikan tugas di langkah ini, lalu centang kotaknya untuk membuka langkah berikutnya.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </section>
+
+  <!-- KUIS REFLEKSI DAY 6 -->
+  <div class="quiz-card">
+    <div class="quiz-badge">KUIS REFLEKSI DAY 6</div>
+    <p class="quiz-question">Kenapa kita memilih format unduhan 'Video MP4' di Canva, bukan animasi GIF?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, true, 'Tepat sekali! Format MP4 menyimpan gambar bergerak sekaligus suara audio, serta diterima di semua platform seperti Instagram, TikTok, dan WhatsApp.')">A. Format MP4 bisa memuat suara narasi audio dan diterima di semua media sosial</button>
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, false, 'Format GIF hanya untuk gambar bergerak tanpa suara audio.')">B. Format GIF tidak bisa dibuka di HP</button>
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, false, 'Canva mendukung semua format gambar dan video.')">C. Canva tidak bisa menyimpan selain file foto</button>
+    </div>
+    <div class="quiz-feedback" style="display:none"></div>
+  </div>
+
+  <section class="bottom-card finish day6-next">
+    <h2>Selesai Day 6!</h2>
+    <p>Luar biasa! Kamu sudah resmi memproduksi sebuah karya video animasi AI yang utuh dari nol: dari ide cerita, karakter konsisten, klip bergerak, suara narator, hingga hasil edit final di Canva!</p>
+    <div class="next">
+      <div>
+        <small>PUNCAK KELULUSAN</small>
+        <strong>Day 7 · Panggung karya & sertifikat kelulusan</strong>
+      </div>
+      <button class="day6-finish-button" id="day6FinishButton" type="button" disabled onclick="window.location.href='day7-preview.html'">Lanjut ke Day 7 (Showcase & Sertifikat) →</button>
+    </div>
+    <p class="continue-help" id="day6FinishHelp">Selesaikan semua langkah dan centang setiap kotak untuk membuka puncak kelulusan.</p>
+  </section>
+
+  <section class="help">
+    <div>
+      <strong>Butuh bantuan?</strong>
+      <p>Hubungi admin jika ada kendala saat mengedit di Canva.</p>
+    </div>
+    <a class="wa-help-button" href="https://wa.me/6281289795589?text=Halo%20kak%2C%20aku%20sudah%20belajar%20sampai%20Day%206%2C%20bisa%20minta%20bantuannya%3F" target="_blank" rel="noopener noreferrer">Bantuan WhatsApp</a>
+  </section>
+
+  <div class="foot">Belajar pelan-pelan, berkarya dengan percaya diri. — Asdos Digital Academy</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+const day6Steps = [...document.querySelectorAll('.lesson-step')];
+let day6Done = [];
+try { day6Done = JSON.parse(localStorage.getItem('asdos_day6_preview_steps') || '[]'); } catch(e){}
+
+function persistDay6() {
+  try { localStorage.setItem('asdos_day6_preview_steps', JSON.stringify(day6Done)); } catch(e){}
+}
+
+function redrawDay6() {
+  const n = day6Done.filter(Boolean).length;
+  document.getElementById('progressText').textContent = n + '/5 langkah';
+  document.getElementById('progressFill').style.width = (n / 5 * 100) + '%';
+  const finish = document.getElementById('day6FinishButton');
+  if (finish) finish.disabled = n < 5;
+
+  day6Steps.forEach((s, i) => {
+    s.classList.toggle('done', !!day6Done[i]);
+    s.classList.toggle('locked', i > 0 && !day6Done[i - 1]);
+    const status = s.querySelector('.step-status');
+    if (status) status.textContent = day6Done[i] ? 'Selesai' : (i > 0 && !day6Done[i - 1]) ? 'Terkunci' : 'Belum';
+  });
+}
+
+day6Steps.forEach((s, i) => {
+  const c = s.querySelector('.confirm');
+  const b = s.querySelector('.continue');
+  c.checked = !!day6Done[i];
+
+  const sync = () => {
+    b.disabled = !c.checked;
+    b.setAttribute('aria-disabled', String(b.disabled));
+  };
+  sync();
+
+  c.addEventListener('change', sync);
+  b.addEventListener('click', () => {
+    sync();
+    if (!c.checked) return;
+    day6Done[i] = true;
+    persistDay6();
+    redrawDay6();
+    s.open = false;
+    const next = day6Steps[i + 1];
+    if (next) {
+      next.open = true;
+      next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.showToast('Day 6 selesai! Video MP4-mu siap ditonton.');
+    }
+  });
+
+  s.addEventListener('toggle', () => {
+    if (s.classList.contains('locked') && s.open) {
+      s.open = false;
+      window.showToast('Selesaikan langkah sebelumnya dulu untuk membuka bagian ini.');
+    }
+  });
+});
+
+redrawDay6();
+
+// Device Switch
+document.querySelectorAll('[data-device]').forEach(b => b.addEventListener('click', () => {
+  const m = b.dataset.device;
+  document.querySelectorAll('[data-device]').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.phone').forEach(x => x.style.display = m === 'phone' ? 'block' : 'none');
+  document.querySelectorAll('.laptop').forEach(x => x.style.display = m === 'laptop' ? 'block' : 'none');
+}));
+
+// Lock SVG Observer
+(() => {
+  const openIcon = '<svg class="status-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="11" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 8.7-3.4"></path><path d="M17 7v1"></path></svg>';
+  const closedIcon = '<svg class="status-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="11" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 10 0v3"></path></svg>';
+  const isLocked = index => index > 0 && !day6Steps[index - 1].classList.contains('done');
+  
+  const syncIcons = () => day6Steps.forEach((step, index) => {
+    const locked = isLocked(index);
+    step.classList.toggle('locked', locked);
+    const status = step.querySelector('.step-status');
+    if (!status) return;
+    const done = step.classList.contains('done');
+    status.innerHTML = locked ? closedIcon : openIcon;
+    status.title = locked ? 'Terkunci' : done ? 'Selesai' : 'Terbuka';
+  });
+  syncIcons();
+})();
+</script>
+</body>
+</html>

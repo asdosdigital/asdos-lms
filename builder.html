@@ -1,0 +1,3242 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Visual Course Studio Builder - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card-bg: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --shadow: 0 8px 24px rgba(80, 55, 30, 0.06);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Studio Bar */
+    .studio-header {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 850;
+      font-size: 15px;
+      color: var(--brand-dark);
+      white-space: nowrap;
+    }
+    .studio-brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+    }
+    .studio-badge {
+      background: var(--sun);
+      color: #7A4B00;
+      border: 1px solid #E8CF6A;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .studio-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Main Split Container */
+    .studio-body {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+
+    /* Left Panel: Block Editor */
+    .editor-pane {
+      flex: 1.25;
+      overflow-y: auto;
+      padding: 24px;
+      border-right: 1.5px solid var(--line);
+      background: var(--bg);
+    }
+
+    /* Right Panel: Live Phone Simulator */
+    .preview-pane {
+      flex: 1;
+      overflow-y: auto;
+      background: #F4ECE1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px;
+      position: relative;
+    }
+
+    .preview-toolbar {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .preview-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preview-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--go);
+      box-shadow: 0 0 0 2px rgba(46, 125, 79, 0.25);
+    }
+
+    /* Smartphone Device Mockup (Fixed Flex Column Layout) */
+    .phone-mockup {
+      width: 385px;
+      max-width: 100%;
+      height: 760px;
+      max-height: calc(100vh - 130px);
+      background: var(--bg);
+      border: 11px solid #2A2420;
+      border-radius: 46px;
+      box-shadow: 0 24px 60px rgba(42, 36, 32, 0.28);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-notch {
+      width: 124px;
+      height: 18px;
+      background: #2A2420;
+      border-radius: 0 0 14px 14px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    /* Fixed Top Navigation Bar on Phone (Ala Day 2) */
+    .sim-topbar-fixed {
+      flex-shrink: 0;
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--line);
+      padding-top: 18px; /* Safe space under notch */
+      z-index: 10;
+    }
+    .sim-topbar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 8px;
+    }
+    .sim-btn-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      background: #FAF6EE;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+    .sim-btn-top:hover {
+      background: var(--peach);
+    }
+
+    /* Universal Stepper Bar (Matching Day 2) */
+    .sim-stepper {
+      padding: 0 14px 10px;
+    }
+    .sim-stepper-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .sim-stepper-title {
+      color: var(--ink);
+      font-weight: 850;
+    }
+    .sim-progress-track {
+      height: 6px;
+      background: #E8DCCB;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .sim-progress-fill {
+      height: 100%;
+      background: var(--go); /* Universal Green */
+      border-radius: 99px;
+      transition: width .3s ease;
+    }
+
+    /* Scrollable Screen Content (The only scrolling part) */
+    .phone-screen-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 12px 24px;
+      scrollbar-width: thin;
+    }
+
+    /* Mission Card Container inside Phone */
+    .sim-mission-card {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 18px;
+      box-shadow: 0 4px 18px rgba(80, 55, 30, 0.05);
+      margin-bottom: 14px;
+    }
+    .sim-card-badge {
+      font-size: 11.5px;
+      font-weight: 850;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--sun);
+      color: #7A4B00;
+      border: 1px solid #E8CF6A;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .sim-card-title {
+      font-size: 20px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      line-height: 1.35;
+      margin: 0 0 8px;
+    }
+    .sim-card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+
+    /* Fixed Bottom Bar on Phone (Always stays pinned at bottom!) */
+    .sim-bottom-bar-fixed {
+      flex-shrink: 0;
+      background: #ffffff;
+      border-top: 1.5px solid var(--line);
+      padding: 10px 14px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .sim-btn-prev {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 11px;
+      font-size: 13.5px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 0.42;
+      transition: background .15s ease;
+    }
+    .sim-btn-prev:hover {
+      background: var(--peach);
+    }
+    .sim-btn-prev[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .sim-btn-next {
+      background: var(--brand); /* Universal Teal */
+      color: #ffffff;
+      border: 0;
+      border-radius: 12px;
+      padding: 11px;
+      font-size: 14.5px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 1;
+      box-shadow: 0 4px 12px rgba(31, 107, 122, 0.25);
+      transition: background .15s ease;
+    }
+    .sim-btn-next:hover {
+      background: var(--brand-dark);
+    }
+
+    /* Card Tabs Selector (Horizontal Cards Bar) */
+    .card-deck-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      border-bottom: 1.5px solid var(--line);
+      scrollbar-width: none;
+    }
+    .card-deck-bar::-webkit-scrollbar { display: none; }
+    .card-tab-pill {
+      padding: 9px 14px;
+      border: 1.5px solid var(--line);
+      background: #ffffff;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s ease;
+      user-select: none;
+    }
+    .card-tab-pill:hover {
+      background: var(--peach);
+      border-color: var(--peach-line);
+      color: var(--brand-dark);
+    }
+    .card-tab-pill.active {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+      box-shadow: 0 4px 12px rgba(31, 107, 122, 0.25);
+    }
+    .card-tab-pill.dragging {
+      opacity: 0.4;
+      border: 2px dashed var(--brand);
+    }
+    .card-tab-pill.drag-over {
+      border-left: 3px solid var(--brand);
+      transform: translateX(4px);
+    }
+    .btn-add-card {
+      padding: 9px 14px;
+      border: 1.5px dashed var(--brand);
+      background: var(--leaf);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--go-dark);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-add-card:hover {
+      background: #D7EED3;
+    }
+
+    /* Section Panels */
+    .panel-box {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .panel-box h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 850;
+      color: var(--brand-dark);
+    }
+    .panel-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 16px;
+      line-height: 1.5;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #FDFBF7;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--brand);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(31, 107, 122, 0.12);
+    }
+
+    /* Rich Text WYSIWYG Editor (Ala H5P / Notion) */
+    .format-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: #FAF6EE;
+      border: 1.5px solid var(--line);
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      padding: 6px 8px;
+    }
+    .btn-format {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12.5px;
+      font-weight: 850;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s ease;
+      user-select: none;
+    }
+    .btn-format:hover {
+      background: var(--peach);
+      border-color: var(--peach-line);
+      color: var(--brand-dark);
+    }
+    .btn-format.active {
+      background: var(--brand) !important;
+      color: #ffffff !important;
+      border-color: var(--brand) !important;
+    }
+    .btn-format.active span {
+      background: rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+    }
+    .rich-text-editor {
+      width: 100%;
+      min-height: 95px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-top: 0;
+      border-radius: 0 0 12px 12px;
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink);
+      outline: none;
+      box-sizing: border-box;
+    }
+    .rich-text-editor:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(31, 107, 122, 0.12);
+    }
+    .rich-text-editor h3 { margin: 8px 0 4px; color: var(--brand-dark); font-size: 16px; font-weight: 850; }
+    .rich-text-editor ul { margin: 6px 0 8px; padding-left: 22px; }
+    .rich-text-editor mark { background: #FFF3BF; padding: 1px 4px; border-radius: 4px; }
+
+    /* Blocks Inside Card */
+    .block-item-card {
+      background: #FDFBF7;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+      transition: transform .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+    .block-item-card:hover {
+      border-color: #D4C5B0;
+    }
+    .block-item-card.dragging {
+      opacity: 0.35;
+      border: 2px dashed var(--brand);
+    }
+    .block-item-card.drag-over {
+      border-top: 3px solid var(--brand);
+      transform: translateY(2px);
+    }
+    .block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .drag-handle {
+      cursor: grab;
+      color: #8C7B6B;
+      display: flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #FAF6EE;
+      margin-right: 8px;
+      user-select: none;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+      background: #E8DCCB;
+    }
+    .block-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 850;
+      padding: 3px 10px;
+      border-radius: 99px;
+      letter-spacing: .4px;
+    }
+    .btb-text { background: var(--leaf); color: var(--go-dark); border: 1px solid var(--leaf-line); }
+    .btb-prompt { background: var(--sun); color: #7A4B00; border: 1px solid #E8CF6A; }
+    .btb-trouble { background: var(--peach); color: #8A4B1A; border: 1px solid var(--peach-line); }
+    .btb-quiz { background: #EDE9FE; color: #5B21B6; border: 1px solid #C4B5FD; }
+    .btb-video { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+    .btb-image { background: #FDF2F8; color: #9D174D; border: 1px solid #FBCFE8; }
+    .btb-steps { background: #E0F2FE; color: #075985; border: 1px solid #7DD3FC; }
+    .btb-callout { background: #EFF6FF; color: #1D4ED8; border: 1px solid #93C5FD; }
+
+    .block-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-icon-mini {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all .15s ease;
+    }
+    .btn-icon-mini:hover {
+      background: var(--peach);
+      color: var(--brand-dark);
+      border-color: var(--peach-line);
+    }
+    .btn-icon-mini.del:hover {
+      background: var(--danger-bg);
+      color: var(--danger-ink);
+      border-color: #F8C2B8;
+    }
+
+    /* Add Block Toolbar */
+    .add-block-zone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1.5px dashed var(--line);
+    }
+    .btn-add-block {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s ease;
+    }
+    .btn-add-block:hover {
+      background: var(--sun);
+      border-color: #E8CF6A;
+      transform: translateY(-1px);
+    }
+
+    /* Preset Color Chips (Minor accent selector) */
+    .color-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .color-chip {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 2px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s ease;
+      user-select: none;
+    }
+    .color-chip:hover {
+      transform: translateY(-1px);
+    }
+    .color-chip.active {
+      border-color: #2A2420 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .chip-teal { background: #E0F2F1; color: #1F6B7A; }
+    .chip-green { background: var(--leaf); color: var(--go-dark); }
+    .chip-peach { background: var(--peach); color: #8A4B1A; }
+    .chip-sun { background: var(--sun); color: #7A4B00; }
+    .chip-blue { background: #EFF6FF; color: #1D4ED8; }
+    .chip-rose { background: #FFE4E6; color: #9F1239; }
+    .chip-lavender { background: #F3E8FF; color: #6D28D9; }
+
+    /* Action Buttons */
+    .btn-primary {
+      background: var(--brand);
+      color: #ffffff;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .15s ease;
+    }
+    .btn-primary:hover {
+      background: var(--brand-dark);
+    }
+    .btn-export {
+      background: var(--go);
+      color: #ffffff;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .15s ease;
+    }
+    .btn-export:hover {
+      background: var(--go-dark);
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary:hover {
+      background: var(--peach);
+    }
+
+    /* Prompt Box on Phone */
+    .sim-prompt-box {
+      background: #FFFBE8;
+      border: 1.5px solid #F0DA8A;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .sim-prompt-text {
+      font-family: monospace;
+      font-size: 12.5px;
+      color: #3B2806;
+      line-height: 1.5;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #EADB9C;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .sim-copy-btn {
+      width: 100%;
+      background: var(--brand);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Trouble Box on Phone */
+    .sim-trouble-box {
+      background: #FFF5EC;
+      border: 1.5px solid #F5CBA7;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .sim-trouble-title {
+      font-size: 13px;
+      font-weight: 850;
+      color: #7E3812;
+      margin-bottom: 6px;
+    }
+    .sim-trouble-ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 12.5px;
+      color: #5A3215;
+      line-height: 1.5;
+    }
+
+    /* Numbered Steps on Phone (Day 1-7 Pointers) */
+    .sim-step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .sim-step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .step-num-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #ffffff;
+      font-weight: 850;
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Image Box on Phone */
+    .sim-img-box {
+      margin-bottom: 14px;
+    }
+    .sim-img-box img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1.5px solid var(--line);
+      display: block;
+      object-fit: cover;
+      max-height: 260px;
+    }
+    .sim-img-caption {
+      font-size: 11.5px;
+      color: var(--muted);
+      text-align: center;
+      margin: 6px 0 0;
+      font-style: italic;
+    }
+
+    /* Quiz Box on Phone */
+    .sim-quiz-box {
+      background: #F5F3FF;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .sim-quiz-q {
+      font-size: 13.5px;
+      font-weight: 850;
+      color: #4C1D95;
+      margin-bottom: 10px;
+    }
+    .sim-quiz-opt {
+      background: #ffffff;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      font-weight: 750;
+      color: var(--ink);
+      margin-bottom: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .15s ease;
+    }
+    .sim-quiz-opt:hover {
+      background: #EDE9FE;
+    }
+    .sim-quiz-opt.correct {
+      background: #E8F5E9 !important;
+      border-color: #81C784 !important;
+      color: #1B5E20 !important;
+    }
+    .sim-quiz-opt.wrong {
+      background: #FFEBEE !important;
+      border-color: #E57373 !important;
+      color: #B71C1C !important;
+    }
+
+    /* Callout Box on Phone */
+    .sim-callout-box {
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .sim-callout-title {
+      font-size: 13px;
+      font-weight: 850;
+      color: #1E40AF;
+      margin-bottom: 4px;
+    }
+    .sim-callout-text {
+      font-size: 12.5px;
+      color: #1E3A8A;
+      line-height: 1.5;
+    }
+
+    /* Inline Help Button on Phone (Ala Day 1-7) */
+    .sim-btn-help-inline {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px dashed #E0BA98;
+      background: #FFF7EE;
+      color: #8A4B1A;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      transition: all .15s ease;
+    }
+    .sim-btn-help-inline:hover {
+      background: #FFEBD6;
+    }
+
+    /* Simulated Help Drawer inside Phone Screen (Bottom Sheet Overlay) */
+    .sim-help-drawer {
+      position: absolute;
+      inset: 0;
+      background: rgba(42, 36, 32, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+    }
+    .sim-help-drawer.open {
+      display: flex;
+    }
+    .sim-help-sheet {
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-height: 82%;
+      overflow-y: auto;
+      padding: 18px 16px 24px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.2);
+    }
+    .sim-faq-item {
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .sim-faq-q { font-weight: 850; color: var(--brand-dark); margin-bottom: 3px; }
+    .sim-faq-a { color: var(--muted); margin: 0; line-height: 1.4; }
+
+    /* Modal Dialog for Help Center Settings */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(42,36,32,0.6);
+      z-index: 10000;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 580px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    }
+
+    /* Toast */
+    .studio-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2A2420;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 750;
+      z-index: 20000;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP STUDIO NAV -->
+<header class="studio-header">
+  <div class="studio-brand">
+    <img src="asdos-square.png" alt="Asdos Digital Academy">
+    <span>asdos digital academy</span>
+    <span class="studio-badge">VISUAL COURSE BUILDER</span>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--muted)">
+      <span>Template / Modul:</span>
+      <select id="selPresetTemplate" onchange="loadPresetTemplate(this.value)" style="width:auto;padding:6px 10px;font-size:12.5px">
+        <option value="custom">Modul Baru (Kustom)</option>
+        <option value="day1">Day 1 (Setup &amp; Prompt Perdana)</option>
+        <option value="day2">Day 2 (Character Sheet &amp; Konsistensi Wajah)</option>
+        <option value="day3">Day 3 (Konsistensi Gambar &amp; Sudut Kamera)</option>
+        <option value="day4">Day 4 (Latar Adegan Sinematik)</option>
+        <option value="day5">Day 5 (Audio &amp; Voiceover AI)</option>
+        <option value="day6">Day 6 (Video Assembly Final Cut)</option>
+        <option value="day7">Day 7 (Proyek Kelulusan &amp; Sertifikat)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="studio-actions">
+    <button type="button" class="btn-secondary" onclick="openHelpCenterModal()" title="Atur FAQ dan WhatsApp Bantuan">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Pusat Bantuan &amp; WA</span>
+    </button>
+    <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleImportJson(event)">
+    <button type="button" class="btn-secondary" onclick="document.getElementById('jsonFileInput').click()" title="Buka file draft JSON">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span>Buka JSON</span>
+    </button>
+    <button type="button" class="btn-secondary" onclick="exportDraftJson()" title="Simpan draft proyek dalam format JSON">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span>Simpan Draft</span>
+    </button>
+    <button type="button" class="btn-secondary" onclick="saveToLmsDatabase()">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Simpan ke Database</span>
+    </button>
+    <button type="button" class="btn-secondary" onclick="previewInNewTab()" title="Buka pratinjau materi layar penuh di tab baru">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <span>Pratinjau Tab Baru</span>
+    </button>
+    <button type="button" class="btn-export" onclick="exportStandaloneHtml()" title="Unduh file modul utuh mandiri (.html)">
+      <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Unduh File HTML (.html)</span>
+    </button>
+    <a href="admin.html" class="btn-secondary" style="text-decoration:none">
+      <span>Kembali ke Admin</span>
+    </a>
+  </div>
+</header>
+
+<!-- MAIN STUDIO SPLIT PANE -->
+<div class="studio-body">
+
+  <!-- LEFT PANE: BLOCK & CARD EDITOR -->
+  <main class="editor-pane">
+    <!-- Day Metadata -->
+    <div class="panel-box">
+      <h3>Informasi Modul Pembelajaran</h3>
+      <p class="panel-desc">Tentukan nomor modul dan judul yang akan ditampilkan di kurikulum siswa.</p>
+      
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:14px">
+        <div class="form-group">
+          <label for="modDayNumber">Nomor Modul:</label>
+          <input type="text" id="modDayNumber" value="Day 8" oninput="updateCourseMeta()">
+        </div>
+        <div class="form-group">
+          <label for="modTitle">Judul Utama Modul:</label>
+          <input type="text" id="modTitle" value="Eksplorasi Efek Animasi Lanjutan" oninput="updateCourseMeta()">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label for="modDesc">Tujuan / Deskripsi Singkat:</label>
+        <input type="text" id="modDesc" value="Praktik menyempurnakan klip animasi dengan sentuhan visual effects dan filter sinematik." oninput="updateCourseMeta()">
+      </div>
+    </div>
+
+    <!-- Cards Manager -->
+    <div class="panel-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <h3 style="margin:0">Kartu Pembelajaran (Cards Deck)</h3>
+          <p class="panel-desc" style="margin:2px 0 0">Tarik tab kartu untuk mengurutkan (Drag &amp; Drop). Siswa akan menyusuri materi kartu demi kartu.</p>
+        </div>
+        <button type="button" class="btn-add-card" onclick="addNewCard()">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Tambah Kartu</span>
+        </button>
+      </div>
+
+      <!-- Card Selection Pills -->
+      <div id="cardDeckNav" class="card-deck-bar"></div>
+
+      <!-- Active Card Form -->
+      <div id="activeCardFormArea">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT PANE: LIVE PHONE PREVIEW (Ponsel Bersih Ala Day 1-7) -->
+  <aside class="preview-pane">
+    <div class="preview-toolbar">
+      <div class="preview-tag">
+        <span class="preview-dot"></span>
+        <span>Pratinjau Layar Siswa (Live Real-Time)</span>
+      </div>
+      <span style="font-size:12px;font-weight:750;color:var(--muted)" id="previewCardIndicator">Kartu 1 dari 1</span>
+    </div>
+
+    <!-- Smartphone Bezel -->
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      
+      <!-- 1. FIXED TOPBAR (Ruang Belajar, Bantuan, Stepper) -->
+      <div class="sim-topbar-fixed">
+        <div class="sim-topbar-nav">
+          <div class="sim-btn-top">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Ruang Belajar</span>
+          </div>
+          <button type="button" class="sim-btn-top" onclick="openSimHelp()">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Bantuan</span>
+          </button>
+        </div>
+
+        <!-- Universal Stepper Bar -->
+        <div class="sim-stepper">
+          <div class="sim-stepper-label">
+            <span class="sim-stepper-title" id="phoneCardSubtitle">Langkah 1</span>
+            <span id="phoneStepBadge">Langkah 1 dari 2</span>
+          </div>
+          <div class="sim-progress-track">
+            <div class="sim-progress-fill" id="phoneProgressBar" style="width:50%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SCROLLABLE SCREEN BODY (Konten Bergulir Rapi) -->
+      <div class="phone-screen-scroll" id="phoneLiveScreen">
+        <div class="sim-mission-card">
+          <span class="sim-card-badge" id="simCardBadge">Day 8 · Praktik</span>
+          <h1 class="sim-card-title" id="simCardTitle">Judul Langkah</h1>
+          <p class="sim-card-desc" id="simCardDesc">Deskripsi ringkas...</p>
+
+          <div id="phoneCardContent">
+            <!-- Dynamic blocks inside card -->
+          </div>
+
+          <button type="button" class="sim-btn-help-inline" id="phoneBtnHelpInline" onclick="openSimHelp()">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="phoneBtnHelpText">Gambarnya aneh? Lihat bantuan</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. FIXED BOTTOM BAR (Selalu Menempel di Bawah HP, Tidak Melayang!) -->
+      <footer class="sim-bottom-bar-fixed">
+        <button type="button" class="sim-btn-prev" id="phoneBtnPrev" onclick="simNavPrev()">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Balik</span>
+        </button>
+        <button type="button" class="sim-btn-next" id="phoneBtnNext" onclick="simNavNext()">
+          <span id="phoneBtnNextLabel">Lanjut</span>
+        </button>
+      </footer>
+
+      <!-- 4. PUSAT BANTUAN DRAWER OVERLAY (Ala Day 2) -->
+      <div class="sim-help-drawer" id="simHelpDrawer" onclick="closeSimHelpOnBg(event)">
+        <div class="sim-help-sheet">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid var(--line)">
+            <strong style="font-size:16px;color:var(--brand-dark)" id="simHelpDrawerTitle">Pusat Bantuan Praktik</strong>
+            <button type="button" onclick="closeSimHelp()" style="background:#FAF6EE;border:1px solid var(--line);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;cursor:pointer">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div id="simHelpFaqList"></div>
+          <a id="simHelpWaBtn" href="#" target="_blank" rel="noopener noreferrer" style="margin-top:14px;background:#2E7D4F;color:#fff;text-decoration:none;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:6px">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>Tanya Pengajar via WhatsApp</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<!-- MODAL PENGATURAN PUSAT BANTUAN -->
+<div id="modalHelpCenter" class="modal-backdrop" onclick="closeHelpCenterModalOnBg(event)">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--line)">
+      <h3 style="margin:0;font-size:18px;color:var(--brand-dark)">Kelola Pusat Bantuan &amp; WhatsApp</h3>
+      <button type="button" onclick="closeHelpCenterModal()" style="background:#FAF6EE;border:1px solid var(--line);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;cursor:pointer">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    
+    <div class="form-group">
+      <label>Nomor WhatsApp Pengajar / Admin:</label>
+      <input type="text" id="helpWaNumber" placeholder="6281289795589">
+    </div>
+    <div class="form-group">
+      <label>Template Pesan WhatsApp Otomatis:</label>
+      <input type="text" id="helpWaText" placeholder="Halo Mentor, saya butuh bantuan praktik di materi ini">
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px">
+      <label style="margin:0">Daftar Pertanyaan &amp; Jawaban Bantuan (FAQ):</label>
+      <button type="button" class="btn-secondary" onclick="addFaqItem()" style="padding:4px 10px;font-size:11.5px">
+        + Tambah FAQ
+      </button>
+    </div>
+    <div id="faqEditorContainer"></div>
+
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px">
+      <button type="button" class="btn-secondary" onclick="closeHelpCenterModal()">Batal</button>
+      <button type="button" class="btn-primary" onclick="saveHelpCenterSettings()">Simpan Pengaturan Bantuan</button>
+    </div>
+  </div>
+</div>
+
+<div id="studioToast" class="studio-toast" role="status"></div>
+
+<script src="lms-db.js"></script>
+<script>
+// ==========================================================================
+// COURSE BUILDER ENGINE - STATE & DATA MODEL
+// ==========================================================================
+let currentActiveCardIndex = 0;
+let draggedCardIdx = null;
+let draggedBlockIdx = null;
+
+let courseModel = {
+  dayNumber: 'Day 8',
+  title: 'Eksplorasi Efek Animasi Lanjutan',
+  desc: 'Praktik menyempurnakan klip animasi dengan sentuhan visual effects dan filter sinematik.',
+  helpCenter: {
+    waNumber: '6281289795589',
+    waText: 'Halo Mentor, saya sedang praktik Day 8 dan butuh bantuan teknis',
+    faqs: [
+      { q: 'Gambarnya aneh atau belum mirip?', a: 'Tekan tombol buat (Generate) sekali lagi. Setiap percobaan AI menghasilkan gambar yang sedikit berbeda.' },
+      { q: 'Gambarnya gepeng atau melebar?', a: 'Pilih ukuran 9:16 sebelum menekan tombol buat, lalu coba lagi.' },
+      { q: 'Tombol Salin tidak bekerja?', a: 'Tahan jari di kalimat perintah, pilih semua teksnya, lalu ketuk Salin atau Copy.' }
+    ]
+  },
+  cards: [
+    {
+      stepBadge: 'LANGKAH 1',
+      accent: 'teal',
+      title: 'Persiapan & Setup Awal',
+      desc: 'Sebelum mulai praktik, siapkan bahan dan alat yang dibutuhkan di bawah ini.',
+      showHelpBtn: true,
+      helpBtnText: 'Gambarnya aneh? Lihat bantuan',
+      blocks: [
+        {
+          id: 'b1',
+          type: 'text',
+          heading: 'Fokus Praktik Hari Ini',
+          body: 'Hari ini kita akan mengeksplorasi teknik baru untuk mempercepat pembuatan adegan video animasi AI.'
+        },
+        {
+          id: 'b2',
+          type: 'prompt',
+          tool: 'Google Flow',
+          formula: 'Cinematic medium shot of [karakter], golden hour lighting, hyper-detailed, 8k --ar 9:16',
+          note: 'Ganti teks di dalam kurung siku dengan nama atau ciri fisik karaktermu.'
+        },
+        {
+          id: 'b3',
+          type: 'trouble',
+          title: 'Hasil AI belum pas? Coba 3 trik ini:',
+          tips: [
+            'Perjelas kata kunci pencahayaan (misal: soft natural studio light).',
+            'Gunakan prompt bahasa Inggris sederhana.',
+            'Pastikan rasio video diatur ke 9:16 untuk layar ponsel.'
+          ]
+        },
+        {
+          id: 'b4',
+          type: 'quiz',
+          question: 'Berapa rasio video standar untuk animasi vertikal di medsos?',
+          options: ['16:9 (Layar Lebar Komputer)', '9:16 (Vertikal Layar Ponsel)', '4:3 (Kotak Klasik)'],
+          correctIndex: 1,
+          feedbackCorrect: 'Format 9:16 adalah rasio penuh yang paling pas dan nyaman dilihat di layar ponsel!',
+          feedbackWrong: 'Belum tepat. Format vertikal layar ponsel di reels/tiktok menggunakan rasio 9:16.'
+        }
+      ]
+    },
+    {
+      stepBadge: 'LANGKAH 2',
+      accent: 'go',
+      title: 'Pembuatan Prompt Gerak Dinamis',
+      desc: 'Tuliskan perintah gerak kamera yang halus agar adegan terasa hidup dan menarik.',
+      showHelpBtn: true,
+      helpBtnText: 'Belum berhasil? Buka bantuan',
+      blocks: [
+        {
+          id: 'b5',
+          type: 'prompt',
+          tool: 'Google Flow / Runway',
+          formula: 'Slow camera pan right, character turns head and smiles gently, atmospheric dust particles, 60fps',
+          note: 'Pastikan gerakan lambat agar AI tidak merusak bentuk wajah karakter.'
+        },
+        {
+          id: 'b6',
+          type: 'steps',
+          title: 'Urutan Eksekusi Render di Ponsel:',
+          items: [
+            'Buka aplikasi Flow di peramban Chrome HP kamu.',
+            'Tempelkan rumus prompt gerak di atas ke kolom generate.',
+            'Tunggu render selesai lalu tekan tombol download.'
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// Minor Accent Token Map (Only changes badge & chip details)
+const ACCENT_MAP = {
+  teal: { bg: '#E0F2F1', ink: '#1F6B7A', border: '#80CBC4', label: 'Teal' },
+  go: { bg: '#E6F4E4', ink: '#2E7D4F', border: '#7DBB8A', label: 'Hijau' },
+  peach: { bg: '#FFEBD6', ink: '#8A4B1A', border: '#F0B98A', label: 'Peach' },
+  sun: { bg: '#FFF3BF', ink: '#7A4B00', border: '#E8CF6A', label: 'Kuning' },
+  blue: { bg: '#EFF6FF', ink: '#1D4ED8', border: '#93C5FD', label: 'Biru' },
+  rose: { bg: '#FFE4E6', ink: '#9F1239', border: '#FDA4AF', label: 'Rose' },
+  lavender: { bg: '#F3E8FF', ink: '#6D28D9', border: '#C4B5FD', label: 'Lavender' }
+};
+
+// ==========================================================================
+// RENDER EDITOR PANE
+// ==========================================================================
+function renderEditor() {
+  document.getElementById('modDayNumber').value = courseModel.dayNumber;
+  document.getElementById('modTitle').value = courseModel.title;
+  document.getElementById('modDesc').value = courseModel.desc;
+
+  // 1. Render Card Deck Bar with Drag and Drop
+  renderCardDeckNav();
+
+  // 2. Render Active Card Form
+  const cardArea = document.getElementById('activeCardFormArea');
+  const card = courseModel.cards[currentActiveCardIndex] || courseModel.cards[0];
+  if (!card) return;
+
+  const curAccent = card.accent || 'teal';
+
+  cardArea.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:#FAF6EE;padding:10px 14px;border-radius:12px;border:1px solid var(--line)">
+      <span style="font-size:13px;font-weight:850;color:var(--brand-dark)">Mengedit: ${escapeHtml(card.stepBadge || 'Kartu ' + (currentActiveCardIndex + 1))}</span>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="btn-icon-mini" title="Pindah ke Kiri" onclick="moveCard(${currentActiveCardIndex}, -1)" ${currentActiveCardIndex === 0 ? 'disabled' : ''}>
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button type="button" class="btn-icon-mini" title="Pindah ke Kanan" onclick="moveCard(${currentActiveCardIndex}, 1)" ${currentActiveCardIndex === courseModel.cards.length - 1 ? 'disabled' : ''}>
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button type="button" class="btn-icon-mini" title="Duplikasi Kartu" onclick="duplicateCard(${currentActiveCardIndex})">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+        <button type="button" class="btn-icon-mini del" title="Hapus Kartu" onclick="deleteCard(${currentActiveCardIndex})" ${courseModel.cards.length <= 1 ? 'disabled' : ''}>
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="form-group">
+        <label>Badge / Label Langkah:</label>
+        <input type="text" value="${escapeHtml(card.stepBadge)}" oninput="updateActiveCardProp('stepBadge', this.value)">
+      </div>
+      <div class="form-group">
+        <label>Warna Aksen Kartu (Badge):</label>
+        <div class="color-chips" id="colorChipsContainer">
+          <span class="color-chip chip-teal ${curAccent === 'teal' ? 'active' : ''}" id="chip_teal" onclick="setCardAccent('teal')">Teal</span>
+          <span class="color-chip chip-green ${curAccent === 'go' ? 'active' : ''}" id="chip_go" onclick="setCardAccent('go')">Hijau</span>
+          <span class="color-chip chip-peach ${curAccent === 'peach' ? 'active' : ''}" id="chip_peach" onclick="setCardAccent('peach')">Peach</span>
+          <span class="color-chip chip-sun ${curAccent === 'sun' ? 'active' : ''}" id="chip_sun" onclick="setCardAccent('sun')">Kuning</span>
+          <span class="color-chip chip-blue ${curAccent === 'blue' ? 'active' : ''}" id="chip_blue" onclick="setCardAccent('blue')">Biru</span>
+          <span class="color-chip chip-rose ${curAccent === 'rose' ? 'active' : ''}" id="chip_rose" onclick="setCardAccent('rose')">Rose</span>
+          <span class="color-chip chip-lavender ${curAccent === 'lavender' ? 'active' : ''}" id="chip_lavender" onclick="setCardAccent('lavender')">Lavender</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Judul Kartu:</label>
+      <input type="text" value="${escapeHtml(card.title)}" oninput="updateActiveCardProp('title', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label>Instruksi / Subtitle Kartu:</label>
+      <textarea rows="2" oninput="updateActiveCardProp('desc', this.value)">${escapeHtml(card.desc)}</textarea>
+    </div>
+
+    <!-- PENGATURAN TOMBOL BANTUAN KARTU INI -->
+    <div style="background:#FAF6EE;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:850;color:var(--brand-dark)">
+          <input type="checkbox" ${card.showHelpBtn !== false ? 'checked' : ''} onchange="updateActiveCardProp('showHelpBtn', this.checked)">
+          <span>Tampilkan Tombol Bantuan Praktik di Kartu Ini</span>
+        </label>
+        <button type="button" onclick="openHelpCenterModal()" style="background:none;border:0;color:var(--brand);font-size:12px;font-weight:800;cursor:pointer;text-decoration:underline">
+          Atur Isi FAQ &amp; WA &rarr;
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:6px">
+        <label style="font-size:11.5px;color:var(--muted)">Tulisan pada Tombol Bantuan:</label>
+        <input type="text" value="${escapeHtml(card.helpBtnText || 'Gambarnya aneh? Lihat bantuan')}" placeholder="misal: Gambarnya aneh? Lihat bantuan" oninput="updateActiveCardProp('helpBtnText', this.value)">
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px">
+      <h4 style="font-size:14px;color:var(--brand-dark);margin:0;display:flex;align-items:center;gap:6px">
+        <span>Blok Komponen Kartu Ini:</span>
+      </h4>
+      <span style="font-size:11.5px;color:var(--muted);font-weight:750">Tarik ikon ⠿ untuk urutkan blok</span>
+    </div>
+
+    <div id="blocksContainer">
+      ${card.blocks.map((b, bIdx) => renderBlockEditorItem(b, bIdx)).join('')}
+    </div>
+
+    <!-- Toolbar Tambah Blok Komponen Baru -->
+    <div class="add-block-zone">
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('text')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <span>+ Teks Panduan</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('steps')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        <span>+ Langkah Bernomor (1 2 3)</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('image')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>+ Gambar / Ilustrasi</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('prompt')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>+ Salin Prompt AI</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('trouble')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>+ Troubleshooting</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('quiz')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>+ Kuis Santai</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('video')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        <span>+ Video Tutorial</span>
+      </button>
+      <button type="button" class="btn-add-block" onclick="addBlockToCard('callout')">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>+ Kotak Tips / Info</span>
+      </button>
+    </div>
+  `;
+
+  renderLivePreview();
+}
+
+function renderCardDeckNav() {
+  const deckNav = document.getElementById('cardDeckNav');
+  if (!deckNav) return;
+  deckNav.innerHTML = courseModel.cards.map((card, idx) => {
+    const isActive = idx === currentActiveCardIndex;
+    return `
+      <div class="card-tab-pill ${isActive ? 'active' : ''}" 
+           draggable="true"
+           ondragstart="handleCardDragStart(event, ${idx})"
+           ondragover="handleCardDragOver(event, ${idx})"
+           ondragleave="handleCardDragLeave(event)"
+           ondragend="handleCardDragEnd(event)"
+           ondrop="handleCardDrop(event, ${idx})"
+           onclick="selectCard(${idx})"
+           title="Tarik tab ini untuk memindahkan urutan">
+        <span style="opacity:0.6;display:inline-flex;align-items:center">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><circle cx="8" cy="5" r="1.5"/><circle cx="16" cy="5" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/></svg>
+        </span>
+        <span>${escapeHtml(card.stepBadge || 'Kartu ' + (idx + 1))}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderBlockEditorItem(b, bIdx) {
+  let innerForm = '';
+  let badgeLabel = 'Teks';
+  let badgeClass = 'btb-text';
+
+  if (b.type === 'text') {
+    badgeLabel = 'Teks Penjelasan';
+    badgeClass = 'btb-text';
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Judul Sub-Langkah:</label>
+        <input type="text" value="${escapeHtml(b.heading || '')}" oninput="updateBlockProp(${bIdx}, 'heading', this.value)">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Isi Penjelasan (Visual WYSIWYG - Tanpa kode tag HTML):</label>
+        <div class="format-toolbar">
+          <button type="button" class="btn-format" id="btnB_${bIdx}" onmousedown="event.preventDefault()" onclick="toggleRichFormat(${bIdx}, 'bold')" title="Tebal (Bold)">
+            <b>B</b>
+          </button>
+          <button type="button" class="btn-format" id="btnI_${bIdx}" onmousedown="event.preventDefault()" onclick="toggleRichFormat(${bIdx}, 'italic')" title="Miring (Italic)">
+            <i>I</i>
+          </button>
+          <button type="button" class="btn-format" id="btnH3_${bIdx}" onmousedown="event.preventDefault()" onclick="toggleRichFormat(${bIdx}, 'h3')" title="Sub-Judul (H3)">
+            <span>H3</span>
+          </button>
+          <button type="button" class="btn-format" id="btnList_${bIdx}" onmousedown="event.preventDefault()" onclick="toggleRichFormat(${bIdx}, 'bullet')" title="Daftar Poin">
+            <span>• Poin</span>
+          </button>
+          <button type="button" class="btn-format" id="btnMark_${bIdx}" onmousedown="event.preventDefault()" onclick="toggleRichFormat(${bIdx}, 'highlight')" title="Stabilo Kuning (Klik lagi untuk batal)">
+            <span style="background:#FFF3BF;color:#7A4B00;padding:1px 4px;border-radius:3px">Stabilo</span>
+          </button>
+        </div>
+        <div class="rich-text-editor" 
+             id="richText_${bIdx}" 
+             contenteditable="true" 
+             oninput="onRichTextInput(${bIdx})" 
+             onmouseup="updateFormatToolbarState(${bIdx})" 
+             onkeyup="updateFormatToolbarState(${bIdx})">${b.body || ''}</div>
+      </div>
+    `;
+  } else if (b.type === 'steps') {
+    badgeLabel = 'Langkah Bernomor 1 2 3';
+    badgeClass = 'btb-steps';
+    const items = b.items || ['Langkah pertama...', 'Langkah kedua...'];
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Judul Alur Langkah:</label>
+        <input type="text" value="${escapeHtml(b.title || 'Langkah-Langkah Praktik:')}" oninput="updateBlockProp(${bIdx}, 'title', this.value)">
+      </div>
+      <label>Daftar Pointers Angka (Berwarna otomatis ala Day 1-7):</label>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
+        ${items.map((it, itIdx) => `
+          <div style="display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center">
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px;font-weight:850;display:grid;place-items:center">${itIdx + 1}</span>
+            <input type="text" value="${escapeHtml(it)}" oninput="updateStepItemText(${bIdx}, ${itIdx}, this.value)">
+            <button type="button" class="btn-icon-mini del" onclick="deleteStepItem(${bIdx}, ${itIdx})" ${items.length <= 1 ? 'disabled' : ''}>
+              <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `).join('')}
+      </div>
+      <button type="button" class="btn-secondary" onclick="addStepItem(${bIdx})" style="padding:6px 12px;font-size:12px">
+        + Tambah Langkah (${items.length + 1})
+      </button>
+    `;
+  } else if (b.type === 'image') {
+    badgeLabel = 'Gambar / Ilustrasi';
+    badgeClass = 'btb-image';
+    innerForm = `
+      <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:8px">
+        <div class="form-group" style="margin-bottom:0">
+          <label>URL Gambar atau Path File:</label>
+          <input type="text" value="${escapeHtml(b.imgUrl || '')}" placeholder="assets/gambar.png atau URL https://..." oninput="updateBlockProp(${bIdx}, 'imgUrl', this.value)">
+        </div>
+        <div>
+          <label style="opacity:0">Upload</label>
+          <input type="file" id="fileUpload_${bIdx}" accept="image/*" style="display:none" onchange="handleImageFileUpload(${bIdx}, event)">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('fileUpload_${bIdx}').click()" style="padding:10px 14px;white-space:nowrap">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Pilih File HP/PC</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Keterangan Bawah Gambar (Caption):</label>
+        <input type="text" value="${escapeHtml(b.caption || '')}" placeholder="misal: Pastikan rasio 9:16 sudah tercentang" oninput="updateBlockProp(${bIdx}, 'caption', this.value)">
+      </div>
+      ${b.imgUrl ? `<div style="max-width:180px;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-top:6px"><img src="${escapeHtml(b.imgUrl)}" style="width:100%;display:block;max-height:100px;object-fit:cover"></div>` : ''}
+    `;
+  } else if (b.type === 'prompt') {
+    badgeLabel = 'Salin Prompt AI';
+    badgeClass = 'btb-prompt';
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Nama Tool AI:</label>
+        <input type="text" value="${escapeHtml(b.tool || 'Google Flow')}" oninput="updateBlockProp(${bIdx}, 'tool', this.value)">
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Rumus Prompt AI:</label>
+        <textarea rows="3" oninput="updateBlockProp(${bIdx}, 'formula', this.value)">${escapeHtml(b.formula || '')}</textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Catatan / Tips Tambahan:</label>
+        <input type="text" value="${escapeHtml(b.note || '')}" oninput="updateBlockProp(${bIdx}, 'note', this.value)">
+      </div>
+    `;
+  } else if (b.type === 'trouble') {
+    badgeLabel = 'Troubleshooting';
+    badgeClass = 'btb-trouble';
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Judul Masalah:</label>
+        <input type="text" value="${escapeHtml(b.title || 'Hasil belum pas? Coba tips ini:')}" oninput="updateBlockProp(${bIdx}, 'title', this.value)">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>3 Tips Solusi (Pisahkan baris baru):</label>
+        <textarea rows="3" oninput="updateTroubleTips(${bIdx}, this.value)">${(b.tips || []).join('\n')}</textarea>
+      </div>
+    `;
+  } else if (b.type === 'quiz') {
+    badgeLabel = 'Kuis Santai';
+    badgeClass = 'btb-quiz';
+    const cIdx = b.correctIndex !== undefined ? b.correctIndex : 0;
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Pertanyaan Kuis:</label>
+        <input type="text" value="${escapeHtml(b.question || '')}" oninput="updateBlockProp(${bIdx}, 'question', this.value)">
+      </div>
+      
+      <label>Pilihan Jawaban &amp; Tandai Kunci Jawaban Benar:</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+        ${[0, 1, 2].map(optIdx => `
+          <div style="display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;background:#FAF6EE;padding:8px 12px;border-radius:10px;border:1.5px solid ${cIdx === optIdx ? 'var(--go)' : 'var(--line)'}">
+            <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:850;font-size:12px;color:${cIdx === optIdx ? 'var(--go-dark)' : 'var(--muted)'}">
+              <input type="radio" name="quizRadio_${bIdx}" value="${optIdx}" ${cIdx === optIdx ? 'checked' : ''} onchange="updateQuizCorrectIndex(${bIdx}, ${optIdx})">
+              <span>Pilihan ${['A','B','C'][optIdx]} (Kunci Benar)</span>
+            </label>
+            <input type="text" value="${escapeHtml((b.options && b.options[optIdx]) || '')}" placeholder="Tuliskan pilihan ${['A','B','C'][optIdx]}" oninput="updateQuizOption(${bIdx}, ${optIdx}, this.value)" style="margin:0;background:#ffffff">
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="color:#2E7D4F">Penjelasan Jika Jawaban Tepat (Benar):</label>
+          <textarea rows="2" placeholder="Bagus sekali, tepat! Format 9:16 adalah..." oninput="updateBlockProp(${bIdx}, 'feedbackCorrect', this.value)">${escapeHtml(b.feedbackCorrect || b.explanation || '')}</textarea>
+        </div>
+        <div>
+          <label style="color:#8A2A12">Penjelasan Jika Jawaban Kurang Tepat (Salah):</label>
+          <textarea rows="2" placeholder="Belum tepat. Format vertikal medsos adalah..." oninput="updateBlockProp(${bIdx}, 'feedbackWrong', this.value)">${escapeHtml(b.feedbackWrong || 'Belum pas. Coba pilih jawaban yang lain!')}</textarea>
+        </div>
+      </div>
+    `;
+  } else if (b.type === 'video') {
+    badgeLabel = 'Video YouTube';
+    badgeClass = 'btb-video';
+    innerForm = `
+      <div class="form-group" style="margin-bottom:0">
+        <label>URL Video YouTube (atau ID Video):</label>
+        <input type="text" value="${escapeHtml(b.videoUrl || '')}" placeholder="https://www.youtube.com/watch?v=..." oninput="updateBlockProp(${bIdx}, 'videoUrl', this.value)">
+      </div>
+    `;
+  } else if (b.type === 'callout') {
+    badgeLabel = 'Tips Penting';
+    badgeClass = 'btb-callout';
+    innerForm = `
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Judul Tips / Info:</label>
+        <input type="text" value="${escapeHtml(b.title || 'Catatan Penting:')}" oninput="updateBlockProp(${bIdx}, 'title', this.value)">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Isi Catatan:</label>
+        <textarea rows="2" oninput="updateBlockProp(${bIdx}, 'body', this.value)">${escapeHtml(b.body || '')}</textarea>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="block-item-card" 
+         id="blockCard_${bIdx}"
+         draggable="true"
+         ondragstart="handleBlockDragStart(event, ${bIdx})"
+         ondragover="handleBlockDragOver(event, ${bIdx})"
+         ondragleave="handleBlockDragLeave(event, ${bIdx})"
+         ondragend="handleBlockDragEnd(event)"
+         ondrop="handleBlockDrop(event, ${bIdx})">
+      <div class="block-header">
+        <div style="display:flex;align-items:center">
+          <div class="drag-handle" title="Tarik untuk memindahkan posisi blok">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><circle cx="8" cy="5" r="1.5"/><circle cx="16" cy="5" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/></svg>
+          </div>
+          <span class="block-type-badge ${badgeClass}">${badgeLabel}</span>
+        </div>
+        <div class="block-actions">
+          <button type="button" class="btn-icon-mini" title="Pindah ke Atas" onclick="moveBlock(${bIdx}, -1)" ${bIdx === 0 ? 'disabled' : ''}>
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <button type="button" class="btn-icon-mini" title="Pindah ke Bawah" onclick="moveBlock(${bIdx}, 1)" ${bIdx === courseModel.cards[currentActiveCardIndex].blocks.length - 1 ? 'disabled' : ''}>
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button type="button" class="btn-icon-mini del" title="Hapus Blok" onclick="deleteBlock(${bIdx})">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      ${innerForm}
+    </div>
+  `;
+}
+
+// ==========================================================================
+// COLOR ACCENT CHIP CONTROLLER (Minor Details only)
+// ==========================================================================
+function setCardAccent(accentKey) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (!card) return;
+  card.accent = accentKey;
+
+  // 1. Update chip selector active class in editor DOM
+  document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
+  const clicked = document.getElementById('chip_' + accentKey);
+  if (clicked) clicked.classList.add('active');
+
+  // 2. Refresh deck bar & preview
+  renderCardDeckNav();
+  renderLivePreview();
+}
+
+// ==========================================================================
+// VISUAL WYSIWYG FORMATTING ACTIONS (ALA H5P / NOTION)
+// ==========================================================================
+function checkIfSelectionHighlighted(editor) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return false;
+  try {
+    const bc = document.queryCommandValue('backColor');
+    if (bc && bc !== 'transparent' && bc !== 'rgba(0, 0, 0, 0)' && bc !== 'rgb(255, 255, 255)') {
+      return true;
+    }
+  } catch (e) {}
+
+  let node = sel.anchorNode;
+  if (node && node.nodeType === 3) node = node.parentElement;
+  while (node && node !== editor && node !== document.body) {
+    if (node.tagName === 'MARK') return true;
+    const bg = node.style ? node.style.backgroundColor : '';
+    if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return true;
+    node = node.parentElement;
+  }
+  return false;
+}
+
+function removeSelectionHighlight(editor) {
+  document.execCommand('hiliteColor', false, 'transparent');
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+
+  let node = sel.anchorNode;
+  if (node && node.nodeType === 3) node = node.parentElement;
+  while (node && node !== editor && node !== document.body) {
+    if (node.tagName === 'MARK' || (node.tagName === 'SPAN' && (node.style.backgroundColor === 'transparent' || node.style.backgroundColor === 'rgba(0, 0, 0, 0)' || (node.style.backgroundColor && (node.style.backgroundColor.includes('255, 243, 191') || node.style.backgroundColor.includes('#FFF3BF')))))) {
+      const parent = node.parentNode;
+      if (parent) {
+        while (node.firstChild) {
+          parent.insertBefore(node.firstChild, node);
+        }
+        parent.removeChild(node);
+      }
+      break;
+    }
+    node = node.parentElement;
+  }
+}
+
+function toggleRichFormat(bIdx, cmd) {
+  const editor = document.getElementById('richText_' + bIdx);
+  if (!editor) return;
+  editor.focus();
+
+  if (cmd === 'bold') {
+    document.execCommand('bold', false, null);
+  } else if (cmd === 'italic') {
+    document.execCommand('italic', false, null);
+  } else if (cmd === 'h3') {
+    const curBlock = document.queryCommandValue('formatBlock');
+    if (curBlock && curBlock.toLowerCase().includes('h3')) {
+      document.execCommand('formatBlock', false, '<p>');
+    } else {
+      document.execCommand('formatBlock', false, '<h3>');
+    }
+  } else if (cmd === 'bullet') {
+    document.execCommand('insertUnorderedList', false, null);
+  } else if (cmd === 'highlight') {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+      if (checkIfSelectionHighlighted(editor)) {
+        removeSelectionHighlight(editor);
+      } else {
+        document.execCommand('hiliteColor', false, '#FFF3BF');
+      }
+    }
+  }
+
+  onRichTextInput(bIdx);
+  updateFormatToolbarState(bIdx);
+}
+
+function updateFormatToolbarState(bIdx) {
+  const btnB = document.getElementById(`btnB_${bIdx}`);
+  const btnI = document.getElementById(`btnI_${bIdx}`);
+  const btnList = document.getElementById(`btnList_${bIdx}`);
+  const btnH3 = document.getElementById(`btnH3_${bIdx}`);
+  const btnMark = document.getElementById(`btnMark_${bIdx}`);
+  const editor = document.getElementById(`richText_${bIdx}`);
+
+  try {
+    if (btnB) btnB.classList.toggle('active', document.queryCommandState('bold'));
+    if (btnI) btnI.classList.toggle('active', document.queryCommandState('italic'));
+    if (btnList) btnList.classList.toggle('active', document.queryCommandState('insertUnorderedList'));
+    const curBlock = document.queryCommandValue('formatBlock');
+    if (btnH3) btnH3.classList.toggle('active', !!(curBlock && curBlock.toLowerCase().includes('h3')));
+    if (btnMark && editor) {
+      btnMark.classList.toggle('active', checkIfSelectionHighlighted(editor));
+    }
+  } catch (err) {}
+}
+
+document.addEventListener('selectionchange', () => {
+  const activeEl = document.activeElement;
+  if (activeEl && activeEl.classList && activeEl.classList.contains('rich-text-editor')) {
+    const id = activeEl.id;
+    if (id && id.startsWith('richText_')) {
+      const bIdx = parseInt(id.replace('richText_', ''), 10);
+      if (!isNaN(bIdx)) updateFormatToolbarState(bIdx);
+    }
+  }
+});
+
+function onRichTextInput(bIdx) {
+  const editor = document.getElementById('richText_' + bIdx);
+  if (!editor) return;
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx]) {
+    card.blocks[bIdx].body = editor.innerHTML;
+    renderLivePreview();
+  }
+}
+
+function handleImageFileUpload(bIdx, event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    updateBlockProp(bIdx, 'imgUrl', e.target.result);
+    renderEditor();
+    showToast('Gambar berhasil dimuat!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateStepItemText(bIdx, itIdx, val) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx] && card.blocks[bIdx].items) {
+    card.blocks[bIdx].items[itIdx] = val;
+    renderLivePreview();
+  }
+}
+
+function addStepItem(bIdx) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx]) {
+    if (!card.blocks[bIdx].items) card.blocks[bIdx].items = [];
+    card.blocks[bIdx].items.push('Langkah baru...');
+    renderEditor();
+  }
+}
+
+function deleteStepItem(bIdx, itIdx) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx] && card.blocks[bIdx].items) {
+    card.blocks[bIdx].items.splice(itIdx, 1);
+    renderEditor();
+  }
+}
+
+function updateQuizCorrectIndex(bIdx, correctIdx) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx]) {
+    card.blocks[bIdx].correctIndex = correctIdx;
+    renderEditor();
+    showToast(`Kunci jawaban benar diatur ke Pilihan ${['A','B','C'][correctIdx]}`);
+  }
+}
+
+// ==========================================================================
+// DRAG AND DROP HANDLERS WITH FAILSAFE REVERT
+// ==========================================================================
+function handleCardDragStart(e, idx) {
+  draggedCardIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+
+function handleCardDragOver(e, idx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const el = e.currentTarget;
+  if (!el.classList.contains('drag-over')) {
+    el.classList.add('drag-over');
+  }
+}
+
+function handleCardDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function handleCardDragEnd(e) {
+  draggedCardIdx = null;
+  document.querySelectorAll('.card-tab-pill').forEach(el => {
+    el.classList.remove('dragging', 'drag-over');
+  });
+}
+
+function handleCardDrop(e, targetIdx) {
+  e.preventDefault();
+  handleCardDragEnd(e);
+  if (draggedCardIdx !== null && draggedCardIdx !== targetIdx) {
+    const movedCard = courseModel.cards.splice(draggedCardIdx, 1)[0];
+    courseModel.cards.splice(targetIdx, 0, movedCard);
+    currentActiveCardIndex = targetIdx;
+    renderEditor();
+    showToast('Urutan kartu berhasil dipindahkan.');
+  }
+  draggedCardIdx = null;
+}
+
+function handleBlockDragStart(e, bIdx) {
+  draggedBlockIdx = bIdx;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => {
+    const cardEl = document.getElementById('blockCard_' + bIdx);
+    if (cardEl) cardEl.classList.add('dragging');
+  }, 10);
+}
+
+function handleBlockDragOver(e, bIdx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const cardEl = document.getElementById('blockCard_' + bIdx);
+  if (cardEl && !cardEl.classList.contains('drag-over')) {
+    cardEl.classList.add('drag-over');
+  }
+}
+
+function handleBlockDragLeave(e, bIdx) {
+  const cardEl = document.getElementById('blockCard_' + bIdx);
+  if (cardEl) cardEl.classList.remove('drag-over');
+}
+
+function handleBlockDragEnd(e) {
+  draggedBlockIdx = null;
+  document.querySelectorAll('.block-item-card').forEach(el => {
+    el.classList.remove('dragging', 'drag-over');
+  });
+}
+
+function handleBlockDrop(e, targetBIdx) {
+  e.preventDefault();
+  handleBlockDragEnd(e);
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (draggedBlockIdx !== null && draggedBlockIdx !== targetBIdx && card) {
+    const movedBlock = card.blocks.splice(draggedBlockIdx, 1)[0];
+    card.blocks.splice(targetBIdx, 0, movedBlock);
+    renderEditor();
+    showToast('Posisi blok berhasil dipindahkan.');
+  }
+  draggedBlockIdx = null;
+}
+
+// ==========================================================================
+// RENDER LIVE REAL-TIME PHONE PREVIEW (ALUR PERSIS DAY 1 - DAY 7)
+// ==========================================================================
+function renderLivePreview() {
+  const card = courseModel.cards[currentActiveCardIndex] || courseModel.cards[0];
+  if (!card) return;
+
+  const total = courseModel.cards.length;
+  const currentNum = currentActiveCardIndex + 1;
+  const percent = Math.round((currentNum / total) * 100);
+
+  const accentInfo = ACCENT_MAP[card.accent || 'teal'] || ACCENT_MAP.teal;
+
+  // 1. Topbar Stepper Updates
+  document.getElementById('previewCardIndicator').textContent = `Kartu ${currentNum} dari ${total}`;
+  document.getElementById('phoneCardSubtitle').textContent = card.title || 'Langkah ' + currentNum;
+  document.getElementById('phoneStepBadge').textContent = `Langkah ${currentNum} dari ${total}`;
+  
+  // Progress Bar is ALWAYS universal green (#2E7D4F) as in Day 1-7
+  const progFill = document.getElementById('phoneProgressBar');
+  progFill.style.width = percent + '%';
+  progFill.style.background = '#2E7D4F';
+
+  // 2. Card Header Details
+  const cardBadgeEl = document.getElementById('simCardBadge');
+  cardBadgeEl.textContent = `${courseModel.dayNumber || 'Day X'} · ${card.stepBadge || 'Langkah ' + currentNum}`;
+  cardBadgeEl.style.background = accentInfo.bg;
+  cardBadgeEl.style.color = accentInfo.ink;
+  cardBadgeEl.style.border = `1px solid ${accentInfo.border}`;
+
+  document.getElementById('simCardTitle').textContent = card.title || 'Judul Langkah';
+  document.getElementById('simCardDesc').textContent = card.desc || '';
+
+  // 3. Render Card Blocks Content
+  const container = document.getElementById('phoneCardContent');
+  let blocksHtml = '';
+
+  card.blocks.forEach((b, bIdx) => {
+    if (b.type === 'text') {
+      blocksHtml += `
+        <div style="background:#FAF6EE;border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px">
+          ${b.heading ? `<strong style="display:block;font-size:14px;color:var(--brand-dark);margin-bottom:6px">${escapeHtml(b.heading)}</strong>` : ''}
+          <div style="font-size:13.5px;color:var(--ink);line-height:1.55">${b.body || ''}</div>
+        </div>
+      `;
+    } else if (b.type === 'steps') {
+      const items = b.items || [];
+      blocksHtml += `
+        <div style="margin-bottom:14px">
+          ${b.title ? `<strong style="display:block;font-size:13.5px;color:var(--brand-dark);margin-bottom:8px">${escapeHtml(b.title)}</strong>` : ''}
+          <div class="sim-step-list">
+            ${items.map((it, itIdx) => `
+              <div class="sim-step-row">
+                <span class="step-num-badge">${itIdx + 1}</span>
+                <div style="flex:1;font-size:13px">${escapeHtml(it)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (b.type === 'image') {
+      if (b.imgUrl) {
+        blocksHtml += `
+          <div class="sim-img-box">
+            <img src="${escapeHtml(b.imgUrl)}" alt="${escapeHtml(b.caption || 'Gambar materi')}">
+            ${b.caption ? `<p class="sim-img-caption">${escapeHtml(b.caption)}</p>` : ''}
+          </div>
+        `;
+      }
+    } else if (b.type === 'prompt') {
+      blocksHtml += `
+        <div class="sim-prompt-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:850;color:#7A4B00;margin-bottom:6px">
+            <span>RUMUS PROMPT (${escapeHtml(b.tool || 'AI Tool')})</span>
+            <span style="opacity:0.75">1-Klik Salin</span>
+          </div>
+          <div class="sim-prompt-text" id="simPrompt_${bIdx}">${escapeHtml(b.formula || '')}</div>
+          <button type="button" class="sim-copy-btn" onclick="simCopyPrompt('${bIdx}')">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Salin Prompt Praktik</span>
+          </button>
+          ${b.note ? `<div style="font-size:11.5px;color:#7A4B00;margin-top:6px;line-height:1.4"><b>Tips:</b> ${escapeHtml(b.note)}</div>` : ''}
+        </div>
+      `;
+    } else if (b.type === 'trouble') {
+      blocksHtml += `
+        <div class="sim-trouble-box">
+          <div class="sim-trouble-title">${escapeHtml(b.title || 'Tips Troubleshooting')}</div>
+          <ul class="sim-trouble-ul">
+            ${(b.tips || []).map(tip => `<li>${escapeHtml(tip)}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    } else if (b.type === 'quiz') {
+      const correctIdx = b.correctIndex !== undefined ? b.correctIndex : 0;
+      blocksHtml += `
+        <div class="sim-quiz-box">
+          <div style="font-size:11px;font-weight:850;color:#5B21B6;margin-bottom:4px">KUIS REFLEKSI MANDIRI</div>
+          <div class="sim-quiz-q">${escapeHtml(b.question || 'Pertanyaan Kuis')}</div>
+          <div>
+            ${(b.options || []).map((opt, optIdx) => `
+              <div class="sim-quiz-opt" id="simQuizOpt_${bIdx}_${optIdx}" onclick="simAnswerQuiz(${bIdx}, ${optIdx}, ${correctIdx})">
+                <span style="width:20px;height:20px;border-radius:50%;background:#EDE9FE;display:grid;place-items:center;font-size:10px;font-weight:850;color:#5B21B6">${['A','B','C'][optIdx]}</span>
+                <span>${escapeHtml(opt)}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div id="simQuizFeedback_${bIdx}" style="display:none;font-size:12px;margin-top:8px;padding:8px 10px;border-radius:8px"></div>
+        </div>
+      `;
+    } else if (b.type === 'video') {
+      const ytId = extractYouTubeId(b.videoUrl);
+      if (ytId) {
+        blocksHtml += `
+          <div style="border-radius:14px;overflow:hidden;margin-bottom:14px;aspect-ratio:16/9;background:#000">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen style="border:0"></iframe>
+          </div>
+        `;
+      } else {
+        blocksHtml += `
+          <div style="background:#000000;border-radius:14px;overflow:hidden;margin-bottom:14px;aspect-ratio:16/9;display:grid;place-items:center;color:#ffffff;text-align:center;padding:14px">
+            <div>
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="#EF4444" style="margin-bottom:6px"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <div style="font-size:12px;font-weight:750">Video Tutorial Interaktif</div>
+            </div>
+          </div>
+        `;
+      }
+    } else if (b.type === 'callout') {
+      blocksHtml += `
+        <div class="sim-callout-box">
+          <div class="sim-callout-title">${escapeHtml(b.title || 'Catatan Penting:')}</div>
+          <div class="sim-callout-text">${escapeHtml(b.body || '').replace(/\n/g, '<br>')}</div>
+        </div>
+      `;
+    }
+  });
+  container.innerHTML = blocksHtml;
+
+  // 4. Inline Help Button Visibility & Text
+  const helpBtn = document.getElementById('phoneBtnHelpInline');
+  const helpText = document.getElementById('phoneBtnHelpText');
+  if (card.showHelpBtn !== false) {
+    helpBtn.style.display = 'flex';
+    helpText.textContent = card.helpBtnText || 'Gambarnya aneh? Lihat bantuan';
+  } else {
+    helpBtn.style.display = 'none';
+  }
+
+  // 5. Fixed Bottom Nav Bar Buttons (Universal Buttons)
+  const prevBtn = document.getElementById('phoneBtnPrev');
+  if (currentActiveCardIndex === 0) {
+    prevBtn.disabled = true;
+  } else {
+    prevBtn.disabled = false;
+  }
+
+  const nextLabel = document.getElementById('phoneBtnNextLabel');
+  if (currentActiveCardIndex === total - 1) {
+    nextLabel.textContent = 'Selesai!';
+  } else {
+    nextLabel.textContent = 'Lanjut'; // Universal clean "Lanjut"
+  }
+
+  // Render simulated Help Drawer FAQs
+  renderSimHelpDrawer();
+}
+
+// ==========================================================================
+// SIMULATED PUSAT BANTUAN DRAWER
+// ==========================================================================
+function renderSimHelpDrawer() {
+  const listEl = document.getElementById('simHelpFaqList');
+  const waBtn = document.getElementById('simHelpWaBtn');
+  const titleEl = document.getElementById('simHelpDrawerTitle');
+  const hc = courseModel.helpCenter || {
+    waNumber: '6281289795589',
+    waText: 'Halo Mentor, saya butuh bantuan praktik di materi ini',
+    faqs: []
+  };
+
+  if (titleEl) {
+    titleEl.textContent = `Pusat Bantuan ${courseModel.dayNumber || 'Modul'}`;
+  }
+
+  if (listEl) {
+    listEl.innerHTML = (hc.faqs || []).map(f => `
+      <div class="sim-faq-item">
+        <div class="sim-faq-q">${escapeHtml(f.q)}</div>
+        <p class="sim-faq-a">${escapeHtml(f.a)}</p>
+      </div>
+    `).join('');
+  }
+
+  if (waBtn) {
+    waBtn.href = `https://wa.me/${hc.waNumber || '6281289795589'}?text=${encodeURIComponent(hc.waText || 'Halo Mentor, saya butuh bantuan praktik')}`;
+  }
+}
+
+function openSimHelp() {
+  const d = document.getElementById('simHelpDrawer');
+  if (d) d.classList.add('open');
+}
+
+function closeSimHelp() {
+  const d = document.getElementById('simHelpDrawer');
+  if (d) d.classList.remove('open');
+}
+
+function closeSimHelpOnBg(e) {
+  if (e.target.id === 'simHelpDrawer') closeSimHelp();
+}
+
+// ==========================================================================
+// PUSAT BANTUAN SETTINGS MODAL
+// ==========================================================================
+function openHelpCenterModal() {
+  const m = document.getElementById('modalHelpCenter');
+  if (!m) return;
+  const hc = courseModel.helpCenter || {
+    waNumber: '6281289795589',
+    waText: 'Halo Mentor, saya butuh bantuan praktik di materi ini',
+    faqs: []
+  };
+
+  document.getElementById('helpWaNumber').value = hc.waNumber || '6281289795589';
+  document.getElementById('helpWaText').value = hc.waText || 'Halo Mentor, saya butuh bantuan praktik';
+
+  renderFaqEditorRows(hc.faqs || []);
+  m.classList.add('open');
+}
+
+function closeHelpCenterModal() {
+  const m = document.getElementById('modalHelpCenter');
+  if (m) m.classList.remove('open');
+}
+
+function closeHelpCenterModalOnBg(e) {
+  if (e.target.id === 'modalHelpCenter') closeHelpCenterModal();
+}
+
+function renderFaqEditorRows(faqs) {
+  const c = document.getElementById('faqEditorContainer');
+  c.innerHTML = faqs.map((f, fIdx) => `
+    <div style="background:#FAF6EE;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;position:relative">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <strong style="font-size:12px;color:var(--brand-dark)">Pertanyaan #${fIdx + 1}</strong>
+        <button type="button" class="btn-icon-mini del" onclick="deleteFaqItem(${fIdx})">
+          <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <input type="text" id="faqQ_${fIdx}" value="${escapeHtml(f.q)}" placeholder="Contoh: Gambarnya gepeng atau melebar?" style="margin-bottom:6px">
+      <textarea id="faqA_${fIdx}" rows="2" placeholder="Jawaban solusi untuk siswa...">${escapeHtml(f.a)}</textarea>
+    </div>
+  `).join('');
+}
+
+function addFaqItem() {
+  if (!courseModel.helpCenter) courseModel.helpCenter = { faqs: [] };
+  courseModel.helpCenter.faqs.push({
+    q: 'Pertanyaan baru?',
+    a: 'Penjelasan solusi...'
+  });
+  renderFaqEditorRows(courseModel.helpCenter.faqs);
+}
+
+function deleteFaqItem(fIdx) {
+  if (courseModel.helpCenter && courseModel.helpCenter.faqs) {
+    courseModel.helpCenter.faqs.splice(fIdx, 1);
+    renderFaqEditorRows(courseModel.helpCenter.faqs);
+  }
+}
+
+function saveHelpCenterSettings() {
+  const hc = courseModel.helpCenter || { faqs: [] };
+  hc.waNumber = document.getElementById('helpWaNumber').value.trim();
+  hc.waText = document.getElementById('helpWaText').value.trim();
+
+  const newFaqs = [];
+  (hc.faqs || []).forEach((_, fIdx) => {
+    const qEl = document.getElementById('faqQ_' + fIdx);
+    const aEl = document.getElementById('faqA_' + fIdx);
+    if (qEl && aEl && qEl.value.trim()) {
+      newFaqs.push({ q: qEl.value.trim(), a: aEl.value.trim() });
+    }
+  });
+  hc.faqs = newFaqs;
+  courseModel.helpCenter = hc;
+
+  closeHelpCenterModal();
+  renderLivePreview();
+  showToast('Pengaturan Pusat Bantuan & WhatsApp berhasil disimpan!');
+}
+
+// ==========================================================================
+// CARD & BLOCK CONTROLLER ACTIONS
+// ==========================================================================
+function selectCard(idx) {
+  currentActiveCardIndex = idx;
+  renderEditor();
+}
+
+function addNewCard() {
+  const newNum = courseModel.cards.length + 1;
+  courseModel.cards.push({
+    stepBadge: 'LANGKAH ' + newNum,
+    accent: 'teal',
+    title: 'Langkah Pembelajaran Baru ' + newNum,
+    desc: 'Tuliskan deskripsi ringkas tentang apa yang akan dipraktikkan siswa di langkah ini.',
+    showHelpBtn: true,
+    helpBtnText: 'Belum berhasil? Buka bantuan',
+    blocks: [
+      {
+        id: 'b_' + Date.now(),
+        type: 'text',
+        heading: 'Panduan Praktik',
+        body: 'Jelaskan instruksi secara bertahap dan mudah dipahami.'
+      }
+    ]
+  });
+  currentActiveCardIndex = courseModel.cards.length - 1;
+  renderEditor();
+  showToast('Kartu ' + newNum + ' berhasil ditambahkan!');
+}
+
+function duplicateCard(idx) {
+  const copy = JSON.parse(JSON.stringify(courseModel.cards[idx]));
+  copy.stepBadge += ' (Salinan)';
+  courseModel.cards.splice(idx + 1, 0, copy);
+  currentActiveCardIndex = idx + 1;
+  renderEditor();
+  showToast('Kartu berhasil diduplikasi.');
+}
+
+function deleteCard(idx) {
+  if (courseModel.cards.length <= 1) return;
+  if (confirm('Hapus kartu pembelajaran ini?')) {
+    courseModel.cards.splice(idx, 1);
+    if (currentActiveCardIndex >= courseModel.cards.length) {
+      currentActiveCardIndex = courseModel.cards.length - 1;
+    }
+    renderEditor();
+    showToast('Kartu dihapus.');
+  }
+}
+
+function moveCard(idx, dir) {
+  const target = idx + dir;
+  if (target < 0 || target >= courseModel.cards.length) return;
+  const temp = courseModel.cards[idx];
+  courseModel.cards[idx] = courseModel.cards[target];
+  courseModel.cards[target] = temp;
+  currentActiveCardIndex = target;
+  renderEditor();
+}
+
+function updateCourseMeta() {
+  courseModel.dayNumber = document.getElementById('modDayNumber').value;
+  courseModel.title = document.getElementById('modTitle').value;
+  courseModel.desc = document.getElementById('modDesc').value;
+  renderLivePreview();
+}
+
+function updateActiveCardProp(prop, val) {
+  if (!courseModel.cards[currentActiveCardIndex]) return;
+  courseModel.cards[currentActiveCardIndex][prop] = val;
+  if (prop === 'stepBadge') {
+    renderCardDeckNav();
+  }
+  renderLivePreview();
+}
+
+function addBlockToCard(type) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (!card) return;
+
+  const id = 'b_' + Date.now();
+  if (type === 'text') {
+    card.blocks.push({ id, type, heading: 'Langkah Tambahan', body: 'Tuliskan rincian panduan di sini.' });
+  } else if (type === 'steps') {
+    card.blocks.push({ id, type, title: 'Alur Praktik Bertahap:', items: ['Buka aplikasi generator AI.', 'Tempelkan prompt pilihanmu.', 'Pilih resolusi video 9:16.'] });
+  } else if (type === 'image') {
+    card.blocks.push({ id, type, imgUrl: 'asdos-square.png', caption: 'Pratinjau antarmuka' });
+  } else if (type === 'prompt') {
+    card.blocks.push({ id, type, tool: 'Google Flow', formula: 'Sinematik visual prompt --ar 9:16', note: 'Ganti dengan prompt sesuai kebutuhan.' });
+  } else if (type === 'trouble') {
+    card.blocks.push({ id, type, title: 'Hasil belum sesuai harapan?', tips: ['Coba ganti kata kunci.', 'Periksa kembali rasio video.'] });
+  } else if (type === 'quiz') {
+    card.blocks.push({ 
+      id, 
+      type, 
+      question: 'Pertanyaan kuis refleksi mandiri?', 
+      options: ['Pilihan A', 'Pilihan B (Benar)', 'Pilihan C'], 
+      correctIndex: 1, 
+      feedbackCorrect: 'Bagus sekali, tepat! Pilihan B adalah jawaban yang benar.',
+      feedbackWrong: 'Belum tepat. Coba periksa kembali instruksi di atas!'
+    });
+  } else if (type === 'video') {
+    card.blocks.push({ id, type, videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' });
+  } else if (type === 'callout') {
+    card.blocks.push({ id, type, title: 'Tips Menarik:', body: 'Eksperimen dengan menambahkan kata pencahayaan dramatis.' });
+  }
+
+  renderEditor();
+  showToast('Blok baru ditambahkan ke kartu!');
+}
+
+function deleteBlock(bIdx) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (!card || !card.blocks[bIdx]) return;
+  card.blocks.splice(bIdx, 1);
+  renderEditor();
+}
+
+function moveBlock(bIdx, dir) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (!card) return;
+  const target = bIdx + dir;
+  if (target < 0 || target >= card.blocks.length) return;
+  const temp = card.blocks[bIdx];
+  card.blocks[bIdx] = card.blocks[target];
+  card.blocks[target] = temp;
+  renderEditor();
+}
+
+function updateBlockProp(bIdx, prop, val) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx]) {
+    card.blocks[bIdx][prop] = val;
+    renderLivePreview();
+  }
+}
+
+function updateTroubleTips(bIdx, rawText) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx]) {
+    card.blocks[bIdx].tips = rawText.split('\n').filter(t => t.trim().length > 0);
+    renderLivePreview();
+  }
+}
+
+function updateQuizOption(bIdx, optIdx, val) {
+  const card = courseModel.cards[currentActiveCardIndex];
+  if (card && card.blocks[bIdx] && card.blocks[bIdx].options) {
+    card.blocks[bIdx].options[optIdx] = val;
+    renderLivePreview();
+  }
+}
+
+// ==========================================================================
+// SIMULATOR GESTURES & ACTIONS
+// ==========================================================================
+function simNavPrev() {
+  if (currentActiveCardIndex > 0) {
+    selectCard(currentActiveCardIndex - 1);
+  }
+}
+
+function simNavNext() {
+  if (currentActiveCardIndex < courseModel.cards.length - 1) {
+    selectCard(currentActiveCardIndex + 1);
+  } else {
+    showToast('Selamat! Kamu telah mencapai kartu terakhir modul ini.');
+  }
+}
+
+function simCopyPrompt(bIdx) {
+  const el = document.getElementById('simPrompt_' + bIdx);
+  if (el) {
+    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+      showToast('Prompt disalin ke papan klip HP!');
+    });
+  }
+}
+
+function simAnswerQuiz(bIdx, chosenIdx, correctIdx) {
+  const optEl = document.getElementById(`simQuizOpt_${bIdx}_${chosenIdx}`);
+  const fbkEl = document.getElementById(`simQuizFeedback_${bIdx}`);
+  const card = courseModel.cards[currentActiveCardIndex];
+  const block = card.blocks[bIdx];
+
+  // Reset other options styling
+  for (let i = 0; i < 3; i++) {
+    const o = document.getElementById(`simQuizOpt_${bIdx}_${i}`);
+    if (o) {
+      o.classList.remove('correct', 'wrong');
+    }
+  }
+
+  if (chosenIdx === correctIdx) {
+    optEl.classList.add('correct');
+    fbkEl.style.display = 'block';
+    fbkEl.style.background = '#E8F5E9';
+    fbkEl.style.color = '#1B5E20';
+    fbkEl.style.border = '1px solid #81C784';
+    fbkEl.textContent = 'Bagus sekali, tepat! ' + (block.feedbackCorrect || block.explanation || '');
+  } else {
+    optEl.classList.add('wrong');
+    fbkEl.style.display = 'block';
+    fbkEl.style.background = '#FFEBEE';
+    fbkEl.style.color = '#B71C1C';
+    fbkEl.style.border = '1px solid #E57373';
+    fbkEl.textContent = block.feedbackWrong || 'Belum pas. Coba periksa kembali pilihanmu!';
+  }
+}
+
+// ==========================================================================
+// PRESET TEMPLATES (DAY 1 - DAY 7)
+// ==========================================================================
+const PRESETS = {
+  day1: {
+    dayNumber: 'Day 1',
+    title: 'Orientasi & Menghidupkan Prompt Perdana',
+    desc: 'Mengenal antarmuka AI dan membuat video animasi perdana berdurasi 4 detik.',
+    helpCenter: {
+      waNumber: '6281289795589',
+      waText: 'Halo Mentor, saya butuh bantuan praktik Day 1',
+      faqs: [
+        { q: 'Saya tidak bisa masuk ke Google Flow?', a: 'Pastikan memakai akun Google (Gmail) yang aktif di HP. Coba buka kembali tombol Flow.' },
+        { q: 'Gambarnya gepeng atau melebar?', a: 'Pilih ukuran 9:16 sebelum menekan tombol Generate.' },
+        { q: 'Tombol Salin tidak bekerja?', a: 'Tahan jari di teks prompt, lalu ketuk opsi Salin.' }
+      ]
+    },
+    cards: [
+      {
+        stepBadge: 'KENALAN DULU',
+        accent: 'teal',
+        title: 'Memahami Cara Kerja AI Generator',
+        desc: 'Kecerdasan buatan bekerja seperti koki digital yang mengikuti resep tulisanmu.',
+        showHelpBtn: true,
+        helpBtnText: 'Gambarnya aneh? Lihat bantuan',
+        blocks: [
+          { type: 'text', heading: 'Alur 3 Langkah Sederhana', body: '<p>1. Tulis naskah ide visual.<br>2. Biarkan AI merender gambar.<br>3. Berikan gerakan lembut.</p>' },
+          { type: 'trouble', title: 'Belum pernah coba sama sekali?', tips: ['Gunakan akun Google yang aktif.', 'Gunakan peramban Chrome di HP.', 'Ikuti contoh persis di kartu berikutnya.'] }
+        ]
+      },
+      {
+        stepBadge: 'PROMPT PERDANA',
+        accent: 'sun',
+        title: 'Membuat Video 4 Detik Pertama',
+        desc: 'Salin formula di bawah ini dan tempelkan ke aplikasi AI pilihanmu.',
+        showHelpBtn: true,
+        helpBtnText: 'Belum berhasil? Buka bantuan',
+        blocks: [
+          { type: 'prompt', tool: 'Google Flow', formula: 'Cute chibi cat wearing tiny apron baking cookies in warm kitchen, soft lighting, 4k --ar 9:16', note: 'Formula ini menghasilkan video kucing imut yang cocok untuk akun fakta.' },
+          { type: 'quiz', question: 'Apa fungsi utama prompt di dalam generative AI?', options: ['Sebagai tombol delete', 'Sebagai instruksi resep pembuatan visual', 'Sebagai aplikasi video player'], correctIndex: 1, feedbackCorrect: 'Tepat sekali! Prompt adalah instruksi teks yang memandu AI menghasilkan karya sesuai keinginanmu.', feedbackWrong: 'Belum tepat. Prompt adalah resep instruksi teks untuk kecerdasan buatan.' }
+        ]
+      }
+    ]
+  },
+  day2: {
+    dayNumber: 'Day 2',
+    title: 'Character Sheet & Konsistensi Wajah',
+    desc: 'Merancang lembar karakter multi-sudut pandang agar tokoh tidak berubah-ubah wajahnya.',
+    helpCenter: {
+      waNumber: '6281289795589',
+      waText: 'Halo Mentor, saya butuh bantuan praktik Day 2',
+      faqs: [
+        { q: 'Panel gambarnya menyatu, tidak jadi 3?', a: 'Pastikan kamu menyalin seluruh isi prompt tanpa menghapus bagian ## Layout (Split canvas into 3 vertical panels).' },
+        { q: 'Wajah karakter tidak konsisten di panel dekat?', a: 'Tambahkan ciri khusus yang khas pada karaktermu di deskripsi, misalnya: kacamata bulat merah, jaket kuning berkupluk.' },
+        { q: 'Gambarnya gepeng atau terpotong?', a: 'Pastikan kamu memilih ukuran 16:9 (mendatar) di pengaturan Flow sebelum menekan tombol buat.' }
+      ]
+    },
+    cards: [
+      {
+        stepBadge: 'FONDASI KARAKTER',
+        accent: 'teal',
+        title: 'Membuat 3 Sudut Pandang Karakter',
+        desc: 'Tampak depan, tampak samping 45 derajat, dan tampak ekspresi berbicara.',
+        showHelpBtn: true,
+        helpBtnText: 'Karakter berubah? Lihat bantuan',
+        blocks: [
+          { type: 'prompt', tool: 'ChatGPT / Midjourney', formula: 'Character design turnaround sheet, 3 views (front view, 3/4 view, side view), same young boy with spectacles, blue hoodie --ar 16:9', note: 'Gunakan turnaround sheet ini sebagai gambar referensi utama di hari-hari berikutnya.' },
+          { type: 'trouble', title: 'Wajah berubah saat ganti gaya rambut?', tips: ['Kunci bentuk mata dan kacamata.', 'Gunakan seed number yang sama jika tool mendukung.', 'Pakai deskripsi warna pakaian yang spesifik.'] }
+        ]
+      }
+    ]
+  }
+};
+
+function loadPresetTemplate(type) {
+  if (type === 'custom') return;
+  if (PRESETS[type]) {
+    courseModel = JSON.parse(JSON.stringify(PRESETS[type]));
+    currentActiveCardIndex = 0;
+    renderEditor();
+    showToast(`Template ${PRESETS[type].dayNumber} berhasil dimuat.`);
+  }
+}
+
+// ==========================================================================
+// IMPORT & EXPORT DRAFT JSON
+// ==========================================================================
+function exportDraftJson() {
+  const jsonStr = JSON.stringify(courseModel, null, 2);
+  const cleanDay = (courseModel.dayNumber || 'modul').toLowerCase().replace(/\s+/g, '_');
+  const filename = `${cleanDay}_draft.json`;
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = URL.createObjectURL(blob);
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => document.body.removeChild(a), 200);
+  showToast(`Draft proyek ${filename} berhasil disimpan.`);
+}
+
+function handleImportJson(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const data = JSON.parse(evt.target.result);
+      if (data && data.cards && Array.isArray(data.cards)) {
+        courseModel = data;
+        currentActiveCardIndex = 0;
+        renderEditor();
+        showToast('Draft proyek JSON berhasil dimuat!');
+      } else {
+        alert('Format file JSON tidak sesuai dengan standar Course Builder.');
+      }
+    } catch(err) {
+      alert('Gagal membaca file JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ==========================================================================
+// EXPORT STANDALONE HTML GENERATOR (PERSIS STANDAR DAY 1 - DAY 7)
+// ==========================================================================
+function generateStandaloneHtmlString() {
+  const total = courseModel.cards.length;
+
+  const scriptDb = '<' + 'script src="lms-db.js"><' + '/script>';
+  const scriptCore = '<' + 'script src="lms-core.js"><' + '/script>';
+  const scriptOpen = '<' + 'script>';
+  const scriptClose = '<' + '/script>';
+
+  const hc = courseModel.helpCenter || {
+    waNumber: '6281289795589',
+    waText: 'Halo Mentor, saya butuh bantuan praktik',
+    faqs: []
+  };
+
+  const htmlContent = `<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>${escapeHtml(courseModel.dayNumber)} - ${escapeHtml(courseModel.title)} - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+    }
+    .deck-viewport {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px 16px 110px;
+    }
+    .deck-topbar {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+    }
+    .deck-topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 7px 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .progress-wrap { width: 100%; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      height: 7px;
+      background: #E8DCCB;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--go);
+      border-radius: 99px;
+      transition: width .3s ease;
+    }
+
+    .card-deck-item {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      display: none;
+    }
+    .card-deck-item.active { display: block; }
+    .card-step-badge {
+      font-size: 11.5px;
+      font-weight: 850;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--sun);
+      color: #7A4B00;
+      border: 1px solid #E8CF6A;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .card-head-title {
+      font-size: 22px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      margin: 0 0 8px;
+    }
+    .card-head-desc {
+      font-size: 14.5px;
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+    .prompt-box {
+      background: #FFFBE8;
+      border: 1.5px solid #F0DA8A;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .prompt-content {
+      font-family: monospace;
+      font-size: 13px;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #EADB9C;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #3B2806;
+    }
+    .btn-copy-prompt {
+      width: 100%;
+      background: var(--brand);
+      color: #ffffff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 13.5px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    .trouble-box {
+      background: #FFF5EC;
+      border: 1.5px solid #F5CBA7;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .quiz-box {
+      background: #F5F3FF;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .quiz-opt-btn {
+      background: #ffffff;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 750;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quiz-opt-btn.correct { background: #E8F5E9 !important; border-color: #81C784 !important; color: #1B5E20 !important; }
+    .quiz-opt-btn.wrong { background: #FFEBEE !important; border-color: #E57373 !important; color: #B71C1C !important; }
+    
+    .btn-help-inline {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px dashed #E0BA98;
+      background: #FFF7EE;
+      color: #8A4B1A;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(42,36,32,0.65);
+      z-index: 1000; display: none; align-items: flex-end; justify-content: center;
+    }
+    .help-drawer-backdrop.open { display: flex; }
+    .help-drawer-sheet {
+      background: #fff; width: 100%; max-width: 640px; border-radius: 24px 24px 0 0;
+      padding: 22px 20px 28px; max-height: 80vh; overflow-y: auto;
+    }
+
+    /* Fixed Bottom Bar */
+    .deck-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1.5px solid var(--line);
+      padding: 12px 18px;
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+    }
+    .deck-nav-wrap {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      gap: 12px;
+    }
+    .btn-deck-prev {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      color: var(--muted);
+      flex: 0.45;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    .btn-deck-prev[disabled] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .btn-deck-next {
+      background: var(--brand);
+      border: 0;
+      color: #ffffff;
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2A2420;
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 99px;
+      font-size: 13.5px;
+      font-weight: 750;
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <header class="deck-topbar">
+    <div class="deck-topbar-inner">
+      <a href="../dashboard.html" class="btn-top">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Ruang Belajar</span>
+      </a>
+      <button type="button" class="btn-top" onclick="openHelpDrawer()">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Bantuan</span>
+      </button>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="deckStepTitle">${escapeHtml(courseModel.cards[0].title || 'Langkah 1')}</span>
+        <span id="deckStepNum">Langkah 1 dari ${total}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:${Math.round(100/total)}%"></div>
+      </div>
+    </div>
+  </header>
+
+  <div id="deckContainer">
+    ${courseModel.cards.map((c, cIdx) => `
+      <section class="card-deck-item ${cIdx === 0 ? 'active' : ''}" id="card_${cIdx}">
+        <span class="card-step-badge">${escapeHtml(c.stepBadge || 'LANGKAH ' + (cIdx + 1))}</span>
+        <h1 class="card-head-title">${escapeHtml(c.title)}</h1>
+        <p class="card-head-desc">${escapeHtml(c.desc)}</p>
+
+        <div class="card-blocks-inner">
+          ${c.blocks.map((b, bIdx) => {
+            if (b.type === 'text') {
+              return `
+                <div style="background:#FAF6EE;border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:18px">
+                  ${b.heading ? `<strong style="display:block;font-size:15px;color:var(--brand-dark);margin-bottom:6px">${escapeHtml(b.heading)}</strong>` : ''}
+                  <div style="font-size:14px;color:var(--ink);line-height:1.6">${b.body || ''}</div>
+                </div>
+              `;
+            } else if (b.type === 'steps') {
+              return `
+                <div style="margin-bottom:18px">
+                  ${b.title ? `<strong style="display:block;font-size:14.5px;color:var(--brand-dark);margin-bottom:10px">${escapeHtml(b.title)}</strong>` : ''}
+                  <div style="display:flex;flex-direction:column;gap:10px">
+                    ${(b.items || []).map((it, itIdx) => `
+                      <div style="display:flex;align-items:flex-start;gap:12px;background:#ffffff;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px">
+                        <span style="width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:850;display:grid;place-items:center;flex-shrink:0">${itIdx + 1}</span>
+                        <div style="font-size:14px;line-height:1.5">${escapeHtml(it)}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+            } else if (b.type === 'image') {
+              return `
+                <div style="margin-bottom:18px">
+                  <img src="${escapeHtml(b.imgUrl)}" style="width:100%;border-radius:16px;border:1.5px solid var(--line);display:block">
+                  ${b.caption ? `<p style="font-size:12.5px;color:var(--muted);text-align:center;margin:8px 0 0;font-style:italic">${escapeHtml(b.caption)}</p>` : ''}
+                </div>
+              `;
+            } else if (b.type === 'prompt') {
+              return `
+                <div class="prompt-box">
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:850;color:#7A4B00;margin-bottom:8px">
+                    <span>RUMUS PROMPT (${escapeHtml(b.tool || 'AI Tool')})</span>
+                    <span>1-Klik Salin</span>
+                  </div>
+                  <div class="prompt-content" id="p_${cIdx}_${bIdx}">${escapeHtml(b.formula || '')}</div>
+                  <button type="button" class="btn-copy-prompt" onclick="copyPromptText('p_${cIdx}_${bIdx}')">
+                    Salin Prompt Praktik
+                  </button>
+                  ${b.note ? `<div style="font-size:12px;color:#7A4B00;margin-top:8px"><b>Tips:</b> ${escapeHtml(b.note)}</div>` : ''}
+                </div>
+              `;
+            } else if (b.type === 'trouble') {
+              return `
+                <div class="trouble-box">
+                  <strong style="display:block;font-size:14px;color:#7E3812;margin-bottom:8px">${escapeHtml(b.title || 'Troubleshooting')}</strong>
+                  <ul style="margin:0;padding-left:20px;font-size:13.5px;color:#5A3215;line-height:1.6">
+                    ${(b.tips || []).map(tip => `<li>${escapeHtml(tip)}</li>`).join('')}
+                  </ul>
+                </div>
+              `;
+            } else if (b.type === 'quiz') {
+              const correctIdx = b.correctIndex !== undefined ? b.correctIndex : 0;
+              return `
+                <div class="quiz-box">
+                  <div style="font-size:11px;font-weight:850;color:#5B21B6;margin-bottom:6px">KUIS REFLEKSI MANDIRI</div>
+                  <div style="font-size:15px;font-weight:850;color:#4C1D95;margin-bottom:12px">${escapeHtml(b.question)}</div>
+                  <div>
+                    ${(b.options || []).map((opt, optIdx) => `
+                      <div class="quiz-opt-btn" id="q_${cIdx}_${bIdx}_${optIdx}" onclick="answerQuiz('${cIdx}_${bIdx}', ${optIdx}, ${correctIdx}, '${escapeHtml(b.feedbackCorrect || b.explanation || '')}', '${escapeHtml(b.feedbackWrong || 'Belum pas. Coba pilih jawaban yang lain!')}')">
+                        <span style="width:22px;height:22px;border-radius:50%;background:#EDE9FE;display:grid;place-items:center;font-size:11px;font-weight:850;color:#5B21B6">${['A','B','C'][optIdx]}</span>
+                        <span>${escapeHtml(opt)}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <div id="qfb_${cIdx}_${bIdx}" style="display:none;font-size:13px;margin-top:10px;padding:10px 14px;border-radius:10px"></div>
+                </div>
+              `;
+            } else if (b.type === 'video') {
+              const ytId = extractYouTubeId(b.videoUrl);
+              if (ytId) {
+                return `
+                  <div style="border-radius:14px;overflow:hidden;margin-bottom:18px;aspect-ratio:16/9;background:#000">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen style="border:0"></iframe>
+                  </div>
+                `;
+              }
+            } else if (b.type === 'callout') {
+              return `
+                <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:14px;padding:16px;margin-bottom:18px">
+                  <strong style="display:block;font-size:14px;color:#1E40AF;margin-bottom:6px">${escapeHtml(b.title || 'Catatan Penting:')}</strong>
+                  <div style="font-size:13.5px;color:#1E3A8A;line-height:1.6">${escapeHtml(b.body || '').replace(/\n/g, '<br>')}</div>
+                </div>
+              `;
+            }
+            return '';
+          }).join('')}
+        </div>
+
+        ${c.showHelpBtn !== false ? `
+          <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>${escapeHtml(c.helpBtnText || 'Gambarnya aneh? Lihat bantuan')}</span>
+          </button>
+        ` : ''}
+      </section>
+    `).join('')}
+  </div>
+</div>
+
+<!-- PUSAT BANTUAN DRAWER -->
+<div class="help-drawer-backdrop" id="helpDrawer" onclick="closeHelpDrawerOnBg(event)">
+  <div class="help-drawer-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--line)">
+      <strong style="font-size:18px;color:var(--brand-dark)">Pusat Bantuan ${escapeHtml(courseModel.dayNumber)}</strong>
+      <button type="button" onclick="closeHelpDrawer()" style="background:#FAF6EE;border:1px solid var(--line);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;cursor:pointer">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    
+    <div>
+      ${(hc.faqs || []).map(f => `
+        <div style="background:#FAF6EE;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+          <strong style="display:block;font-size:13.5px;color:var(--brand-dark);margin-bottom:4px">${escapeHtml(f.q)}</strong>
+          <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.5">${escapeHtml(f.a)}</p>
+        </div>
+      `).join('')}
+    </div>
+
+    <a href="https://wa.me/${hc.waNumber || '6281289795589'}?text=${encodeURIComponent(hc.waText || 'Halo Mentor, saya butuh bantuan praktik')}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;background:#2E7D4F;color:#fff;text-decoration:none;border-radius:14px;padding:12px 18px;font-size:14px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span>Tanya Pengajar via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<div class="deck-bottom-bar">
+  <div class="deck-nav-wrap">
+    <button type="button" class="btn-deck-prev" id="btnPrevCard" onclick="navCard(-1)">
+      &larr; Balik
+    </button>
+    <button type="button" class="btn-deck-next" id="btnNextCard" onclick="navCard(1)">
+      Lanjut &rarr;
+    </button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+${scriptDb}
+${scriptCore}
+${scriptOpen}
+  let activeCard = 0;
+  const totalCards = ${total};
+
+  function updateDeckView() {
+    for (let i = 0; i < totalCards; i++) {
+      const el = document.getElementById('card_' + i);
+      if (el) el.classList.toggle('active', i === activeCard);
+    }
+    const prevBtn = document.getElementById('btnPrevCard');
+    if (prevBtn) prevBtn.disabled = (activeCard === 0);
+
+    const nextBtn = document.getElementById('btnNextCard');
+    if (nextBtn) nextBtn.textContent = activeCard === totalCards - 1 ? 'Selesai!' : 'Lanjut →';
+
+    const progFill = document.getElementById('progressFill');
+    if (progFill) progFill.style.width = Math.round(((activeCard + 1) / totalCards) * 100) + '%';
+
+    const stepNum = document.getElementById('deckStepNum');
+    if (stepNum) stepNum.textContent = 'Langkah ' + (activeCard + 1) + ' dari ' + totalCards;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navCard(dir) {
+    const target = activeCard + dir;
+    if (target >= 0 && target < totalCards) {
+      activeCard = target;
+      updateDeckView();
+    } else if (target >= totalCards) {
+      showToast('Selamat! Kamu telah menyelesaikan seluruh modul ini.');
+    }
+  }
+
+  function copyPromptText(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+        showToast('Prompt berhasil disalin ke papan klip HP!');
+      });
+    }
+  }
+
+  function answerQuiz(qKey, chosenIdx, correctIdx, feedbackCorrect, feedbackWrong) {
+    for (let i = 0; i < 3; i++) {
+      const o = document.getElementById('q_' + qKey + '_' + i);
+      if (o) o.classList.remove('correct', 'wrong');
+    }
+    const chosenEl = document.getElementById('q_' + qKey + '_' + chosenIdx);
+    const fbEl = document.getElementById('qfb_' + qKey);
+    if (chosenIdx === correctIdx) {
+      if (chosenEl) chosenEl.classList.add('correct');
+      if (fbEl) {
+        fbEl.style.display = 'block';
+        fbEl.style.background = '#E8F5E9';
+        fbEl.style.color = '#1B5E20';
+        fbEl.style.border = '1px solid #81C784';
+        fbEl.textContent = 'Bagus sekali, tepat! ' + feedbackCorrect;
+      }
+    } else {
+      if (chosenEl) chosenEl.classList.add('wrong');
+      if (fbEl) {
+        fbEl.style.display = 'block';
+        fbEl.style.background = '#FFEBEE';
+        fbEl.style.color = '#B71C1C';
+        fbEl.style.border = '1px solid #E57373';
+        fbEl.textContent = feedbackWrong || 'Belum tepat. Coba pilih jawaban yang lain!';
+      }
+    }
+  }
+
+  function openHelpDrawer() {
+    const d = document.getElementById('helpDrawer');
+    if (d) d.classList.add('open');
+  }
+
+  function closeHelpDrawer() {
+    const d = document.getElementById('helpDrawer');
+    if (d) d.classList.remove('open');
+  }
+
+  function closeHelpDrawerOnBg(e) {
+    if (e.target.id === 'helpDrawer') closeHelpDrawer();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 2600);
+  }
+
+  // Paywall check jika modul berbayar
+  const matchDay = '${escapeHtml(courseModel.dayNumber)}'.match(/\\d+/);
+  const dayNum = matchDay ? parseInt(matchDay[0], 10) : 8;
+  if (window.checkDayAccess && dayNum >= 2) {
+    window.checkDayAccess(dayNum);
+  }
+
+  updateDeckView();
+${scriptClose}
+</body>
+</html>`;
+
+  return htmlContent;
+}
+
+function exportStandaloneHtml() {
+  const cleanDayNum = (courseModel.dayNumber || 'Day_X').replace(/\s+/g, '').toLowerCase();
+  const filename = `${cleanDayNum}-v3.1.html`;
+  const htmlContent = generateStandaloneHtmlString();
+
+  const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = URL.createObjectURL(blob);
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); }, 200);
+
+  showToast(`File ${filename} berhasil diunduh!`);
+}
+
+function previewInNewTab() {
+  let htmlContent = generateStandaloneHtmlString();
+  const baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+  htmlContent = htmlContent.replace('<head>', `<head><base href="${baseHref}">`);
+
+  const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+  const blobUrl = URL.createObjectURL(blob);
+  window.open(blobUrl, '_blank');
+  showToast('Pratinjau layar penuh dibuka di tab baru!');
+}
+
+// ==========================================================================
+// SAVE TO LMS DATABASE
+// ==========================================================================
+function saveToLmsDatabase() {
+  if (!window.LMS_DB) {
+    showToast('LMS Database belum dimuat.');
+    return;
+  }
+
+  const cleanDay = (courseModel.dayNumber || 'Day 8').trim();
+  const title = (courseModel.title || 'Materi Tambahan').trim();
+  const desc = (courseModel.desc || '').trim();
+  const targetUrl = `v3.1/${cleanDay.toLowerCase().replace(/\s+/g, '')}-v3.1.html`;
+
+  const categories = window.LMS_DB.getModuleCategories();
+  let cat = categories.find(c => c.id === 'cat_additional' || c.title.includes('Lanjutan'));
+  if (!cat) {
+    cat = categories[0] || { cards: [] };
+  }
+
+  const existingIdx = cat.cards.findIndex(c => c.title === title || c.badge === cleanDay);
+  const newCardObj = {
+    id: 'mod_' + Date.now(),
+    title: title,
+    desc: desc,
+    badge: cleanDay,
+    url: targetUrl
+  };
+
+  if (existingIdx >= 0) {
+    cat.cards[existingIdx] = newCardObj;
+  } else {
+    cat.cards.push(newCardObj);
+  }
+
+  window.LMS_DB.saveModuleCategories(categories);
+  showToast(`Modul "${title}" berhasil disimpan ke database LMS!`);
+}
+
+// Helpers
+function extractYouTubeId(url) {
+  if (!url) return '';
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : '';
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('studioToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2600);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderEditor();
+});
+</script>
+</body>
+</html>

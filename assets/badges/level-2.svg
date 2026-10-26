@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="100%" height="100%">
+  <defs>
+    <!-- Filter Glow & Drop Shadow -->
+    <filter id="shadow-l2" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#14343B" flood-opacity="0.2"/>
+    </filter>
+    <filter id="ribbon-shadow-l2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad-l2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#F2F9FA"/>
+      <stop offset="100%" stop-color="#DDF0F3"/>
+    </linearGradient>
+
+    <linearGradient id="rim-grad-l2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4E99A8"/>
+      <stop offset="50%" stop-color="#1F6B7A"/>
+      <stop offset="100%" stop-color="#11424C"/>
+    </linearGradient>
+
+    <linearGradient id="gold-grad-l2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="60%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <linearGradient id="ribbon-grad-l2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#154B55"/>
+      <stop offset="50%" stop-color="#1F6B7A"/>
+      <stop offset="100%" stop-color="#154B55"/>
+    </linearGradient>
+
+    <linearGradient id="palette-grad-l2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3E0"/>
+      <stop offset="60%" stop-color="#FFE0B2"/>
+      <stop offset="100%" stop-color="#FFCC80"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#shadow-l2)">
+    <!-- Outer Shield / Medallion -->
+    <path d="M90 12 C124 12 152 24 152 58 C152 104 116 138 90 148 C64 138 28 104 28 58 C28 24 56 12 90 12 Z" 
+          fill="url(#bg-grad-l2)" stroke="url(#rim-grad-l2)" stroke-width="4.5" stroke-linejoin="round"/>
+    
+    <!-- Inner Dotted Ring -->
+    <path d="M90 20 C118 20 143 30 143 60 C143 98 112 128 90 137 C68 128 37 98 37 60 C37 30 62 20 90 20 Z" 
+          fill="none" stroke="#60A5B3" stroke-width="1.6" stroke-dasharray="3.5 3.5"/>
+
+    <!-- Sparkles -->
+    <path d="M128 36 L130 41 L135 43 L130 45 L128 50 L126 45 L121 43 L126 41 Z" fill="#FFB300"/>
+    <path d="M52 46 L53 50 L57 51 L53 52 L52 56 L51 52 L47 51 L51 50 Z" fill="#60A5B3"/>
+
+    <!-- Central Illustration: Artist Palette & Character Focus Ring -->
+    <g transform="translate(90, 75)">
+      <!-- Backing Artist Palette -->
+      <path d="M-28 -4 C-32 -26 12 -34 26 -16 C34 -6 34 14 20 22 C12 26 2 20 -2 24 C-6 28 -4 34 -14 32 C-26 28 -32 10 -28 -4 Z" 
+            fill="url(#palette-grad-l2)" stroke="#D4A373" stroke-width="2.5"/>
+      <!-- Palette Thumb Hole -->
+      <ellipse cx="-16" cy="16" rx="4" ry="5.5" fill="#DDF0F3" stroke="#D4A373" stroke-width="1.5"/>
+
+      <!-- Color Swatches on Palette -->
+      <circle cx="-16" cy="-14" r="3.5" fill="#EF4444"/>
+      <circle cx="-2" cy="-22" r="3.5" fill="#3B82F6"/>
+      <circle cx="14" cy="-18" r="3.5" fill="#10B981"/>
+      <circle cx="22" cy="-4" r="3.5" fill="#F59E0B"/>
+      
+      <!-- Paintbrush Crossing -->
+      <g transform="rotate(32) translate(0, -6)">
+        <!-- Handle -->
+        <path d="M-2 -30 L2 -30 L3 12 L-3 12 Z" fill="#8D5B4C"/>
+        <!-- Ferrule (metal) -->
+        <rect x="-3.5" y="12" width="7" height="6" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="0.8"/>
+        <!-- Bristles -->
+        <path d="M-3.5 18 C-3 26 0 30 0 30 C0 30 3 26 3.5 18 Z" fill="#1F6B7A"/>
+        <!-- Paint Tip -->
+        <path d="M-2 23 C-1 28 0 30 0 30 C0 30 1 28 2 23 Z" fill="#60A5B3"/>
+      </g>
+
+      <!-- Consistent Character Silhouette / Portrait Cameo Badge -->
+      <g transform="translate(6, 4)">
+        <circle cx="0" cy="0" r="14" fill="#FFFFFF" stroke="#1F6B7A" stroke-width="2"/>
+        <!-- Head -->
+        <circle cx="0" cy="-3.5" r="5" fill="#1F6B7A"/>
+        <!-- Shoulders -->
+        <path d="M-9 10 C-9 4 9 4 9 10 Z" fill="#1F6B7A"/>
+        <!-- Camera / Sparkle focus tick -->
+        <circle cx="8" cy="-8" r="2.5" fill="#FFB300"/>
+      </g>
+    </g>
+
+    <!-- Top Badge Level Pill with 2 Stars -->
+    <g transform="translate(90, 24)">
+      <rect x="-38" y="-12" width="76" height="24" rx="12" fill="url(#gold-grad-l2)" stroke="#FFFFFF" stroke-width="1.8"/>
+      <!-- Star Left -->
+      <polygon points="-24,-1 -22,-6 -20,-1 -15,-1 -19,2 -17,7 -22,4 -27,7 -25,2 -29,-1" fill="#FFFFFF" transform="scale(0.7) translate(-10, 0)"/>
+      <text x="3" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="900" fill="#422006" text-anchor="middle" letter-spacing="0.5">LEVEL 2</text>
+      <!-- Star Right -->
+      <polygon points="24,-1 26,-6 28,-1 33,-1 29,2 31,7 26,4 21,7 23,2 19,-1" fill="#FFFFFF" transform="scale(0.7) translate(14, 0)"/>
+    </g>
+
+    <!-- Bottom Ribbon -->
+    <g filter="url(#ribbon-shadow-l2)">
+      <!-- Ribbon Tails -->
+      <polygon points="18 152 12 136 28 138" fill="#0C2F36"/>
+      <polygon points="162 152 168 136 152 138" fill="#0C2F36"/>
+      
+      <!-- Ribbon Center Plaque -->
+      <path d="M20 134 Q90 140 160 134 L156 154 Q90 160 24 154 Z" fill="url(#ribbon-grad-l2)" stroke="#60A5B3" stroke-width="1.2"/>
+      
+      <!-- Ribbon Text -->
+      <text x="90" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">DASAR LANJUTAN</text>
+    </g>
+  </g>
+</svg>

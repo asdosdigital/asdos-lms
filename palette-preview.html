@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Perbandingan Palet Warna · Asdos Digital Academy</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #e4ebe4;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #142921;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Selector Bar */
+    .selector-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid #cfe0d5;
+      padding: 12px 16px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(24, 74, 57, 0.04);
+    }
+    .selector-title {
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #264a39;
+      margin-bottom: 10px;
+    }
+    .palette-pills {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .palette-pill-btn {
+      border: 1.5px solid #c8dcd0;
+      background: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 750;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .palette-pill-btn:hover {
+      border-color: #1e5a42;
+      transform: translateY(-1px);
+    }
+    .palette-pill-btn.active {
+      background: #184a39;
+      color: white;
+      border-color: #184a39;
+      box-shadow: 0 4px 14px rgba(24, 74, 57, 0.28);
+    }
+    .swatch-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Main Container */
+    .preview-layout {
+      max-width: 1100px;
+      margin: 24px auto 60px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      justify-items: center;
+    }
+
+    /* Phone Mockup Frame */
+    .phone-mockup {
+      width: 100%;
+      max-width: 440px;
+      background: var(--theme-bg, #FFFFDD);
+      border-radius: 40px;
+      border: 10px solid #143527;
+      box-shadow: 0 24px 60px rgba(20, 53, 39, 0.22), 0 4px 14px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: background-color 0.25s ease;
+      position: relative;
+    }
+
+    /* Mockup Header */
+    .mock-topbar {
+      padding: 16px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--theme-line, rgba(24, 74, 57, 0.08));
+      background: var(--theme-top-bg, #FFFFDD);
+      transition: background-color 0.25s ease;
+    }
+    .mock-back {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--theme-top-text, #184A39);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .mock-help {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--theme-help-text, #184A39);
+      background: var(--theme-help-bg, #FFFFFF);
+      border: 1.5px solid var(--theme-line, rgba(24, 74, 57, 0.12));
+      padding: 5px 12px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(24, 74, 57, 0.04);
+    }
+
+    /* Mock Progress */
+    .mock-progress-wrap {
+      padding: 12px 20px 6px;
+    }
+    .mock-segments {
+      display: flex;
+      gap: 5px;
+      height: 6px;
+    }
+    .mock-seg {
+      flex: 1;
+      height: 100%;
+      background: rgba(24, 74, 57, 0.1);
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+
+    /* Segments for Palette A */
+    .theme-palette-a .mock-seg:nth-child(1) { background: #A2C579; }
+    .theme-palette-a .mock-seg:nth-child(2) { background: #D2DE32; }
+    .theme-palette-a .mock-seg:nth-child(3) { background: #61A3BA; }
+    .theme-palette-a .mock-seg:nth-child(4) { background: #C5DDC0; }
+    .theme-palette-a .mock-seg:nth-child(5) { background: #E8F0CB; }
+    .theme-palette-a .mock-seg:nth-child(6) { background: #D2DE32; }
+
+    /* Segments for Palette B */
+    .theme-palette-b .mock-seg:nth-child(1) { background: #C8CFA0; }
+    .theme-palette-b .mock-seg:nth-child(2) { background: #FCDC94; }
+    .theme-palette-b .mock-seg:nth-child(3) { background: #EF9C66; }
+    .theme-palette-b .mock-seg:nth-child(4) { background: #78ABA8; }
+    .theme-palette-b .mock-seg:nth-child(5) { background: #F5E5C9; }
+    .theme-palette-b .mock-seg:nth-child(6) { background: #EF9C66; }
+
+    /* Segments for Palette C */
+    .theme-palette-c .mock-seg:nth-child(1) { background: #A0C878; }
+    .theme-palette-c .mock-seg:nth-child(2) { background: #DDEB9D; }
+    .theme-palette-c .mock-seg:nth-child(3) { background: #27667B; }
+    .theme-palette-c .mock-seg:nth-child(4) { background: #B9DC96; }
+    .theme-palette-c .mock-seg:nth-child(5) { background: #EAF3BE; }
+    .theme-palette-c .mock-seg:nth-child(6) { background: #27667B; }
+
+    /* Segments for Green Bento Theme */
+    .theme-green-bento .mock-seg:nth-child(1) { background: #82C59B; }
+    .theme-green-bento .mock-seg:nth-child(2) { background: #52AA74; }
+    .theme-green-bento .mock-seg:nth-child(3) { background: #184A39; }
+    .theme-green-bento .mock-seg:nth-child(4) { background: #C9E6D4; }
+    .theme-green-bento .mock-seg:nth-child(5) { background: #D8EFE2; }
+    .theme-green-bento .mock-seg:nth-child(6) { background: #FDE047; }
+
+    .mock-seg.done { background: var(--theme-primary, #184A39); opacity: 0.5; }
+    .mock-seg.active { background: var(--theme-primary, #184A39); }
+
+    .mock-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--theme-top-text, #2c5946);
+      margin-top: 8px;
+    }
+
+    /* Mock Content Shell */
+    .mock-content {
+      padding: 12px 16px 88px;
+    }
+    .mock-card {
+      background: var(--theme-card, #FFFFFF);
+      border: 1.5px solid var(--theme-line, rgba(24, 74, 57, 0.08));
+      border-radius: var(--theme-card-radius, 30px);
+      padding: 22px 18px;
+      box-shadow: 0 10px 30px rgba(20, 53, 39, 0.06);
+      transition: all 0.25s ease;
+    }
+
+    .mock-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.6px;
+      color: var(--theme-badge-text, #184A39);
+      background: var(--theme-badge-bg, #DCF3E5);
+      border: 1px solid rgba(24, 74, 57, 0.12);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .mock-title {
+      font-size: 20px;
+      font-weight: 850;
+      letter-spacing: -0.4px;
+      color: var(--theme-ink, #142921);
+      margin: 0 0 6px;
+      line-height: 1.25;
+    }
+
+    .mock-desc {
+      font-size: 13.5px;
+      color: var(--theme-muted, #596b62);
+      margin: 0 0 16px;
+      line-height: 1.5;
+    }
+
+    /* Video & Character Mascot Card (Aura Frame) */
+    .mock-video-container {
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: var(--theme-mascot-bg, #61A3BA);
+      padding: 20px 14px;
+      text-align: center;
+      position: relative;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: all 0.25s ease;
+    }
+
+    /* Concentric Aura circles */
+    .mascot-aura-backdrop {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 25%, rgba(255, 255, 255, 0.65) 48%, rgba(255, 255, 255, 0.3) 72%, transparent 73%);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+    .mascot-aura-backdrop svg {
+      width: 82px;
+      height: 82px;
+      fill: var(--theme-mascot-fill, #FFFFFF);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      transition: fill 0.25s ease;
+    }
+
+    .mock-video-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #142921;
+      color: white;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 8px 16px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    }
+    .mock-video-pill svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    /* Prompt Box (Accented Style) */
+    .mock-prompt-box {
+      background: var(--theme-prompt-bg, #FFFFDD);
+      border: 1.5px solid var(--theme-prompt-border, #A2C579);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 16px;
+      transition: all 0.25s ease;
+    }
+    .mock-prompt-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--theme-prompt-label, #184A39);
+      margin-bottom: 8px;
+      letter-spacing: 0.6px;
+    }
+    .mock-prompt-text {
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 13.5px;
+      color: #142921;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .mock-btn-copy {
+      width: 100%;
+      padding: 12px;
+      background: var(--theme-copy-btn-bg, #D2DE32);
+      color: var(--theme-copy-btn-text, #152E0B);
+      border: 0;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    /* Action Checklist */
+    .mock-steps-list {
+      background: var(--theme-steps-bg, #F9FBF6);
+      border: 1px solid var(--theme-line, rgba(0, 0, 0, 0.06));
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--theme-ink, #142921);
+    }
+    .mock-step-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 0;
+    }
+    .mock-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--theme-step-num-bg, #A2C579);
+      color: var(--theme-step-num-color, #FFFFFF);
+      font-size: 11px;
+      font-weight: 850;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Bottom Sticky Mockup Bar */
+    .mock-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 18px 16px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--theme-line, rgba(24, 74, 57, 0.08));
+      display: flex;
+      gap: 9px;
+    }
+    .mock-btn-prev {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 1.5px solid var(--theme-line, rgba(24, 74, 57, 0.12));
+      background: white;
+      color: #557566;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .mock-btn-next {
+      flex: 1;
+      height: 46px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--theme-next-btn-bg, #184A39);
+      color: white;
+      font-size: 14px;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(24, 74, 57, 0.28);
+      transition: all 0.25s ease;
+    }
+
+    /* Palette Breakdown Card */
+    .palette-info-card {
+      max-width: 560px;
+      background: white;
+      border-radius: 24px;
+      padding: 24px 26px;
+      box-shadow: 0 8px 30px rgba(24, 74, 57, 0.06);
+      border: 1px solid #c8dbcf;
+      width: 100%;
+    }
+    .palette-info-card h3 {
+      margin: 0 0 6px;
+      font-size: 19px;
+      color: #142921;
+      font-weight: 850;
+    }
+    .palette-info-card p {
+      margin: 0 0 16px;
+      font-size: 13.5px;
+      color: #4a5c53;
+      line-height: 1.5;
+    }
+    .swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .swatch-box {
+      border: 1px solid #d4e4da;
+      border-radius: 14px;
+      padding: 9px;
+      text-align: center;
+      background: #f7faf8;
+    }
+    .swatch-color {
+      height: 40px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 750;
+      color: #1e3d30;
+      display: block;
+    }
+    .swatch-hex {
+      font-size: 10px;
+      color: #63776d;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header class="selector-bar">
+  <div class="selector-title">Pilih Opsi Desain & Palet Warna:</div>
+  <div class="palette-pills">
+    <button type="button" class="palette-pill-btn active" onclick="switchTheme('paletUserA')">
+      <span class="swatch-dot" style="background:#D2DE32"></span>
+      <span>Opsi A: 61A3BA · FFFFDD · D2DE32 · A2C579</span>
+    </button>
+    <button type="button" class="palette-pill-btn" onclick="switchTheme('paletUserB')">
+      <span class="swatch-dot" style="background:#EF9C66"></span>
+      <span>Opsi B: EF9C66 · FCDC94 · C8CFA0 · 78ABA8</span>
+    </button>
+    <button type="button" class="palette-pill-btn" onclick="switchTheme('paletUserC')">
+      <span class="swatch-dot" style="background:#A0C878"></span>
+      <span>Opsi C: DDEB9D · 27667B · A0C878</span>
+    </button>
+    <button type="button" class="palette-pill-btn" onclick="switchTheme('greenBento')">
+      <span class="swatch-dot" style="background:#184A39"></span>
+      <span>Asdos Green Bento (Emerald & Mint)</span>
+    </button>
+    <button type="button" class="palette-pill-btn" onclick="switchTheme('lama')">
+      <span class="swatch-dot" style="background:#246B52"></span>
+      <span>Warna Lama (Baseline Hijau Datar)</span>
+    </button>
+  </div>
+</header>
+
+<main class="preview-layout">
+
+  <!-- PHONE MOCKUP -->
+  <div class="phone-mockup theme-palette-a" id="phoneWrapper">
+    <!-- Topbar -->
+    <div class="mock-topbar">
+      <span class="mock-back">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Ruang Belajar</span>
+      </span>
+      <span class="mock-help">Pusat Bantuan</span>
+    </div>
+
+    <!-- Progress Segments -->
+    <div class="mock-progress-wrap">
+      <div class="mock-segments">
+        <div class="mock-seg done"></div>
+        <div class="mock-seg done"></div>
+        <div class="mock-seg active"></div>
+        <div class="mock-seg"></div>
+        <div class="mock-seg"></div>
+        <div class="mock-seg"></div>
+      </div>
+      <div class="mock-meta">
+        <span>Misi 2 · Buat Gambar Kucing</span>
+        <span>Tahap 3 dari 6</span>
+      </div>
+    </div>
+
+    <!-- Main Card Content -->
+    <div class="mock-content">
+      <div class="mock-card">
+        <span class="mock-badge">[ Misi 2 dari 4 ]</span>
+        <h2 class="mock-title">Pesan Gambar Kucing Pertama</h2>
+        <p class="mock-desc">Salin kalimat perintah di bawah, lalu tempelkan di kolom teks Google Flow Anda.</p>
+
+        <!-- Video & Mascot Bento Box (Aura Frame) -->
+        <div class="mock-video-container">
+          <div class="mascot-aura-backdrop">
+            <svg viewBox="0 0 24 24">
+              <!-- Cute Cat Silhouette in White Aura -->
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+          </div>
+          <div class="mock-video-pill">
+            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Tonton Video HP (60 Detik)</span>
+          </div>
+        </div>
+
+        <!-- 1-Click Prompt Copy Box -->
+        <div class="mock-prompt-box">
+          <div class="mock-prompt-head">
+            <span>[ MANTRA PERINTAH KUCING ]</span>
+            <span style="opacity:0.85">1-Klik Salin</span>
+          </div>
+          <div class="mock-prompt-text">
+            Seekor kucing oren duduk santai di taman kecil yang penuh bunga warna-warni. Suasana cerah dan hangat, format 9:16.
+          </div>
+          <button type="button" class="mock-btn-copy">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Salin Mantra Perintah</span>
+          </button>
+        </div>
+
+        <!-- Action Steps List -->
+        <div class="mock-steps-list">
+          <div class="mock-step-row">
+            <span class="mock-step-num">1</span>
+            <span>Tahan layar di kolom teks Flow, pilih <strong>Tempel</strong>.</span>
+          </div>
+          <div class="mock-step-row">
+            <span class="mock-step-num" id="stepNum2" style="background:#D2DE32;color:#183610">2</span>
+            <span>Pastikan rasio ukuran memilih <strong>9:16</strong>.</span>
+          </div>
+          <div class="mock-step-row">
+            <span class="mock-step-num" id="stepNum3" style="background:#61A3BA;color:#FFFFFF">3</span>
+            <span>Tekan tombol <strong>Generate</strong> dan tunggu 10 detik.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="mock-bottom-bar">
+      <button type="button" class="mock-btn-prev">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button type="button" class="mock-btn-next">
+        <span>Kucing Sudah Jadi → Misi 3</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PALETTE EXPLANATION CARD -->
+  <div class="palette-info-card">
+    <h3 id="infoTitle">Opsi A: 61A3BA · FFFFDD · D2DE32 · A2C579</h3>
+    <p id="infoDesc">Kombinasi 4 warna pilihan Anda: Latar kanvas kuning gading lembut (#FFFFDD), kartu bento berbingkai sage (#A2C579), visual maskot berlatar toska laut (#61A3BA), dipadukan tombol aksi hijau lime elektrik (#D2DE32) yang sangat cerah dan berenergi.</p>
+
+    <div class="swatches-grid" id="swatchesGrid">
+      <!-- Diisi dinamis via JS -->
+    </div>
+
+    <div style="font-size:12px;color:#596b62;border-top:1px dashed #cfe0d5;padding-top:10px">
+      Klik pilihan tombol di bilah atas untuk menguji tema lainnya secara bergantian.
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const themes = {
+    paletUserA: {
+      name: "Opsi A: 61A3BA · FFFFDD · D2DE32 · A2C579 (Ocean Sage & Lime)",
+      desc: "Kombinasi 4 warna pilihan Anda: Latar kanvas kuning gading lembut (#FFFFDD), kartu bento berbingkai sage (#A2C579), visual maskot berlatar toska laut (#61A3BA), dipadukan tombol aksi hijau lime elektrik (#D2DE32) yang sangat cerah dan berenergi.",
+      themeClass: 'theme-palette-a',
+      step2Bg: '#D2DE32', step2Color: '#14300D',
+      step3Bg: '#61A3BA', step3Color: '#FFFFFF',
+      vars: {
+        '--theme-bg': '#FFFFDD',
+        '--theme-top-bg': '#FFFFDD',
+        '--theme-top-text': '#142921',
+        '--theme-help-bg': '#FFFFFF',
+        '--theme-help-text': '#142921',
+        '--theme-card': '#FFFFFF',
+        '--theme-card-radius': '30px',
+        '--theme-ink': '#142921',
+        '--theme-muted': '#556B5D',
+        '--theme-line': '#A2C579',
+        '--theme-primary': '#1E4733',
+        '--theme-badge-bg': '#D2DE32',
+        '--theme-badge-text': '#14300D',
+        '--theme-mascot-bg': '#61A3BA',
+        '--theme-mascot-fill': '#FFFFFF',
+        '--theme-prompt-bg': '#FFFFDD',
+        '--theme-prompt-border': '#A2C579',
+        '--theme-prompt-label': '#1E4733',
+        '--theme-copy-btn-bg': '#D2DE32',
+        '--theme-copy-btn-text': '#14300D',
+        '--theme-steps-bg': '#F9FBF6',
+        '--theme-step-num-bg': '#A2C579',
+        '--theme-step-num-color': '#FFFFFF',
+        '--theme-next-btn-bg': '#1E4733'
+      },
+      swatches: [
+        { name: "Ocean Teal", hex: "#61A3BA", bg: "#61A3BA", light: true },
+        { name: "Vanilla Butter", hex: "#FFFFDD", bg: "#FFFFDD" },
+        { name: "Chartreuse Lime", hex: "#D2DE32", bg: "#D2DE32" },
+        { name: "Foliage Sage", hex: "#A2C579", bg: "#A2C579" },
+        { name: "Deep Anchor Green", hex: "#1E4733", bg: "#1E4733", light: true }
+      ]
+    },
+    paletUserB: {
+      name: "Opsi B: EF9C66 · FCDC94 · C8CFA0 · 78ABA8 (Warm Terracotta & Seafoam)",
+      desc: "Kombinasi hangat dan ramah: Latar madu mentega lembut (#FCDC94), kartu berbingkai sage zaitun (#C8CFA0), visual maskot berlatar toska laut sejuk (#78ABA8), dipadukan tombol aksi terakota koral (#EF9C66) yang menggugah semangat belajar.",
+      themeClass: 'theme-palette-b',
+      step2Bg: '#EF9C66', step2Color: '#FFFFFF',
+      step3Bg: '#78ABA8', step3Color: '#FFFFFF',
+      vars: {
+        '--theme-bg': '#FFFBF2',
+        '--theme-top-bg': '#FFFBF2',
+        '--theme-top-text': '#244341',
+        '--theme-help-bg': '#FFFFFF',
+        '--theme-help-text': '#244341',
+        '--theme-card': '#FFFFFF',
+        '--theme-card-radius': '30px',
+        '--theme-ink': '#1E2F2D',
+        '--theme-muted': '#5D6E6B',
+        '--theme-line': '#C8CFA0',
+        '--theme-primary': '#244C49',
+        '--theme-badge-bg': '#FCDC94',
+        '--theme-badge-text': '#362C10',
+        '--theme-mascot-bg': '#78ABA8',
+        '--theme-mascot-fill': '#FFFFFF',
+        '--theme-prompt-bg': '#FFF4DB',
+        '--theme-prompt-border': '#E4BA68',
+        '--theme-prompt-label': '#244C49',
+        '--theme-copy-btn-bg': '#EF9C66',
+        '--theme-copy-btn-text': '#FFFFFF',
+        '--theme-steps-bg': '#FDFCF9',
+        '--theme-step-num-bg': '#C8CFA0',
+        '--theme-step-num-color': '#1D2A28',
+        '--theme-next-btn-bg': '#244C49'
+      },
+      swatches: [
+        { name: "Sunset Terracotta", hex: "#EF9C66", bg: "#EF9C66", light: true },
+        { name: "Buttercup Honey", hex: "#FCDC94", bg: "#FCDC94" },
+        { name: "Olive Herb Sage", hex: "#C8CFA0", bg: "#C8CFA0" },
+        { name: "Seafoam Teal", hex: "#78ABA8", bg: "#78ABA8", light: true },
+        { name: "Deep Teal Ink", hex: "#244C49", bg: "#244C49", light: true }
+      ]
+    },
+    paletUserC: {
+      name: "Opsi C: DDEB9D · 27667B · A0C878 (Pacific Teal & Spring Meadow)",
+      desc: "Kombinasi hijau modern berenergi tinggi: Latar matcha bud segar (#DDEB9D), kartu berbingkai hijau padang rumput (#A0C878), visual maskot berlatar biru toska samudra pekat (#27667B), dipadukan tombol aksi hijau segar dengan kontras sangat tajam.",
+      themeClass: 'theme-palette-c',
+      step2Bg: '#A0C878', step2Color: '#123015',
+      step3Bg: '#27667B', step3Color: '#FFFFFF',
+      vars: {
+        '--theme-bg': '#F3F9E4',
+        '--theme-top-bg': '#F3F9E4',
+        '--theme-top-text': '#18181B',
+        '--theme-help-bg': '#FFFFFF',
+        '--theme-help-text': '#18181B',
+        '--theme-card': '#FFFFFF',
+        '--theme-card-radius': '30px',
+        '--theme-ink': '#102720',
+        '--theme-muted': '#4B6256',
+        '--theme-line': '#A0C878',
+        '--theme-primary': '#27667B',
+        '--theme-badge-bg': '#DDEB9D',
+        '--theme-badge-text': '#1D4531',
+        '--theme-mascot-bg': '#27667B',
+        '--theme-mascot-fill': '#FFFFFF',
+        '--theme-prompt-bg': '#EBF5C8',
+        '--theme-prompt-border': '#A0C878',
+        '--theme-prompt-label': '#27667B',
+        '--theme-copy-btn-bg': '#A0C878',
+        '--theme-copy-btn-text': '#102914',
+        '--theme-steps-bg': '#F8FBF3',
+        '--theme-step-num-bg': '#27667B',
+        '--theme-step-num-color': '#FFFFFF',
+        '--theme-next-btn-bg': '#27667B'
+      },
+      swatches: [
+        { name: "Matcha Lime Bud", hex: "#DDEB9D", bg: "#DDEB9D" },
+        { name: "Pacific Deep Teal", hex: "#27667B", bg: "#27667B", light: true },
+        { name: "Meadow Green", hex: "#A0C878", bg: "#A0C878" },
+        { name: "Lagoon Ink Text", hex: "#102720", bg: "#102720", light: true }
+      ]
+    },
+    greenBento: {
+      name: "Asdos Green Bento (Emerald & Mint Aura)",
+      desc: "Identitas hijau Asdos Digital tetap 100% dominan, dipadukan dengan geometri modern Playful Bento: sudut kartu super-membal (radius 30px), kanvas sage linen segar, maskot dengan aura mint konsentris, dan tombol pil hijau hutan pekat yang tegas.",
+      themeClass: 'theme-green-bento',
+      step2Bg: '#BCE5D1', step2Color: '#134231',
+      step3Bg: '#A3D9BE', step3Color: '#0d3525',
+      vars: {
+        '--theme-bg': '#E6F2EB',
+        '--theme-top-bg': '#E6F2EB',
+        '--theme-top-text': '#184A39',
+        '--theme-help-bg': '#FFFFFF',
+        '--theme-help-text': '#184A39',
+        '--theme-card': '#FFFFFF',
+        '--theme-card-radius': '30px',
+        '--theme-ink': '#142921',
+        '--theme-muted': '#596B62',
+        '--theme-line': 'rgba(24, 74, 57, 0.08)',
+        '--theme-primary': '#184A39',
+        '--theme-badge-bg': '#DCF3E5',
+        '--theme-badge-text': '#184A39',
+        '--theme-mascot-bg': '#DCF3E5',
+        '--theme-mascot-fill': '#184A39',
+        '--theme-prompt-bg': '#F0F8F3',
+        '--theme-prompt-border': '#C4E3CF',
+        '--theme-prompt-label': '#184A39',
+        '--theme-copy-btn-bg': '#184A39',
+        '--theme-copy-btn-text': '#FFFFFF',
+        '--theme-steps-bg': '#F6FAF7',
+        '--theme-step-num-bg': '#BCE5D1',
+        '--theme-step-num-color': '#134231',
+        '--theme-next-btn-bg': '#184A39'
+      },
+      swatches: [
+        { name: "Sage Linen Canvas", hex: "#E6F2EB", bg: "#E6F2EB" },
+        { name: "Asdos Forest Green", hex: "#184A39", bg: "#184A39", light: true },
+        { name: "Fresh Mint Aura", hex: "#DCF3E5", bg: "#DCF3E5" },
+        { name: "Pistachio Box", hex: "#F0F8F3", bg: "#F0F8F3" },
+        { name: "Forest Ink Text", hex: "#142921", bg: "#142921", light: true }
+      ]
+    },
+    lama: {
+      name: "Warna Lama (Baseline Hijau Datar)",
+      desc: "Palet sebelumnya dengan satu nada warna hijau lumut di semua elemen tanpa kedalaman bento.",
+      themeClass: '',
+      step2Bg: '#EDF5EE', step2Color: '#246B52',
+      step3Bg: '#EDF5EE', step3Color: '#246B52',
+      vars: {
+        '--theme-bg': '#F7F8F4',
+        '--theme-top-bg': '#F7F8F4',
+        '--theme-top-text': '#172B25',
+        '--theme-help-bg': '#EDF5EE',
+        '--theme-help-text': '#246B52',
+        '--theme-card': '#FFFFFF',
+        '--theme-card-radius': '18px',
+        '--theme-ink': '#172B25',
+        '--theme-muted': '#64746D',
+        '--theme-line': '#E3EAE3',
+        '--theme-primary': '#246B52',
+        '--theme-badge-bg': '#EDF5EE',
+        '--theme-badge-text': '#246B52',
+        '--theme-mascot-bg': '#172B25',
+        '--theme-mascot-fill': '#FFFFFF',
+        '--theme-prompt-bg': '#EDF5EE',
+        '--theme-prompt-border': '#CDE3D2',
+        '--theme-prompt-label': '#246B52',
+        '--theme-copy-btn-bg': '#246B52',
+        '--theme-copy-btn-text': '#FFFFFF',
+        '--theme-steps-bg': '#F7F9F7',
+        '--theme-step-num-bg': '#EDF5EE',
+        '--theme-step-num-color': '#246B52',
+        '--theme-next-btn-bg': '#246B52'
+      },
+      swatches: [
+        { name: "Latar Datar", hex: "#F7F8F4", bg: "#F7F8F4" },
+        { name: "Hijau Lumut", hex: "#246B52", bg: "#246B52", light: true },
+        { name: "Aksen Sama", hex: "#246B52", bg: "#246B52", light: true },
+        { name: "Garis Pudar", hex: "#E3EAE3", bg: "#E3EAE3" },
+        { name: "Teks Gelap", hex: "#172B25", bg: "#172B25", light: true }
+      ]
+    }
+  };
+
+  function switchTheme(key) {
+    const t = themes[key];
+    if (!t) return;
+
+    const wrapper = document.getElementById('phoneWrapper');
+    wrapper.className = 'phone-mockup ' + (t.themeClass || '');
+
+    // Set CSS variables
+    Object.keys(t.vars).forEach(varName => {
+      wrapper.style.setProperty(varName, t.vars[varName]);
+    });
+
+    // Update step numbers colors
+    const s2 = document.getElementById('stepNum2');
+    const s3 = document.getElementById('stepNum3');
+    if (s2 && t.step2Bg) {
+      s2.style.background = t.step2Bg;
+      s2.style.color = t.step2Color;
+    }
+    if (s3 && t.step3Bg) {
+      s3.style.background = t.step3Bg;
+      s3.style.color = t.step3Color;
+    }
+
+    // Update active button
+    document.querySelectorAll('.palette-pill-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('active');
+    }
+
+    // Update Info Card
+    document.getElementById('infoTitle').textContent = t.name;
+    document.getElementById('infoDesc').textContent = t.desc;
+
+    // Render Swatches
+    const grid = document.getElementById('swatchesGrid');
+    grid.innerHTML = t.swatches.map(s => `
+      <div class="swatch-box">
+        <div class="swatch-color" style="background:${s.bg}"></div>
+        <span class="swatch-name">${s.name}</span>
+        <span class="swatch-hex">${s.hex}</span>
+      </div>
+    `).join('');
+  }
+
+  // Initial load default to paletUserA
+  (() => {
+    const t = themes.paletUserA;
+    const wrapper = document.getElementById('phoneWrapper');
+    wrapper.className = 'phone-mockup ' + (t.themeClass || '');
+    Object.keys(t.vars).forEach(varName => {
+      wrapper.style.setProperty(varName, t.vars[varName]);
+    });
+    document.getElementById('infoTitle').textContent = t.name;
+    document.getElementById('infoDesc').textContent = t.desc;
+    document.getElementById('swatchesGrid').innerHTML = t.swatches.map(s => `
+      <div class="swatch-box">
+        <div class="swatch-color" style="background:${s.bg}"></div>
+        <span class="swatch-name">${s.name}</span>
+        <span class="swatch-hex">${s.hex}</span>
+      </div>
+    `).join('');
+  })();
+</script>
+
+</body>
+</html>

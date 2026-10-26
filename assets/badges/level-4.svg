@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="100%" height="100%">
+  <defs>
+    <!-- Filter Glow & Drop Shadow -->
+    <filter id="shadow-l4" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#78350F" flood-opacity="0.25"/>
+    </filter>
+    <filter id="ribbon-shadow-l4" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad-l4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#FFFDF5"/>
+      <stop offset="100%" stop-color="#FEF3C7"/>
+    </linearGradient>
+
+    <linearGradient id="rim-grad-l4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+
+    <linearGradient id="gold-cup-l4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="35%" stop-color="#FCD34D"/>
+      <stop offset="70%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+
+    <linearGradient id="ribbon-grad-l4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#78350F"/>
+      <stop offset="50%" stop-color="#B45309"/>
+      <stop offset="100%" stop-color="#78350F"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#shadow-l4)">
+    <!-- Laurel Wreath (Backing Victory Branches) -->
+    <g transform="translate(90, 80)" fill="#D97706" opacity="0.65">
+      <!-- Left Laurel Leaves -->
+      <path d="M-55 -15 C-52 -30 -40 -40 -35 -40 C-36 -32 -42 -22 -48 -14 Z"/>
+      <path d="M-60 8 C-60 -6 -50 -15 -45 -14 C-47 -6 -51 3 -54 11 Z"/>
+      <path d="M-56 30 C-59 16 -50 8 -46 10 C-47 18 -50 26 -50 33 Z"/>
+      <!-- Right Laurel Leaves -->
+      <path d="M55 -15 C52 -30 40 -40 35 -40 C36 -32 42 -22 48 -14 Z"/>
+      <path d="M60 8 C60 -6 50 -15 45 -14 C47 -6 51 3 54 11 Z"/>
+      <path d="M56 30 C59 16 50 8 46 10 C47 18 50 26 50 33 Z"/>
+    </g>
+
+    <!-- Outer Shield / Medallion -->
+    <path d="M90 12 C124 12 152 24 152 58 C152 104 116 138 90 148 C64 138 28 104 28 58 C28 24 56 12 90 12 Z" 
+          fill="url(#bg-grad-l4)" stroke="url(#rim-grad-l4)" stroke-width="4.5" stroke-linejoin="round"/>
+    
+    <!-- Inner Dotted Ring -->
+    <path d="M90 20 C118 20 143 30 143 60 C143 98 112 128 90 137 C68 128 37 98 37 60 C37 30 62 20 90 20 Z" 
+          fill="none" stroke="#FBBF24" stroke-width="1.6" stroke-dasharray="3.5 3.5"/>
+
+    <!-- Radiant Sparkles around Crown -->
+    <path d="M128 34 L130 39 L135 41 L130 43 L128 48 L126 43 L121 41 L126 39 Z" fill="#F59E0B"/>
+    <path d="M52 40 L53 44 L57 45 L53 46 L52 50 L51 46 L47 45 L51 44 Z" fill="#F59E0B"/>
+    <path d="M90 40 L91.5 43 L94 44.5 L91.5 46 L90 49 L88.5 46 L86 44.5 L88.5 43 Z" fill="#F59E0B"/>
+
+    <!-- Central Illustration: Golden Trophy Cup & Creator Crown -->
+    <g transform="translate(90, 75)">
+      <!-- Trophy Handles -->
+      <path d="M-18 -12 C-32 -12 -32 10 -16 14 L-16 8 C-24 6 -24 -6 -18 -6 Z" fill="url(#gold-cup-l4)"/>
+      <path d="M18 -12 C32 -12 32 10 16 14 L16 8 C24 6 24 -6 18 -6 Z" fill="url(#gold-cup-l4)"/>
+
+      <!-- Trophy Cup Body -->
+      <path d="M-18 -18 L18 -18 C18 10 10 20 0 20 C-10 20 -18 10 -18 -18 Z" fill="url(#gold-cup-l4)" stroke="#92400E" stroke-width="1"/>
+      
+      <!-- Trophy Stem & Pedestal Base -->
+      <path d="M-4 20 L4 20 L6 27 L14 27 L16 34 L-16 34 L-14 27 L-6 27 Z" fill="url(#gold-cup-l4)" stroke="#92400E" stroke-width="1"/>
+
+      <!-- Mini Creator Star on Trophy Body -->
+      <polygon points="0,-1 2.5,4 8,4 3.5,8 5.5,13 0,10 -5.5,13 -3.5,8 -8,4 -2.5,4" fill="#FFFFFF" transform="scale(0.85) translate(0, -2)"/>
+
+      <!-- Crown Over Trophy (Top) -->
+      <g transform="translate(0, -26)">
+        <path d="M-14 4 L-18 -6 L-8 -1 L0 -9 L8 -1 L18 -6 L14 4 Z" fill="url(#gold-cup-l4)" stroke="#92400E" stroke-width="1"/>
+        <circle cx="-18" cy="-6" r="1.8" fill="#FFFFFF"/>
+        <circle cx="0" cy="-9" r="2.2" fill="#FFFFFF"/>
+        <circle cx="18" cy="-6" r="1.8" fill="#FFFFFF"/>
+      </g>
+    </g>
+
+    <!-- Top Badge Level Pill with 4 Stars / Master Pill -->
+    <g transform="translate(90, 24)">
+      <rect x="-44" y="-12" width="88" height="24" rx="12" fill="url(#gold-cup-l4)" stroke="#FFFFFF" stroke-width="1.8"/>
+      <!-- Star 1 -->
+      <polygon points="0,-3 1,-1 4,-1 1.5,1 2.5,3 0,1.5 -2.5,3 -1.5,1 -4,-1 -1,-1" fill="#FFFFFF" transform="translate(-28, 0) scale(0.85)"/>
+      <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="900" fill="#422006" text-anchor="middle" letter-spacing="0.5">LEVEL 4</text>
+      <!-- Star 4 -->
+      <polygon points="0,-3 1,-1 4,-1 1.5,1 2.5,3 0,1.5 -2.5,3 -1.5,1 -4,-1 -1,-1" fill="#FFFFFF" transform="translate(28, 0) scale(0.85)"/>
+    </g>
+
+    <!-- Bottom Ribbon -->
+    <g filter="url(#ribbon-shadow-l4)">
+      <!-- Ribbon Tails -->
+      <polygon points="18 152 12 136 28 138" fill="#451A03"/>
+      <polygon points="162 152 168 136 152 138" fill="#451A03"/>
+      
+      <!-- Ribbon Center Plaque -->
+      <path d="M18 134 Q90 140 162 134 L158 154 Q90 160 22 154 Z" fill="url(#ribbon-grad-l4)" stroke="#FDE047" stroke-width="1.2"/>
+      
+      <!-- Ribbon Text -->
+      <text x="90" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.8" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">ALUMNI TERVERIFIKASI</text>
+    </g>
+  </g>
+</svg>

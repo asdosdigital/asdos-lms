@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="100%" height="100%">
+  <defs>
+    <filter id="shadow-l6" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#4C1D95" flood-opacity="0.22"/>
+    </filter>
+    <filter id="ribbon-shadow-l6" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+
+    <linearGradient id="bg-grad-l6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#F5F3FF"/>
+      <stop offset="100%" stop-color="#EDE9FE"/>
+    </linearGradient>
+
+    <linearGradient id="rim-grad-l6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#5B21B6"/>
+    </linearGradient>
+
+    <linearGradient id="gold-grad-l6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="60%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <linearGradient id="ribbon-grad-l6" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4C1D95"/>
+      <stop offset="50%" stop-color="#6D28D9"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#shadow-l6)">
+    <!-- Outer Shield / Medallion -->
+    <path d="M90 12 C124 12 152 24 152 58 C152 104 116 138 90 148 C64 138 28 104 28 58 C28 24 56 12 90 12 Z" 
+          fill="url(#bg-grad-l6)" stroke="url(#rim-grad-l6)" stroke-width="4.5" stroke-linejoin="round"/>
+    
+    <!-- Inner Dotted Ring -->
+    <path d="M90 20 C118 20 143 30 143 60 C143 98 112 128 90 137 C68 128 37 98 37 60 C37 30 62 20 90 20 Z" 
+          fill="none" stroke="#A78BFA" stroke-width="1.6" stroke-dasharray="3.5 3.5"/>
+
+    <!-- Sparkles -->
+    <path d="M128 36 L130 41 L135 43 L130 45 L128 50 L126 45 L121 43 L126 41 Z" fill="#FFB300"/>
+    <path d="M52 46 L53 50 L57 51 L53 52 L52 56 L51 52 L47 51 L51 50 Z" fill="#A78BFA"/>
+
+    <!-- Central Illustration: Movie Reel Camera & Director Chair Stars -->
+    <g transform="translate(90, 75)">
+      <!-- Cinema Projector / Camera Body -->
+      <rect x="-18" y="-4" width="34" height="24" rx="4" fill="#312E81" stroke="#1E1B4B" stroke-width="1.5"/>
+      <!-- Lens Cone -->
+      <polygon points="16,2 30,-5 30,19 16,14" fill="#7C3AED" stroke="#4C1D95" stroke-width="1.2"/>
+      
+      <!-- Film Reels on Top -->
+      <circle cx="-10" cy="-14" r="10" fill="#EDE9FE" stroke="#6D28D9" stroke-width="2.5"/>
+      <circle cx="-10" cy="-14" r="3" fill="#6D28D9"/>
+      <circle cx="8" cy="-14" r="10" fill="#EDE9FE" stroke="#6D28D9" stroke-width="2.5"/>
+      <circle cx="8" cy="-14" r="3" fill="#6D28D9"/>
+      
+      <!-- Camera Tripod lines -->
+      <line x1="-12" y1="20" x2="-22" y2="34" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="0" y1="20" x2="0" y2="34" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="20" x2="22" y2="34" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- Top Badge Level Pill -->
+    <g transform="translate(90, 24)">
+      <rect x="-42" y="-12" width="84" height="24" rx="12" fill="url(#gold-grad-l6)" stroke="#FFFFFF" stroke-width="1.8"/>
+      <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="900" fill="#422006" text-anchor="middle" letter-spacing="0.5">LEVEL 6</text>
+    </g>
+
+    <!-- Bottom Ribbon -->
+    <g filter="url(#ribbon-shadow-l6)">
+      <polygon points="18 152 12 136 28 138" fill="#2E1065"/>
+      <polygon points="162 152 168 136 152 138" fill="#2E1065"/>
+      <path d="M20 134 Q90 140 160 134 L156 154 Q90 160 24 154 Z" fill="url(#ribbon-grad-l6)" stroke="#A78BFA" stroke-width="1.2"/>
+      <text x="90" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SUTRADARA ADEGAN</text>
+    </g>
+  </g>
+</svg>

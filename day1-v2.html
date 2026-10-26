@@ -1,0 +1,1590 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#F3F8E9">
+  <title>Day 1 · Kenalan dengan Flow - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    /* =====================================================================
+       PALETTE C: DDEB9D · 27667B · A0C878 (Pacific Teal & Spring Meadow)
+       ===================================================================== */
+    :root {
+      --bg: #F3F8E9;              /* Soft Matcha Bud Canvas */
+      --card-bg: #FFFFFF;         /* Crisp Bento Milk White */
+      --card-radius: 30px;        /* Super-rounded Bento geometry */
+      --ink: #102720;             /* Deep Lagoon/Forest Ink for ultra crisp text */
+      --muted: #4B6356;           /* Soft muted teal-sage */
+      --line: #A0C878;            /* Meadow Green Border */
+      --teal: #27667B;            /* Pacific Deep Teal (Brand Hero Anchor) */
+      --teal-dark: #174554;
+      --meadow: #A0C878;          /* Fresh Meadow Green */
+      --matcha: #DDEB9D;          /* Matcha Lime Bud */
+      --matcha-tint: #EBF5C8;     /* Soft Buttercream Matcha Tint */
+      --primary: #27667B;
+      --accent: #A0C878;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Celebration Canvas Overlay */
+    .celebration-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    /* Top Navigation Bar (Soft Matcha Background with Bold Black Text) */
+    .deck-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(243, 248, 233, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(160, 200, 120, 0.35);
+      padding: 10px 16px;
+    }
+    .deck-topbar-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn-top-back {
+      font-size: 13px;
+      font-weight: 850;
+      color: #18181B; /* Tulisan Hitam Pekat */
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(16, 39, 32, 0.14);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-top-back:active { background: #EBF5C8; transform: scale(0.98); }
+    .btn-top-back svg { stroke: #18181B; stroke-width: 2.5; }
+
+    .btn-top-help {
+      font-size: 11.5px;
+      font-weight: 850;
+      color: #18181B; /* Tulisan Hitam Pekat */
+      background: #FFFFFF;
+      border: 1.5px solid rgba(16, 39, 32, 0.14);
+      padding: 6px 13px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-top-help:active { background: #EBF5C8; transform: scale(0.98); }
+    .btn-top-help svg {
+      width: 14px;
+      height: 14px;
+      stroke: #18181B;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Segmented Dots / Indicator */
+    .deck-progress-wrap {
+      max-width: 500px;
+      margin: 10px auto 0;
+      padding: 0 16px;
+    }
+    .deck-segments {
+      display: flex;
+      gap: 6px;
+      height: 6px;
+    }
+    .deck-seg {
+      flex: 1;
+      height: 100%;
+      background: rgba(39, 102, 123, 0.12);
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+
+    /* Palette C Multi-tone Segments */
+    .deck-seg:nth-child(1).done, .deck-seg:nth-child(1).active { background: #A0C878; }
+    .deck-seg:nth-child(2).done, .deck-seg:nth-child(2).active { background: #B8DE8F; }
+    .deck-seg:nth-child(3).done, .deck-seg:nth-child(3).active { background: #27667B; }
+    .deck-seg:nth-child(4).done, .deck-seg:nth-child(4).active { background: #71A9B8; }
+    .deck-seg:nth-child(5).done, .deck-seg:nth-child(5).active { background: #DDEB9D; }
+    .deck-seg:nth-child(6).done, .deck-seg:nth-child(6).active { background: #27667B; }
+
+    .deck-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 850;
+      color: #18181B; /* Tulisan Hitam Pekat */
+      letter-spacing: 0.3px;
+    }
+
+    /* Deck Viewport & Slides */
+    .deck-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 12px 16px 110px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .mission-card {
+      display: none;
+      background: var(--card-bg);
+      border: 1.5px solid rgba(160, 200, 120, 0.45);
+      border-radius: var(--card-radius);
+      padding: 22px 18px;
+      box-shadow: 0 10px 32px rgba(39, 102, 123, 0.08);
+      transform-origin: center top;
+      position: relative;
+    }
+
+    /* =====================================================================
+       INITIAL SWIPE PEEK NUDGE ANIMATION (GESTURE ONBOARDING)
+       ===================================================================== */
+    .peek-nudge {
+      animation: cardPeekNudge 1.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s 1 normal forwards;
+    }
+    @keyframes cardPeekNudge {
+      0% { transform: translateX(0); }
+      22% { transform: translateX(-34px); }
+      48% { transform: translateX(10px); }
+      72% { transform: translateX(-4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Floating Swipe Hint Pill */
+    .swipe-hint-pill {
+      position: fixed;
+      bottom: 82px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(16, 39, 32, 0.9);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 16px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 45;
+      pointer-events: none;
+      animation: animFadeSwipeHint 3.8s ease-in-out forwards;
+      border: 1px solid rgba(221, 235, 157, 0.4);
+    }
+    .swipe-hint-pill svg {
+      width: 15px;
+      height: 15px;
+      stroke: #DDEB9D;
+      stroke-width: 2.3;
+      fill: none;
+    }
+    @keyframes animFadeSwipeHint {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-8px); pointer-events: none; }
+    }
+
+    /* Card Transition Animations */
+    .mission-card.active {
+      display: block;
+    }
+    .mission-card.slide-in-right {
+      display: block;
+      animation: animSlideInRight 0.32s cubic-bezier(0.12, 0.88, 0.28, 1) forwards;
+    }
+    .mission-card.slide-in-left {
+      display: block;
+      animation: animSlideInLeft 0.32s cubic-bezier(0.12, 0.88, 0.28, 1) forwards;
+    }
+
+    @keyframes animSlideInRight {
+      0% {
+        opacity: 0;
+        transform: translateX(45px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    @keyframes animSlideInLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-45px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    /* Subtle Card Badge Pop Animation */
+    .mission-card.active .card-badge {
+      animation: badgePop 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Card Content Styling */
+    .card-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #174554;
+      background: var(--matcha);
+      border: 1px solid var(--meadow);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 21px;
+      font-weight: 850;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      margin: 0 0 6px;
+      color: var(--teal);
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0 0 16px;
+    }
+
+    /* Visual Showcase Frame with Pacific Teal Aura (Card 0 & Video) */
+    .target-preview-box {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1.5px solid rgba(39, 102, 123, 0.12);
+      background: var(--teal);
+      position: relative;
+      margin-bottom: 16px;
+      text-align: center;
+      padding: 22px 14px;
+      box-shadow: 0 8px 24px rgba(39, 102, 123, 0.18);
+    }
+    .target-preview-img-wrap {
+      width: min(100%, 250px);
+      aspect-ratio: 9/16;
+      margin: 0 auto 12px;
+      border-radius: 16px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 26%, rgba(221, 235, 157, 0.65) 50%, rgba(160, 200, 120, 0.35) 72%, transparent 73%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .cat-illustration-art {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .cat-silhouette {
+      width: 86px;
+      height: 86px;
+      fill: #FFFFFF;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+      margin-bottom: 12px;
+    }
+    .target-preview-badge {
+      position: absolute;
+      bottom: 10px;
+      background: rgba(16, 39, 32, 0.88);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Video Frame in Steps */
+    .step-video-frame {
+      width: 100%;
+      aspect-ratio: 9/16;
+      max-width: 290px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #142921;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border: 2px solid rgba(160, 200, 120, 0.4);
+    }
+    .step-video-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* Action Checklist Box */
+    .action-steps-box {
+      background: #F9FCF3;
+      border: 1.5px solid rgba(160, 200, 120, 0.35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .action-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+    .action-step-item:not(:last-child) {
+      border-bottom: 1px dashed rgba(160, 200, 120, 0.4);
+    }
+    .action-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--meadow);
+      color: #102914;
+      font-weight: 850;
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* 1-Click Copy Box (Matcha Tint + Meadow Border) */
+    .prompt-copy-card {
+      background: var(--matcha-tint);
+      border: 1.5px solid var(--meadow);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .prompt-copy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .prompt-copy-header small {
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--teal);
+      letter-spacing: 0.5px;
+    }
+    .prompt-copy-text {
+      background: white;
+      border: 1px solid rgba(160, 200, 120, 0.4);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      color: #102720;
+      line-height: 1.5;
+      margin: 0 0 10px;
+      user-select: all;
+    }
+    .btn-copy-action {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--meadow);
+      color: #0E2B14;
+      font-weight: 850;
+      font-size: 14px;
+      padding: 12px;
+      border: 0;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(160, 200, 120, 0.35);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-copy-action:active {
+      transform: scale(0.98);
+      background: #8DBB60;
+    }
+    .btn-copy-action.copied {
+      background: var(--teal);
+      color: white;
+    }
+    .btn-copy-action svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+
+    /* Outbound Link Button (Open Flow) */
+    .btn-outbound-tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: white;
+      color: var(--teal);
+      border: 1.5px solid var(--meadow);
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      font-weight: 850;
+      margin-bottom: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(39, 102, 123, 0.06);
+    }
+    .btn-outbound-tool:active { background: var(--matcha-tint); }
+    .btn-outbound-tool svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+
+    /* Quick Trouble Toggle Link */
+    .quick-trouble-link {
+      display: block;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--teal);
+      text-decoration: underline;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    /* Floating Thumb Bottom Bar */
+    .deck-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1.5px solid rgba(160, 200, 120, 0.4);
+      padding: 10px 16px 14px;
+    }
+    .deck-bottom-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-deck-prev {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(160, 200, 120, 0.4);
+      background: #F9FCF3;
+      color: var(--teal);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-deck-prev:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .btn-deck-prev svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+
+    .btn-deck-next {
+      flex: 1;
+      height: 48px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--teal);
+      color: white;
+      font-size: 14.5px;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(39, 102, 123, 0.3);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-deck-next:active {
+      transform: scale(0.98);
+      background: var(--teal-dark);
+    }
+
+    /* Card 5: Achievement & Celebration Special Effects */
+    .achievement-card-wrap {
+      text-align: center;
+      position: relative;
+    }
+    .achievement-medal-box {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #EBF5C8, #DDEB9D);
+      border: 2px solid var(--meadow);
+      display: grid;
+      place-items: center;
+      color: var(--teal);
+      box-shadow: 0 8px 24px rgba(39, 102, 123, 0.16);
+    }
+    .mission-card.active .achievement-medal-box {
+      animation: medalBounceIn 0.65s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes medalBounceIn {
+      0% {
+        transform: scale(0) rotate(-20deg);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.22) rotate(4deg);
+      }
+      80% {
+        transform: scale(0.94) rotate(-2deg);
+      }
+      100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+      }
+    }
+    .achievement-medal-box svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 2.2;
+    }
+
+    .completion-banner {
+      background: linear-gradient(135deg, #F3F8E9, #E4F2CC);
+      border: 1.5px solid var(--meadow);
+      border-radius: 20px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .completion-banner h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 850;
+      color: var(--teal);
+    }
+    .completion-banner p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #264536;
+      line-height: 1.5;
+    }
+
+    .check-list-final {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .check-item-final {
+      background: #F9FCF3;
+      border: 1.5px solid rgba(160, 200, 120, 0.4);
+      border-radius: 14px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .check-item-final input {
+      accent-color: var(--teal);
+      width: 17px;
+      height: 17px;
+    }
+
+    /* KUIS INTERAKTIF */
+    .quiz-box {
+      background: #F8FCF3;
+      border: 1.5px solid var(--meadow);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .quiz-title {
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.6px;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+    .quiz-q {
+      font-size: 14.5px;
+      font-weight: 800;
+      margin: 0 0 12px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      gap: 8px;
+    }
+    .quiz-btn {
+      position: relative;
+      text-align: left;
+      background: white;
+      border: 1.5px solid rgba(160, 200, 120, 0.45);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .quiz-btn:active {
+      transform: scale(0.99);
+    }
+    .quiz-btn .quiz-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--meadow);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.2s;
+    }
+
+    /* Kuis Benar & Salah */
+    .quiz-btn.quiz-correct {
+      border-color: var(--teal) !important;
+      background: #EBF5C8 !important;
+      color: var(--teal) !important;
+      font-weight: 800;
+      animation: animPopSuccess 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    .quiz-btn.quiz-correct .quiz-indicator {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+    @keyframes animPopSuccess {
+      0% { transform: scale(0.97); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .quiz-btn.quiz-wrong {
+      border-color: #D9534F !important;
+      background: #FDF2F1 !important;
+      color: #83201D !important;
+      animation: animShakeError 0.4s ease-in-out forwards;
+    }
+    .quiz-btn.quiz-wrong .quiz-indicator {
+      background: #D9534F;
+      border-color: #D9534F;
+      color: white;
+    }
+    @keyframes animShakeError {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .quiz-msg {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.45;
+      display: none;
+    }
+    .quiz-msg.ok {
+      background: #EBF5C8;
+      color: var(--teal);
+      border: 1px solid var(--meadow);
+    }
+    .quiz-msg.no {
+      background: #FBEEE8;
+      color: #922;
+      border: 1px solid #ECC9C3;
+    }
+
+    /* Next Day Card Preview */
+    .next-day-card {
+      border: 1.5px solid var(--meadow);
+      background: #F5F9EC;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .next-day-card small {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 850;
+      color: var(--teal);
+      letter-spacing: 0.5px;
+    }
+    .next-day-card strong {
+      display: block;
+      font-size: 15.5px;
+      color: var(--ink);
+      margin: 3px 0 5px;
+    }
+    .next-day-card p {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* Bottom Sheet / Help Center */
+    .help-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 39, 32, 0.45);
+      z-index: 100;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      backdrop-filter: blur(4px);
+    }
+    .help-drawer-backdrop.open {
+      display: block;
+      opacity: 1;
+    }
+    .help-drawer-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 26px 26px 0 0;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 22px 20px 32px;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .help-drawer-backdrop.open .help-drawer-sheet {
+      transform: translateY(0);
+    }
+    .help-drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #D8DED8;
+      border-radius: 99px;
+      margin: 0 auto 16px;
+    }
+    .help-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .help-drawer-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--teal);
+    }
+    .help-drawer-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 0;
+      background: #EDF1EE;
+      color: var(--ink);
+      font-size: 16px;
+      display: grid;
+      place-items: center;
+    }
+    .faq-item {
+      border: 1px solid rgba(160, 200, 120, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #F9FCF3;
+    }
+    .faq-item strong {
+      display: block;
+      font-size: 13.5px;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+    .faq-item p {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .btn-wa-sheet {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #25D366;
+      color: #0B3E1C;
+      font-weight: 850;
+      font-size: 14px;
+      padding: 13px;
+      border-radius: 999px;
+      margin-top: 14px;
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: #102720;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- CANVAS CELEBRATION EFFECT (DAY 1 FINISH) -->
+<canvas id="celebrationCanvas" class="celebration-canvas"></canvas>
+
+<!-- FLOATING SWIPE GESTURE ONBOARDING PILL -->
+<div class="swipe-hint-pill" id="swipeHintPill">
+  <svg viewBox="0 0 24 24"><path d="M17 8l4 4-4 4"/><path d="M7 8l-4 4 4 4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+  <span>Bisa digeser pakai jempol</span>
+</div>
+
+<!-- TOP NAVIGATION -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="dashboard.html" class="btn-top-back">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top-help" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Pusat Bantuan</span>
+    </button>
+  </div>
+</header>
+
+<!-- PROGRESS BAR SEGMENTS (PALETTE C) -->
+<div class="deck-progress-wrap">
+  <div class="deck-segments" id="deckSegments">
+    <div class="deck-seg active" data-index="0"></div>
+    <div class="deck-seg" data-index="1"></div>
+    <div class="deck-seg" data-index="2"></div>
+    <div class="deck-seg" data-index="3"></div>
+    <div class="deck-seg" data-index="4"></div>
+    <div class="deck-seg" data-index="5"></div>
+  </div>
+  <div class="deck-meta-bar">
+    <span id="deckStepTitle">Target & Gambaran Hasil</span>
+    <span id="deckStepNum">Tahap 1 dari 6</span>
+  </div>
+</div>
+
+<!-- DECK CARDS CONTAINER -->
+<main class="deck-container" id="deckViewport">
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 0: TARGET & GAMBARAN HASIL (WITH INITIAL PEEK NUDGE) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card active peek-nudge" id="card-0">
+    <span class="card-badge">[ Target Day 1 ]</span>
+    <h1 class="card-title">Membuat Gambar Kucing Pertama di HP</h1>
+    <p class="card-desc">Tidak perlu bakat menggambar atau mengerti teknis komputer. Dalam 10 menit, gambar kucing lucu ini bakal tersimpan di galeri HP Anda.</p>
+
+    <div class="target-preview-box">
+      <div class="target-preview-img-wrap">
+        <div class="cat-illustration-art">
+          <svg class="cat-silhouette" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          <strong style="color:var(--teal);font-size:14px;margin-bottom:4px">Kucing Oren di Taman</strong>
+          <small style="color:#2D5A46;font-size:11px">Gaya Animasi 3D Lembut</small>
+        </div>
+        <div class="target-preview-badge">Format Tegak 9:16 (Layar HP)</div>
+      </div>
+      <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.9)">Inilah gambar yang akan Anda hasilkan dari instruksi sederhana hari ini.</p>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">✓</span>
+        <div><strong>Durasi Latihan:</strong> Cukup 10–15 menit sambil santai.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">✓</span>
+        <div><strong>Gratis:</strong> Menggunakan akun Google biasa di Google Flow.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 1: MISI 1 (MASUK KE GOOGLE FLOW) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-1">
+    <span class="card-badge">[ Misi 1 dari 4 ]</span>
+    <h2 class="card-title">Masuk ke Google Flow</h2>
+    <p class="card-desc">Google Flow adalah studio tempat kita memesan gambar ke AI. Tonton video 45 detik ini, lalu buka situs Flow di tab baru.</p>
+
+    <!-- Video Step 1 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/ahtYHSTSNeM?rel=0&playsinline=1" title="Misi 1: Masuk Flow" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Tekan tombol <strong>Buka Google Flow</strong> di bawah.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Masuk menggunakan akun Google yang ada di HP Anda.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Ketuk tombol <strong>New project</strong> untuk membuka kanvas kerja.</div>
+      </div>
+    </div>
+
+    <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener noreferrer" class="btn-outbound-tool">
+      <span>Buka Google Flow di Tab Baru</span>
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Bingung atau mentok saat masuk? Tekan di sini</span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 2: MISI 2 (PESAN GAMBAR KUCING) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-2">
+    <span class="card-badge">[ Misi 2 dari 4 ]</span>
+    <h2 class="card-title">Pesan Gambar Kucing Pertama</h2>
+    <p class="card-desc">Salin kalimat perintah di bawah, lalu tempelkan (*paste*) di kolom teks Google Flow Anda.</p>
+
+    <!-- Video Step 2 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/gUmTEnx0hOg?rel=0&playsinline=1" title="Misi 2: Bikin Gambar Kucing" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <!-- 1-Click Copy Box (Palette C) -->
+    <div class="prompt-copy-card">
+      <div class="prompt-copy-header">
+        <small>[ MANTRA PERINTAH KUCING ]</small>
+        <span style="font-size:11px;color:var(--muted)">1-Klik Salin</span>
+      </div>
+      <div class="prompt-copy-text" id="promptTextCat">Seekor kucing oren duduk santai di taman kecil yang penuh bunga warna-warni. Suasana cerah dan hangat, format 9:16.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyCat" onclick="copyPromptText('promptTextCat', 'btnCopyCat')">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Mantra Perintah</span>
+      </button>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Buka tab Google Flow Anda, tahan layar di kolom teks, lalu pilih <strong>Tempel / Paste</strong>.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Pastikan rasio ukuran memilih <strong>9:16</strong> (layar tegak).</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Tekan tombol panah / <strong>Generate</strong> dan tunggu 10 detik.</div>
+      </div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Kucingnya aneh atau belum mirip? Buka bantuan</span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 3: MISI 3 (SENTUHAN AJAIB / UBAH WARNA) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-3">
+    <span class="card-badge">[ Misi 3 dari 4 ]</span>
+    <h2 class="card-title">Sentuhan Ajaib: Ubah Warna</h2>
+    <p class="card-desc">AI bisa merevisi gambar sesuai kata-kata kita. Mari coba ubah kucing oren tadi menjadi abu-abu.</p>
+
+    <!-- Video Step 3 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/rfBNapDZ3RE?rel=0&playsinline=1" title="Misi 3: Edit Gambar" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="prompt-copy-card">
+      <div class="prompt-copy-header">
+        <small>[ MANTRA PERUBAHAN WARNA ]</small>
+        <span style="font-size:11px;color:var(--muted)">1-Klik Salin</span>
+      </div>
+      <div class="prompt-copy-text" id="promptTextEdit">Ubah kucing jadi abu-abu.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyEdit" onclick="copyPromptText('promptTextEdit', 'btnCopyEdit')">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Perintah Ubah</span>
+      </button>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Ketuk gambar kucing yang baru jadi di layar Flow Anda.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Ketuk kolom perubahan (*What do you want to change?*).</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Tempelkan kalimat di atas lalu tekan tombol kirim.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 4: MISI 4 (SIMPAN KE HP) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-4">
+    <span class="card-badge">[ Misi 4 dari 4 ]</span>
+    <h2 class="card-title">Simpan Karya ke Galeri HP</h2>
+    <p class="card-desc">Gambar ini adalah modal utama yang akan kita gerakkan menjadi video di hari-hari berikutnya.</p>
+
+    <!-- Video Step 4 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/wdUPxm_5zak?rel=0&playsinline=1" title="Misi 4: Download Gambar" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Ketuk ikon titik tiga di pojok gambar hasil Anda.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Pilih menu <strong>Download</strong> atau <strong>Unduh</strong>.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Buka Galeri atau folder Download HP Anda untuk memastikan gambarnya sudah tersimpan.</div>
+      </div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Tidak menemukan tombol download? Buka bantuan</span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 5: SELEBRASI & TIKET DAY 2 (ACHIEVEMENT CELEBRATION) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-5">
+    <div class="achievement-card-wrap">
+      
+      <!-- Medal Achievement Bouncing In -->
+      <div class="achievement-medal-box">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="6"/>
+          <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+      </div>
+
+      <div class="completion-banner">
+        <span class="card-badge" style="background:#DDEB9D;color:#174554">[ Misi Day 1 Tuntas ]</span>
+        <h3>Selamat! Gambar Pertama Selesai</h3>
+        <p>Ibu/Kakak sudah membuktikan bahwa AI itu bisa dipelajari dengan mudah langsung lewat HP.</p>
+      </div>
+    </div>
+
+    <!-- Cek Mandiri Interaktif -->
+    <div class="check-list-final">
+      <label class="check-item-final">
+        <input type="checkbox" checked disabled>
+        <span>[✓] Berhasil masuk ke Google Flow</span>
+      </label>
+      <label class="check-item-final">
+        <input type="checkbox" checked disabled>
+        <span>[✓] Berhasil membuat dan mengedit gambar kucing</span>
+      </label>
+      <label class="check-item-final">
+        <input type="checkbox" checked disabled>
+        <span>[✓] Gambar kucing sudah aman di Galeri HP</span>
+      </label>
+    </div>
+
+    <!-- Kuis Refleksi Santai dengan Animasi Getar & Pop -->
+    <div class="quiz-box">
+      <div class="quiz-title">[ KUIS REFLEKSI DAY 1 ]</div>
+      <p class="quiz-q">Kenapa kita memilih ukuran rasio 9:16 untuk animasi kita?</p>
+      
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, true, 'Tepat sekali! Ukuran tegak 9:16 adalah standar paling pas untuk layar HP, Instagram Reels, dan TikTok.')">
+          <span class="quiz-indicator"></span>
+          <span>A. Supaya pas dan penuh di layar HP & Reels/TikTok</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, false, 'Kurang tepat. Ukuran rasio menentukan bentuk layar (berdiri atau mendatar), bukan ukuran kuota internet.')">
+          <span class="quiz-indicator"></span>
+          <span>B. Supaya kuota internet lebih hemat saat download</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, false, 'Kurang tepat. Warna gambar ditentukan oleh kata-kata prompt, bukan dari ukuran rasio layar.')">
+          <span class="quiz-indicator"></span>
+          <span>C. Supaya warnanya otomatis jadi tajam</span>
+        </button>
+      </div>
+
+      <div class="quiz-msg" id="quizFeedbackDeck"></div>
+    </div>
+
+    <!-- Preview Hari Esok -->
+    <div class="next-day-card">
+      <small>[ BESOK DI DAY 2 ]</small>
+      <strong>Membuat Karakter Konsisten (Character Sheet)</strong>
+      <p>Kita akan membuat tokoh orang/anak yang wajah dan bajunya tetap sama saat dilihat dari depan, samping, dan serong.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- FLOATING THUMB BOTTOM BAR -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Langkah Sebelumnya">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Mulai Misi 1 →</span>
+    </button>
+  </div>
+</footer>
+
+<!-- BOTTOM SHEET / HELP CENTER -->
+<div class="help-drawer-backdrop" id="helpDrawer" onclick="closeHelpDrawerOnBg(event)">
+  <div class="help-drawer-sheet">
+    <div class="help-drawer-handle"></div>
+    <div class="help-drawer-header">
+      <h3>Pusat Bantuan Praktik</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()">✕</button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Kucingnya kok aneh atau belum mirip?</strong>
+      <p>AI kadang butuh kesempatan kedua. Tekan tombol <em>Generate</em> sekali lagi di Flow untuk mendapatkan variasi baru yang lebih rapi.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Gambarnya gepeng atau melebar?</strong>
+      <p>Pastikan sebelum membuat gambar, Anda sudah memilih menu ukuran/rasio <strong>9:16</strong> (tegak).</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Masih bingung atau merasa mentok?</strong>
+      <p>Jangan ragu bertanya, admin kami siap mendampingi Anda sampai berhasil.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Admin%20Haniyo%2C%20saya%20sedang%20belajar%20Day%201%20dan%20butuh%20bantuan%20praktik" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <span>Tanya Admin via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<!-- TOAST PILL -->
+<div class="toast-pill" id="toastPill"></div>
+
+<script src="lms-db.js"></script>
+<script>
+  let currentCardIndex = 0;
+  let previousCardIndex = 0;
+  const totalCards = 6;
+  const cards = [
+    document.getElementById('card-0'),
+    document.getElementById('card-1'),
+    document.getElementById('card-2'),
+    document.getElementById('card-3'),
+    document.getElementById('card-4'),
+    document.getElementById('card-5')
+  ];
+  const segments = document.querySelectorAll('.deck-seg');
+  const btnPrev = document.getElementById('btnDeckPrev');
+  const btnNext = document.getElementById('btnDeckNext');
+  const btnNextLabel = document.getElementById('btnNextLabel');
+  const stepTitle = document.getElementById('deckStepTitle');
+  const stepNum = document.getElementById('deckStepNum');
+  const swipeHint = document.getElementById('swipeHintPill');
+
+  const metaTitles = [
+    "Target & Gambaran Hasil",
+    "Misi 1 · Masuk Google Flow",
+    "Misi 2 · Buat Gambar Kucing",
+    "Misi 3 · Sentuhan Ubah Warna",
+    "Misi 4 · Simpan ke Galeri HP",
+    "Tuntas · Tiket Menuju Day 2"
+  ];
+
+  const nextLabels = [
+    "Mulai Misi 1 →",
+    "Sudah Masuk → Lanjut ke Misi 2",
+    "Kucing Sudah Jadi → Misi 3",
+    "Warna Berubah → Misi 4",
+    "Gambar Tersimpan → Lihat Hasil",
+    "Buka Modul Day 2 →"
+  ];
+
+  // Synthesized audio feedback (Zero external assets)
+  function playTone(type) {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      if (type === 'success') {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.3);
+        });
+      } else if (type === 'error') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(130, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      }
+    } catch(e){}
+  }
+
+  function updateDeckUI(direction = 1) {
+    // Hide swipe hint if user interacts
+    if (swipeHint) swipeHint.style.display = 'none';
+
+    cards.forEach((card, idx) => {
+      card.classList.remove('active', 'slide-in-right', 'slide-in-left', 'peek-nudge');
+      if (idx === currentCardIndex) {
+        card.classList.add('active');
+        if (direction === 1) {
+          card.classList.add('slide-in-right');
+        } else if (direction === -1) {
+          card.classList.add('slide-in-left');
+        }
+      }
+    });
+
+    // Update progress segments
+    segments.forEach((seg, idx) => {
+      seg.classList.remove('active', 'done');
+      if (idx < currentCardIndex) {
+        seg.classList.add('done');
+      } else if (idx === currentCardIndex) {
+        seg.classList.add('active');
+      }
+    });
+
+    // Update Titles
+    stepTitle.textContent = metaTitles[currentCardIndex];
+    stepNum.textContent = `Tahap ${currentCardIndex + 1} dari ${totalCards}`;
+    btnNextLabel.textContent = nextLabels[currentCardIndex];
+
+    // Prev button state
+    btnPrev.disabled = currentCardIndex === 0;
+
+    // Special Achievement Celebration on Card 5
+    if (currentCardIndex === 5) {
+      triggerConfetti();
+      playTone('success');
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    }
+
+    // Persist progress to LMS LocalStorage for Day 1
+    if (currentCardIndex >= 1) {
+      try {
+        const stepFlags = [
+          currentCardIndex >= 2,
+          currentCardIndex >= 3,
+          currentCardIndex >= 4,
+          currentCardIndex >= 5
+        ];
+        localStorage.setItem('asdos_day1_preview_steps_v2', JSON.stringify(stepFlags));
+      } catch(e){}
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navigateDeck(direction) {
+    if (direction === 1 && currentCardIndex === totalCards - 1) {
+      window.location.href = 'day2-preview.html';
+      return;
+    }
+
+    const nextIndex = currentCardIndex + direction;
+    if (nextIndex >= 0 && nextIndex < totalCards) {
+      previousCardIndex = currentCardIndex;
+      currentCardIndex = nextIndex;
+      updateDeckUI(direction);
+    }
+  }
+
+  // 1-Click Copy Prompt
+  function copyPromptText(elementId, buttonId) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const text = el.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById(buttonId);
+      if (btn) {
+        const originalHTML = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = `<span>✓ Mantra Tersalin! Tinggal Tempel di Flow</span>`;
+        showToast("Tersalin ke papan klip! Buka Flow lalu tahan layar & pilih Tempel.");
+        playTone('success');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = originalHTML;
+        }, 3500);
+      }
+    }).catch(() => {
+      showToast("Gagal menyalin otomatis. Silakan salin manual.");
+    });
+  }
+
+  // Toast Pill Helper
+  function showToast(msg) {
+    const toast = document.getElementById('toastPill');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
+  }
+
+  // KUIS INTERAKTIF: GETAR SALAH & POP BENAR
+  function handleQuizAnswer(btn, isCorrect, explanation) {
+    const msg = document.getElementById('quizFeedbackDeck');
+    const allBtns = btn.parentElement.querySelectorAll('.quiz-btn');
+
+    // Reset all buttons
+    allBtns.forEach(b => {
+      b.classList.remove('quiz-correct', 'quiz-wrong', 'selected');
+      const ind = b.querySelector('.quiz-indicator');
+      if (ind) ind.textContent = '';
+      b.style.pointerEvents = 'none'; // Lock temporarily
+    });
+
+    btn.classList.add('selected');
+    const indicator = btn.querySelector('.quiz-indicator');
+
+    if (isCorrect) {
+      // BENAR: Animasi Pop + Glow Hijau + Suara Sukses
+      btn.classList.add('quiz-correct');
+      if (indicator) indicator.textContent = '✓';
+      msg.className = 'quiz-msg ok';
+      msg.innerHTML = `<strong>Tepat Sekali!</strong><br>${explanation}`;
+      playTone('success');
+      if (navigator.vibrate) navigator.vibrate([80]);
+    } else {
+      // SALAH: Animasi Getar (Shake Error) + Suara Bass Lembut
+      btn.classList.add('quiz-wrong');
+      if (indicator) indicator.textContent = '✕';
+      msg.className = 'quiz-msg no';
+      msg.innerHTML = `<strong>Yuk Coba Lagi:</strong><br>${explanation}`;
+      playTone('error');
+      if (navigator.vibrate) navigator.vibrate([40, 40, 40]);
+      
+      // Allow re-trying after shake finishes
+      setTimeout(() => {
+        allBtns.forEach(b => b.style.pointerEvents = 'auto');
+      }, 600);
+    }
+
+    msg.style.display = 'block';
+  }
+
+  // CONFETTI CANVAS GENERATOR (Langkah Akhir)
+  function triggerConfetti() {
+    const canvas = document.getElementById('celebrationCanvas');
+    if (!canvas) return;
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#27667B', '#A0C878', '#DDEB9D', '#174554', '#EBF5C8'];
+    const particles = [];
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * (canvas.height * 0.4),
+        r: Math.random() * 6 + 3,
+        d: Math.random() * 50,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.floor(Math.random() * 10) - 10,
+        tiltAngleIncremental: (Math.random() * 0.07) + 0.05,
+        tiltAngle: 0
+      });
+    }
+
+    let animationId;
+    let frames = 0;
+
+    function render() {
+      frames++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.tiltAngle += p.tiltAngleIncremental;
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+        p.tilt = Math.sin(p.tiltAngle - (frames / 3)) * 15;
+
+        ctx.beginPath();
+        ctx.lineWidth = p.r;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+        ctx.stroke();
+      });
+
+      if (frames < 140) {
+        animationId = requestAnimationFrame(render);
+      } else {
+        cancelAnimationFrame(animationId);
+        canvas.style.display = 'none';
+      }
+    }
+    render();
+  }
+
+  // Help Drawer Handlers
+  function openHelpDrawer() {
+    const drawer = document.getElementById('helpDrawer');
+    if (drawer) drawer.classList.add('open');
+  }
+  function closeHelpDrawer() {
+    const drawer = document.getElementById('helpDrawer');
+    if (drawer) drawer.classList.remove('open');
+  }
+  function closeHelpDrawerOnBg(e) {
+    if (e.target.id === 'helpDrawer') {
+      closeHelpDrawer();
+    }
+  }
+
+  // Touch Swipe Gesture for Cards
+  (() => {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+      if (swipeHint) swipeHint.style.display = 'none';
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 75) {
+        if (diff < 0) {
+          navigateDeck(1);
+        } else {
+          navigateDeck(-1);
+        }
+      }
+    }
+  })();
+
+  // Remove peek nudge class after initial animation completes
+  setTimeout(() => {
+    const c0 = document.getElementById('card-0');
+    if (c0) c0.classList.remove('peek-nudge');
+  }, 2200);
+
+  // Initialize
+  updateDeckUI(0);
+</script>
+</body>
+</html>

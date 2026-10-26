@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <title>Day 5 · Audio, Narasi, dan Dialog Video AI - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root{--ink:#172b25;--muted:#68766f;--green:#246b52;--bg:#f7f8f4;--line:#e5eae4}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+    button{font:inherit;cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1040px;padding:0 22px;margin:auto}
+    .top{position:sticky;top:0;z-index:10;background:#fffffff2;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+    .topin{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{font-weight:850;display:flex;align-items:center;gap:9px;white-space:nowrap}
+    .mark{width:34px;height:34px;border-radius:10px;background:var(--green);color:white;display:grid;place-items:center}
+    .brand small{display:block;font-size:10px;color:var(--muted);font-weight:600}
+    .sticky-progress{width:min(400px,46vw);display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center}
+    .sticky-progress strong{font-size:12px}
+    .sticky-progress span{font-size:11px;color:var(--muted)}
+    .track{grid-column:1/-1;height:5px;background:#e9eee8;border-radius:99px;overflow:hidden}
+    .fill{height:100%;width:0;background:#78aa68;transition:width .2s}
+    .back{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+    .page{padding:28px 0 60px}
+    .crumb{font-size:12px;color:var(--muted);margin-bottom:12px}
+    .hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end}
+    .eyebrow,.step-label{font-size:11px;letter-spacing:.8px;color:var(--green);font-weight:850}
+    .hero h1{font-size:clamp(32px,5vw,45px);letter-spacing:-1.4px;line-height:1.1;margin:6px 0 9px}
+    .hero p{margin:0;color:var(--muted);max-width:650px}
+    .goal{background:#e8f2e9;border:1px solid #dae8db;border-radius:15px;padding:13px 15px;max-width:230px}
+    .goal small{display:block;color:var(--muted);font-size:10px}
+    .goal strong{font-size:13px}
+    .pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+    .pill{font-size:11px;font-weight:700;background:white;border:1px solid var(--line);border-radius:99px;padding:5px 9px}
+    .card{background:white;border:1px solid var(--line);border-radius:17px;padding:16px;margin-top:20px}
+    .card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}
+    .card-head h2{font-size:18px;margin:0}
+    .card-head p{font-size:12px;color:var(--muted);margin:2px 0 0}
+    .steps-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:25px 0 12px}
+    .steps-head h2{font-size:23px;margin:0}
+    .steps-head p{font-size:13px;color:var(--muted);margin:3px 0 0}
+    .step-list{display:grid;gap:10px}
+    .lesson-step{background:white;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .lesson-step[open]{box-shadow:0 6px 22px #173d2809}
+    .lesson-step summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:15px 17px}
+    .lesson-step summary::-webkit-details-marker{display:none}
+    .step-number{width:31px;height:31px;flex:none;border-radius:50%;background:#edf4eb;color:var(--green);display:grid;place-items:center;font-size:12px;font-weight:850}
+    .lesson-step.done .step-number{background:#dcefd9}
+    .summary-text{min-width:0;flex:1}
+    .summary-text strong{display:block;font-size:14px}
+    .summary-text small{font-size:11px;color:var(--muted)}
+    .step-status{font-size:11px;font-weight:750;color:#78847c;white-space:nowrap}
+    .lesson-step.done .step-status{color:var(--green)}
+    .chevron{color:#76847a;transition:transform .2s}
+    .lesson-step[open] .chevron{transform:rotate(180deg)}
+    .step-content{border-top:1px solid #edf0ec;padding:16px;display:grid;grid-template-columns:235px 1fr;gap:17px}
+    .video-step{aspect-ratio:16/10;border-radius:12px;background:linear-gradient(145deg,#e5efe4,#c6dcc9);display:grid;place-items:center;text-align:center;color:var(--green)}
+    .step-copy h3{font-size:18px;margin:0 0 7px}
+    .step-copy p{font-size:13px;color:#53635a;margin:0 0 9px}
+    .instructions{background:#f5f7f3;border-radius:10px;padding:10px 12px;font-size:13px}
+    .instructions ol, .instructions ul{margin:0;padding-left:20px}
+    .instructions li{padding:3px 0}
+    .callout{background:#f1f6ed;border-left:3px solid #83aa6d;border-radius:8px;padding:10px 12px;font-size:12px;color:#354d3c;margin:10px 0}
+    .check-confirm{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:13px;font-weight:700;cursor:pointer}
+    .continue-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+    .continue{background:var(--green);color:white;border:0;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:800}
+    .continue:disabled{background:#b8c7be;cursor:not-allowed}
+    .continue-help{margin:0;font-size:11px;color:var(--muted)}
+    .device-switch.switch{background:#e9eee8;padding:4px;border-radius:10px;gap:4px;margin:0;display:inline-flex}
+    .device-switch.switch button{border:0;background:transparent;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:750;color:var(--muted)}
+    .device-switch.switch button.active{background:white;color:var(--green)}
+    .device-lock{width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px}
+    .bottom-card{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:24px}
+    .bottom-card h2{margin:0 0 8px;font-size:20px}
+    .bottom-card p{margin:0 0 14px;font-size:14px;color:var(--muted)}
+    .day5-method2{background:#fafbfa;border:1.5px dashed #dbe4dc}
+    .method2-heading{display:flex;align-items:center;gap:12px}
+    .method2-heading h2{font-size:17px;margin:0}
+    .next{display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid #d5e2d4;padding-top:14px;margin-top:14px}
+    .next small{display:block;font-size:10px;color:var(--muted);font-weight:700}
+    .next strong{display:block;font-size:15px}
+    .day5-finish-button{background:var(--green);color:white;border:0;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:800}
+    .day5-finish-button:disabled{background:#b8c7be;cursor:not-allowed}
+    .help{background:#edf5ee;border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px}
+    .help strong{display:block;font-size:14px;color:var(--green)}
+    .help p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+    .wa-help-button{background:white;color:var(--green);border:1px solid #c7dec9;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;white-space:nowrap}
+    .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:35px}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#172b25;color:white;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;opacity:0;pointer-events:none;transition:opacity .2s}
+    .toast.show{opacity:1}
+    .laptop{display:none}
+
+    /* Lock icons */
+    .step-status{display:inline-flex;align-items:center;justify-content:center;color:#266a53}
+    .step-status[data-lock-state="locked"]{color:#707872}
+    .step-status .status-lock{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .lesson-step.locked>summary{cursor:not-allowed}
+
+    /* Bridging & Glossary Cards */
+    .bridging-card{background:#fdfcf7;border:1px solid #ede8d5;border-radius:14px;padding:14px 16px;margin-top:16px}
+    .b-badge{font-size:11px;font-weight:850;color:#856404;letter-spacing:.8px;margin-bottom:6px}
+    .bridging-card p{margin:0;font-size:13px;color:#554823;line-height:1.55}
+    .glossary-card{background:white;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
+    .g-head{font-size:12px;font-weight:850;color:var(--green);margin-bottom:8px}
+    .g-items{display:grid;gap:8px}
+    .g-item{font-size:12px;color:#45554d;background:#f7f9f6;padding:8px 12px;border-radius:8px}
+
+    /* Self-check card */
+    .self-check-card{background:#edf5ee;border:1px solid #c8dfcb;border-radius:12px;padding:14px 16px;margin:14px 0}
+    .self-check-card strong{display:block;font-size:13px;color:var(--green);margin-bottom:8px}
+    .self-check-card ul{margin:0;padding-left:18px}
+    .self-check-card li{font-size:12px;color:#274332;margin-bottom:4px}
+
+    /* Quiz card */
+    .quiz-card{background:white;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:22px}
+    .quiz-badge{font-size:11px;font-weight:850;color:var(--green);letter-spacing:.8px;margin-bottom:8px}
+    .quiz-question{font-weight:750;font-size:14px;margin:0 0 12px}
+    .quiz-options{display:grid;gap:8px}
+    .quiz-opt{text-align:left;background:#f7f9f6;border:1px solid var(--line);padding:10px 14px;border-radius:10px;font-size:13px;transition:.2s}
+    .quiz-opt:hover{border-color:var(--green);background:#edf5ee}
+    .quiz-feedback{margin-top:10px;padding:10px;border-radius:8px;font-size:12px;font-weight:700}
+    .quiz-feedback.correct{background:#e2f3e5;color:#185a29}
+    .quiz-feedback.wrong{background:#fbeae8;color:#922}
+
+    @media(max-width:740px){
+      .step-content{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr}
+      .goal{max-width:none}
+      .next{flex-direction:column;align-items:stretch}
+      .day5-finish-button{width:100%;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topin">
+    <a class="brand" href="dashboard.html">
+      <span class="mark">A</span>
+      <span>asdos digital<small>kelas praktik animasi AI</small></span>
+    </a>
+    <div class="sticky-progress">
+      <strong>Day 5 · Voice Over & Audio AI</strong>
+      <span id="progressText">0/1 langkah</span>
+      <div class="track"><div class="fill" id="progressFill"></div></div>
+    </div>
+    <a href="dashboard.html" class="back">← Ruang Belajar</a>
+  </div>
+</header>
+
+<main class="wrap page">
+  <div class="crumb">Tantangan 7 Hari &gt; <strong>Day 5</strong></div>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">DAY 5 · AUDIO, NARASI, DAN DIALOG VIDEO AI</div>
+      <h1>Buat suara narasi AI yang hidup</h1>
+      <p>Ubah naskah teks fakta unik dari Day 4 menjadi suara narasi manusia yang jernih menggunakan Google AI Studio Generate Speech.</p>
+      <div class="pills">
+        <span class="pill">Google AI Studio Generate Speech</span>
+        <span class="pill">Format Audio WAV/MP3</span>
+        <span class="pill">Gratis Akun Google</span>
+      </div>
+    </div>
+    <div class="goal">
+      <small>HASIL AKHIR HARI INI</small>
+      <strong>File Voice Over AI tersimpan di HP</strong>
+    </div>
+  </section>
+
+  <!-- JEMBATAN KEMARIN DAY 5 -->
+  <div class="bridging-card">
+    <div class="b-badge">[JEMBATAN KEMARIN]</div>
+    <p><strong>Dari Video Bisu (Day 4) ke Suara Narator AI (Day 5):</strong> Kemarin kamu sudah punya 3 klip video fakta unik. Hari ini kita beri suara narasi profesional dari naskah Day 4, sehingga videomu siap disatukan di Canva pada Day 6!</p>
+  </div>
+
+  <!-- KAMUS SANTAI DAY 5 -->
+  <div class="glossary-card">
+    <div class="g-head">Kamus Santai Day 5</div>
+    <div class="g-items">
+      <div class="g-item"><strong>Voice Over AI:</strong> Teknologi kecerdasan buatan yang mampu membacakan teks naskah dengan intonasi, nafas, dan emosi alami layaknya pengisi suara manusia.</div>
+      <div class="g-item"><strong>Audio Sync:</strong> Menyelaraskan jeda narasi suara dengan perpindahan adegan visual video di timeline editing.</div>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Pengantar Day 5</h2>
+        <p>Google AI Studio menyediakan fitur speech generation dengan kualitas suara yang sangat alami dalam Bahasa Indonesia. Tonton video tutorial di bawah sambil mempraktikkan langkahnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="steps-head">
+    <div>
+      <h2>Yuk, praktik bareng</h2>
+      <p>Ikuti video dan langkah-langkah di bawah untuk membuat suara narasimu.</p>
+    </div>
+    <div class="device-switch switch">
+      <button type="button" class="active" data-device="phone">Saya pakai HP</button>
+      <span class="device-laptop-tooltip" title="Coming soon">
+        <button type="button" data-device="laptop" disabled aria-label="Saya pakai laptop - Coming soon">
+          <svg class="device-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+          <span>Saya pakai laptop</span>
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <section class="step-list" id="steps">
+
+    <!-- METODE 1 -->
+    <details class="lesson-step" open data-index="1">
+      <summary>
+        <span class="step-number">1</span>
+        <span class="summary-text">
+          <strong>Narasi menggunakan Voice Over AI</strong>
+          <small>Buat suara narasi dari teks naskah Day 4</small>
+        </span>
+        <span class="step-status">Belum</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="step-content">
+        <div class="video-step" style="aspect-ratio:9/16;width:min(100%,320px);margin-inline:auto;overflow:hidden">
+          <iframe src="https://www.youtube-nocookie.com/embed/1eTHJJNPeXs?rel=0&playsinline=1" title="Video tutorial Day 5 — Voice Over AI" style="display:block;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div class="step-copy">
+          <span class="step-label">METODE 1</span>
+          <h3>Buat dan simpan file Voice Over</h3>
+          <p>Ikuti video tutorial sambil mencoba langkah-langkah di bawah. Gunakan narasi dari Day 4 agar audionya bisa dipakai untuk video latihanmu.</p>
+          <div class="instructions phone">
+            <ol>
+              <li>Buka Google Chrome di HP. Buka tautan Google AI Studio: <a href="https://aistudio.google.com/generate-speech" target="_blank" rel="noopener" style="color:var(--green);text-decoration:underline">aistudio.google.com/generate-speech</a>.</li>
+              <li>Login dengan akun Google yang kamu pakai. Jika muncul persetujuan layanan, centang persetujuan lalu ketuk <strong>Continue</strong>.</li>
+              <li>Ketuk <strong>Create new dialog</strong>. Buka ChatGPT dan percakapan Day 4, lalu salin bagian <strong>Narasi Full</strong>.</li>
+              <li>Kembali ke Google AI Studio. Ketuk kolom dialog, lalu tempel naskah. Hapus label "Adegan 1", "Adegan 2", dan "Adegan 3" agar tidak ikut dibacakan.</li>
+              <li>Ketuk <strong>Speaker 1</strong>, lalu <strong>Current Voice</strong>. Pilih suara yang cocok (contoh: <strong>Leda</strong> atau <strong>Kore</strong> untuk suara perempuan, <strong>Algenib</strong> atau <strong>Fenrir</strong> untuk suara laki-laki).</li>
+              <li>Ketuk <strong>Run</strong> dan tunggu proses selesai. Putar audio untuk memeriksa hasilnya. Jika sudah cocok, ketuk ikon <strong>Download</strong> untuk menyimpan file audio ke HP.</li>
+            </ol>
+          </div>
+          <div class="instructions laptop">
+            <ol>
+              <li>Buka Google AI Studio melalui browser: <a href="https://aistudio.google.com/generate-speech" target="_blank" rel="noopener" style="color:var(--green);text-decoration:underline">aistudio.google.com/generate-speech</a>.</li>
+              <li>Login dengan akun Google kamu, lalu klik <strong>Continue</strong>.</li>
+              <li>Pilih <strong>Create new dialog</strong>. Salin bagian <strong>Narasi Full</strong> dari ChatGPT Day 4.</li>
+              <li>Tempel naskah ke kolom dialog Google AI Studio. Hapus label nomor adegan.</li>
+              <li>Pilih karakter suara yang kamu suka di <strong>Speaker 1</strong>.</li>
+              <li>Klik <strong>Run</strong>. Setelah selesai, dengarkan dan klik <strong>Download</strong> untuk menyimpan file audio.</li>
+            </ol>
+          </div>
+          
+          <div class="callout"><strong>Perlu diingat:</strong> Jika nama suara di contoh tidak tersedia, kamu bebas memilih suara lain yang terdengar jelas dan ramah di telinga.</div>
+
+          <!-- CEK MANDIRI KUALITAS DAY 5 -->
+          <div class="self-check-card">
+            <strong>Cek Kualitas Voice Over Day 5:</strong>
+            <ul>
+              <li>[✓] Apakah file suara sudah berhasil diunduh dan tersimpan di HP?</li>
+              <li>[✓] Apakah lafal kalimat terdengar jelas dan tidak ada kata yang terpotong?</li>
+              <li>[✓] Apakah intonasi suaranya cocok dengan suasana video fakta unikmu?</li>
+            </ul>
+          </div>
+
+          <label class="check-confirm">
+            <input type="checkbox" class="confirm">
+            <span>Saya sudah membuat dan menyimpan Voice Over AI.</span>
+          </label>
+          <div class="continue-row">
+            <button class="continue" disabled>Selesaikan Day 5 →</button>
+            <p class="continue-help" aria-live="polite">Tonton tutorial, buat Voice Over AI, lalu centang kotak ini untuk menyelesaikan langkah.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </section>
+
+  <!-- METODE 2 COMING SOON -->
+  <section class="bottom-card day5-method2">
+    <div class="method2-heading">
+      <span class="step-number" style="background:#e8ece9;color:var(--muted)">2</span>
+      <div>
+        <h2>Metode 2 · Narasi langsung pada video</h2>
+        <p style="margin:2px 0 0;font-size:12px;color:var(--muted)">Fitur audio terintegrasi langsung saat membuat video di Flow (Segera Hadir / Coming Soon)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KUIS REFLEKSI DAY 5 -->
+  <div class="quiz-card">
+    <div class="quiz-badge">KUIS REFLEKSI DAY 5</div>
+    <p class="quiz-question">Kenapa label teks seperti 'Adegan 1' atau 'Hook' perlu dihapus sebelum menekan tombol Run di Voice Over AI?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, true, 'Betul sekali! AI akan membacakan semua kata yang ada di dalam kolom dialog persis apa adanya.')">A. Supaya AI tidak ikut membaca kata 'Adegan 1' ke dalam suara narasi</button>
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, false, 'AI Speech generation tidak membatasi kuota berdasarkan kata label.')">B. Supaya kuota Google AI Studio tidak cepat habis</button>
+      <button type="button" class="quiz-opt" onclick="checkQuiz(this, false, 'Pilihan jenis suara diatur di menu Current Voice, bukan dari penghapusan kata.')">C. Supaya jenis suaranya otomatis berubah jadi laki-laki</button>
+    </div>
+    <div class="quiz-feedback" style="display:none"></div>
+  </div>
+
+  <section class="bottom-card finish day5-next">
+    <h2>Selesai Day 5</h2>
+    <p>Hebat! Kamu sekarang sudah punya bahan lengkap: 3 klip video dari Day 4 dan 1 file suara narasi dari Day 5. Besok di Day 6, kita akan menyatukan semuanya di Canva menjadi video final yang siap tayang!</p>
+    <div class="next">
+      <div>
+        <small>MATERI BERIKUTNYA</small>
+        <strong>Day 6 · Edit video di Canva</strong>
+      </div>
+      <button class="day5-finish-button" id="day5FinishButton" type="button" disabled onclick="window.location.href='day6-preview.html'">Lanjut ke Day 6 →</button>
+    </div>
+    <p class="continue-help" id="day5FinishHelp">Selesaikan tugas di atas dan centang kotaknya untuk membuka tombol ini.</p>
+  </section>
+
+  <section class="help">
+    <div>
+      <strong>Butuh bantuan?</strong>
+      <p>Hubungi admin jika ada kendala saat membuat Voice Over AI.</p>
+    </div>
+    <a class="wa-help-button" href="https://wa.me/6281289795589?text=Halo%20kak%2C%20aku%20sudah%20belajar%20sampai%20Day%205%2C%20bisa%20minta%20bantuannya%3F" target="_blank" rel="noopener noreferrer">Bantuan WhatsApp</a>
+  </section>
+
+  <div class="foot">Belajar pelan-pelan, berkarya dengan percaya diri. — Asdos Digital Academy</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+const day5Steps = [...document.querySelectorAll('.lesson-step')];
+let day5Done = [];
+try { day5Done = JSON.parse(localStorage.getItem('asdos_day5_audio_steps_v1') || '[]'); } catch(e){}
+
+function persistDay5() {
+  try { localStorage.setItem('asdos_day5_audio_steps_v1', JSON.stringify(day5Done)); } catch(e){}
+}
+
+function redrawDay5() {
+  const n = day5Done.filter(Boolean).length;
+  document.getElementById('progressText').textContent = n + '/1 langkah';
+  document.getElementById('progressFill').style.width = (n / 1 * 100) + '%';
+  const finish = document.getElementById('day5FinishButton');
+  if (finish) finish.disabled = n < 1;
+
+  day5Steps.forEach((s, i) => {
+    s.classList.toggle('done', !!day5Done[i]);
+    const status = s.querySelector('.step-status');
+    if (status) status.textContent = day5Done[i] ? 'Selesai' : 'Belum';
+  });
+}
+
+day5Steps.forEach((s, i) => {
+  const c = s.querySelector('.confirm');
+  const b = s.querySelector('.continue');
+  c.checked = !!day5Done[i];
+
+  const sync = () => {
+    b.disabled = !c.checked;
+    b.setAttribute('aria-disabled', String(b.disabled));
+  };
+  sync();
+
+  c.addEventListener('change', sync);
+  b.addEventListener('click', () => {
+    sync();
+    if (!c.checked) return;
+    day5Done[i] = true;
+    persistDay5();
+    redrawDay5();
+    window.showToast('Day 5 selesai. File Voice Over AI-mu siap dipakai di Canva.');
+  });
+});
+
+redrawDay5();
+
+// Device Switch
+document.querySelectorAll('[data-device]').forEach(b => b.addEventListener('click', () => {
+  const m = b.dataset.device;
+  document.querySelectorAll('[data-device]').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.phone').forEach(x => x.style.display = m === 'phone' ? 'block' : 'none');
+  document.querySelectorAll('.laptop').forEach(x => x.style.display = m === 'laptop' ? 'block' : 'none');
+}));
+
+// Lock SVG Observer
+(() => {
+  const openIcon = '<svg class="status-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="11" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 8.7-3.4"></path><path d="M17 7v1"></path></svg>';
+  const syncIcons = () => day5Steps.forEach((step, index) => {
+    const status = step.querySelector('.step-status');
+    if (!status) return;
+    const done = step.classList.contains('done');
+    status.innerHTML = openIcon;
+    status.title = done ? 'Selesai' : 'Terbuka';
+  });
+  syncIcons();
+})();
+</script>
+</body>
+</html>

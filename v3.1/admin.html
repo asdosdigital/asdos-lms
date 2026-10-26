@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Admin LMS — Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card-bg: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --shadow: 0 8px 24px rgba(80, 55, 30, 0.06);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .wrap { max-width: 1120px; margin: auto; padding: 0 20px; }
+
+    /* Admin Nav */
+    .admin-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--line);
+    }
+    .admin-nav-in {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 850;
+      font-size: 15px;
+      color: var(--brand-dark);
+      white-space: nowrap;
+    }
+    .admin-brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .admin-badge-role {
+      background: var(--sun);
+      color: #7A4B00;
+      border: 1px solid #E8CF6A;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .5px;
+    }
+
+    /* Tabs Bar */
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 0;
+      border-bottom: 1.5px solid var(--line);
+      background: var(--bg);
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+    .atab-btn {
+      padding: 10px 18px;
+      border: 1.5px solid var(--line);
+      background: #ffffff;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .atab-btn:hover {
+      background: var(--peach);
+      color: var(--brand-dark);
+      border-color: var(--peach-line);
+    }
+    .atab-btn.active {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+      box-shadow: 0 4px 12px rgba(31, 107, 122, 0.2);
+    }
+
+    /* Cards & Forms */
+    .panel-box {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    .panel-box h3 {
+      margin: 0 0 6px;
+      font-size: 18.5px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      letter-spacing: -.3px;
+    }
+    .panel-box p.pdesc {
+      margin: 0 0 18px;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #FDFBF7;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s ease, background .2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--brand);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(31, 107, 122, 0.12);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    /* Action Buttons */
+    .btn-save {
+      background: var(--brand);
+      color: #ffffff;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-size: 13.5px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s ease, transform .15s ease;
+      box-shadow: 0 4px 12px rgba(31, 107, 122, 0.2);
+    }
+    .btn-save:hover {
+      background: var(--brand-dark);
+      transform: translateY(-1px);
+    }
+    .btn-subtle {
+      background: var(--peach);
+      color: var(--ink);
+      border: 1.5px solid var(--peach-line);
+      border-radius: 12px;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    .btn-subtle:hover {
+      background: #FFDEC0;
+    }
+    .btn-del {
+      background: var(--danger-bg);
+      color: var(--danger-ink);
+      border: 1px solid #F8C2B8;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    .btn-del:hover {
+      background: #FBD4CC;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      margin-top: 14px;
+      background: #ffffff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    th {
+      background: #FAF4EA;
+      font-weight: 850;
+      color: var(--brand-dark);
+      font-size: 11px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:hover {
+      background: var(--leaf);
+    }
+
+    /* PIN Gate Overlay */
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 36, 32, 0.72);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .pin-box {
+      background: #ffffff;
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      padding: 32px 26px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(42, 36, 32, 0.2);
+    }
+    .pin-box h2 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .pin-box p {
+      color: var(--muted);
+      font-size: 13.5px;
+      margin: 0 0 18px;
+    }
+    .pin-input {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      background: #FDFBF7;
+      box-sizing: border-box;
+    }
+
+    .tab-section {
+      display: none;
+      padding: 24px 0 60px;
+    }
+    .tab-section.active {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .wrap { padding: 0 14px; }
+      .admin-nav-in { height: 58px; gap: 8px; }
+      .admin-brand { font-size: 13.5px; gap: 8px; }
+      .admin-brand img { width: 28px; height: 28px; }
+      .panel-box { padding: 18px 14px; }
+      .form-row { grid-template-columns: 1fr; }
+      .btn-save { width: 100%; justify-content: center; min-height: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PIN GATE PENGAMAN ADMIN -->
+<div id="adminPinGate" class="pin-overlay">
+  <div class="pin-box">
+    <div style="font-size:12px;font-weight:850;color:var(--brand);letter-spacing:.8px;margin-bottom:6px">[ KEAMANAN ADMIN ]</div>
+    <h2>Area Pengajar Asdos</h2>
+    <p>Masukkan sandi pengajar untuk mengakses manajemen siswa dan modul kelas.</p>
+    <input type="password" id="adminPinField" class="pin-input" placeholder="Sandi (admin123)" autofocus>
+    <button type="button" class="btn-save" style="width:100%;justify-content:center" onclick="checkPin()">
+      Buka Dashboard Admin &rarr;
+    </button>
+    <div id="pinErr" style="display:none;color:var(--danger-ink);font-size:12px;margin-top:10px;font-weight:750">
+      Sandi salah. Silakan coba lagi.
+    </div>
+    <div style="margin-top:16px;font-size:12px">
+      <a href="../index.html" style="color:var(--brand);text-decoration:underline">&larr; Kembali ke Halaman Depan</a>
+    </div>
+  </div>
+</div>
+
+<header class="admin-nav">
+  <div class="wrap admin-nav-in">
+    <div class="admin-brand">
+      <img src="asdos-square.png" alt="Asdos Digital">
+      <span>asdos digital academy</span>
+      <span class="admin-badge-role">AREA PENGAJAR</span>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;font-size:13px;font-weight:750">
+      <a href="builder.html" style="background:var(--brand);color:#ffffff;padding:7px 14px;border-radius:10px;display:flex;align-items:center;gap:6px;font-weight:850">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span>Visual Studio Builder</span>
+      </a>
+      <a href="../dashboard.html" target="_blank" style="color:var(--brand);display:flex;align-items:center;gap:4px">
+        <span>Pratinjau Siswa</span> &rarr;
+      </a>
+      <a href="../index.html" style="color:var(--muted);display:flex;align-items:center;gap:4px">
+        <span>Halaman Depan</span> &rarr;
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="admin-tabs">
+    <button type="button" class="atab-btn active" onclick="switchAdminTab('sec-whitelist')">
+      Whitelist Lynk.id (<span id="countWhitelist">0</span>)
+    </button>
+    <button type="button" class="atab-btn" onclick="switchAdminTab('sec-modules')">
+      Course Builder (Galeri Materi)
+    </button>
+    <button type="button" class="atab-btn" onclick="switchAdminTab('sec-info')">
+      Informasi &amp; Tools Asdos
+    </button>
+    <button type="button" class="atab-btn" onclick="switchAdminTab('sec-prompts')">
+      Bank Prompt
+    </button>
+    <button type="button" class="atab-btn" onclick="switchAdminTab('sec-database')">
+      Database Cloud &amp; Backup
+    </button>
+  </nav>
+
+  <!-- =================================================================== -->
+  <!-- TAB 1: WHITELIST LYNK.ID                                            -->
+  <!-- =================================================================== -->
+  <section id="sec-whitelist" class="tab-section active">
+    <div class="panel-box">
+      <h3>Tempel Email Pembeli Lynk.id</h3>
+      <p class="pdesc">Salin daftar email dari transaksi atau rekap penjualan Lynk.id Anda, lalu tempel di kotak ini. Sistem otomatis mendeteksi email valid dan mengaktifkan akses Day 2–7 untuk mereka.</p>
+
+      <div class="form-group">
+        <label for="inputBatchEmails">Daftar Email (Bisa banyak sekaligus):</label>
+        <textarea id="inputBatchEmails" rows="4" placeholder="Contoh:&#10;rina.animasi@gmail.com&#10;budi.santoso@yahoo.com, fitriani@gmail.com"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="inputBatchNote">Catatan Pembelian:</label>
+          <input type="text" id="inputBatchNote" value="Pembeli Lynk.id Batch 1">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn-save" onclick="handleBatchSubmit()">
+          Tambahkan ke Whitelist
+        </button>
+        <button type="button" class="btn-subtle" onclick="downloadWhitelistCsv()">
+          Unduh Rekap CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0">Daftar Siswa Terverifikasi</h3>
+        <input type="text" id="filterEmailInput" oninput="applyFilterEmail()" placeholder="Cari email siswa..." style="max-width:240px;padding:8px 12px;font-size:12px">
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px">No</th>
+              <th>Email Pembeli</th>
+              <th>Catatan</th>
+              <th>Tanggal Daftar</th>
+              <th style="text-align:right">Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="whitelistTableRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <!-- TAB 2: COURSE BUILDER                                               -->
+  <!-- =================================================================== -->
+  <section id="sec-modules" class="tab-section">
+    <div class="panel-box" style="background:linear-gradient(135deg, #FFF9F0 0%, #FFEBD6 100%);border:2px solid var(--peach-line);margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+        <div>
+          <span style="font-size:11px;font-weight:850;background:var(--brand);color:#fff;padding:3px 10px;border-radius:99px;letter-spacing:.5px">STUDIO VISUAL INTERAKTIF</span>
+          <h2 style="margin:8px 0 4px;font-size:20px;font-weight:850;color:var(--brand-dark)">Visual Course Studio Builder (Live Smartphone Simulator)</h2>
+          <p style="margin:0;font-size:13.5px;color:var(--muted);max-width:620px">
+            Buat atau modifikasi modul dan kartu materi pembelajaran baru secara intuitif (drag & drop kartu dan blok) dengan simulator smartphone real-time di sisi layar. Ekspor langsung jadi file HTML mandiri (.html) atau simpan ke database kurikulum.
+          </p>
+        </div>
+        <a href="builder.html" class="btn-save" style="font-size:14px;padding:12px 20px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;background:var(--brand);box-shadow:0 4px 14px rgba(31,107,122,0.25)">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Buka Visual Studio Builder &rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <h3>Tambah Kartu Materi Baru ke Galeri</h3>
+      <p class="pdesc">Tambahkan video tutorial atau panduan baru ke dashboard siswa tanpa perlu mengedit file HTML.</p>
+
+      <form onsubmit="event.preventDefault(); handleAddCardSubmit();">
+        <div class="form-row">
+          <div>
+            <label for="selCategory">Pilih Kategori Galeri:</label>
+            <select id="selCategory"></select>
+          </div>
+          <div>
+            <label for="inCardBadge">Label Badge:</label>
+            <input type="text" id="inCardBadge" placeholder="misal: Video Tutorial, Tips Praktik">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inCardTitle">Judul Materi:</label>
+          <input type="text" id="inCardTitle" placeholder="misal: Cara Edit Transisi Halus di Canva" required>
+        </div>
+
+        <div class="form-group">
+          <label for="inCardDesc">Deskripsi Ringkas:</label>
+          <input type="text" id="inCardDesc" placeholder="misal: Panduan menyambung 3 klip video Flow agar terasa natural." required>
+        </div>
+
+        <div class="form-group">
+          <label for="inCardVideo">Link Video Tutorial YouTube (Opsional):</label>
+          <input type="text" id="inCardVideo" placeholder="https://www.youtube.com/watch?v=... atau embed">
+        </div>
+
+        <button type="submit" class="btn-save">
+          Simpan Kartu Materi Baru
+        </button>
+      </form>
+    </div>
+
+    <div class="panel-box">
+      <h3>Pratinjau Kategori &amp; Kartu Galeri</h3>
+      <div id="catalogListPreview" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <!-- TAB 3: INFORMASI & TOOLS ASDOS                                      -->
+  <!-- =================================================================== -->
+  <section id="sec-info" class="tab-section">
+    <div class="panel-box">
+      <h3>Kelola Informasi Penting Pengajar</h3>
+      <p class="pdesc">Teks pengumuman yang muncul di Tab "Informasi" dashboard siswa.</p>
+
+      <div class="form-group">
+        <label for="editAnnounce1">Pengumuman 1:</label>
+        <input type="text" id="editAnnounce1">
+      </div>
+      <div class="form-group">
+        <label for="editAnnounce2">Pengumuman 2:</label>
+        <input type="text" id="editAnnounce2">
+      </div>
+      <div class="form-group">
+        <label for="editMemberHub">Link Asdos Member Hub:</label>
+        <input type="text" id="editMemberHub">
+      </div>
+
+      <button type="button" class="btn-save" onclick="saveInfoEdits()">
+        Simpan Informasi Pengajar
+      </button>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <!-- TAB 4: BANK PROMPT                                                  -->
+  <!-- =================================================================== -->
+  <section id="sec-prompts" class="tab-section">
+    <div class="panel-box">
+      <h3>Tambah Prompt Baru untuk Siswa</h3>
+      <p class="pdesc">Prompt yang Anda simpan di sini akan langsung tampil di Tab "Prompt" dashboard siswa dengan tombol salin 1-klik.</p>
+
+      <form onsubmit="event.preventDefault(); handleAddPromptSubmit();">
+        <div class="form-row">
+          <div>
+            <label for="inPromptTitle">Judul Prompt:</label>
+            <input type="text" id="inPromptTitle" placeholder="misal: Prompt Latar Hutan Sinematik" required>
+          </div>
+          <div>
+            <label for="inPromptTool">Target Tool:</label>
+            <input type="text" id="inPromptTool" placeholder="misal: Google Flow, ChatGPT, Leonardo" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inPromptDesc">Panduan Singkat Pemakaian:</label>
+          <input type="text" id="inPromptDesc" placeholder="Gunakan perintah ini setelah memilih rasio 9:16">
+        </div>
+
+        <div class="form-group">
+          <label for="inPromptText">Teks Prompt Lengkap:</label>
+          <textarea id="inPromptText" rows="3" placeholder="Tuliskan prompt AI yang siap disalin..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-save">
+          Tambahkan ke Bank Prompt
+        </button>
+      </form>
+    </div>
+
+    <div class="panel-box">
+      <h3>Daftar Prompt yang Aktif</h3>
+      <div id="adminPromptList"></div>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <!-- TAB 5: DATABASE & BACKUP                                            -->
+  <!-- =================================================================== -->
+  <section id="sec-database" class="tab-section">
+    <div class="panel-box">
+      <h3>Cadangkan Seluruh Data (.json)</h3>
+      <p class="pdesc">Ekspor data siswa whitelist, kategori modul, prompt bank, dan informasi pengajar ke file komputer Anda.</p>
+      <button type="button" class="btn-save" onclick="downloadBackup()">
+        Unduh Cadangan Lengkap (.json)
+      </button>
+    </div>
+
+    <div class="panel-box">
+      <h3>Integrasi Cloud Supabase</h3>
+      <p class="pdesc">Masukkan kredensial Supabase jika Anda ingin menyambungkannya ke database cloud.</p>
+      <div class="form-row">
+        <div>
+          <label for="sbUrlInput">Supabase URL:</label>
+          <input type="text" id="sbUrlInput" placeholder="https://xyz.supabase.co">
+        </div>
+        <div>
+          <label for="sbKeyInput">Supabase Anon Key:</label>
+          <input type="password" id="sbKeyInput" placeholder="eyJhbGci...">
+        </div>
+      </div>
+      <button type="button" class="btn-save" onclick="saveSbSettings()">
+        Simpan Pengaturan Cloud
+      </button>
+      <div style="margin-top:16px">
+        <button type="button" class="btn-subtle" onclick="copySchema()">
+          Salin Skema SQL Supabase
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+// ==========================================================================
+// 1. PIN CHECK
+// ==========================================================================
+const PIN_PASS = 'admin123';
+function checkPin() {
+  const val = document.getElementById('adminPinField').value;
+  if (val === PIN_PASS || sessionStorage.getItem('asdos_admin_pass') === 'true') {
+    sessionStorage.setItem('asdos_admin_pass', 'true');
+    document.getElementById('adminPinGate').style.display = 'none';
+  } else {
+    document.getElementById('pinErr').style.display = 'block';
+  }
+}
+document.getElementById('adminPinField').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkPin();
+});
+if (sessionStorage.getItem('asdos_admin_pass') === 'true') {
+  document.getElementById('adminPinGate').style.display = 'none';
+}
+
+// ==========================================================================
+// 2. TABS CONTROLLER
+// ==========================================================================
+function switchAdminTab(secId) {
+  document.querySelectorAll('.atab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+
+  const sec = document.getElementById(secId);
+  if (sec) sec.classList.add('active');
+
+  const btn = Array.from(document.querySelectorAll('.atab-btn')).find(b => b.getAttribute('onclick').includes(secId));
+  if (btn) btn.classList.add('active');
+}
+
+// ==========================================================================
+// 3. WHITELIST LOGIC
+// ==========================================================================
+function renderWhitelistTable() {
+  const list = window.LMS_DB.getWhitelist();
+  const tbody = document.getElementById('whitelistTableRows');
+  const countBadge = document.getElementById('countWhitelist');
+  if (countBadge) countBadge.textContent = list.length;
+  if (!tbody) return;
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Belum ada email yang didaftarkan.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map((item, idx) => {
+    const d = item.dateAdded ? new Date(item.dateAdded).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+    return `
+      <tr>
+        <td style="color:var(--muted)">${idx + 1}</td>
+        <td><strong>${item.email}</strong></td>
+        <td><span style="background:var(--sun);color:#7A4B00;border:1px solid #E8CF6A;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:750">${item.note || 'Lynk.id'}</span></td>
+        <td style="color:var(--muted)">${d}</td>
+        <td style="text-align:right">
+          <button type="button" class="btn-del" onclick="deleteEmail('${item.email}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function handleBatchSubmit() {
+  const text = (document.getElementById('inputBatchEmails').value || '').trim();
+  const note = document.getElementById('inputBatchNote').value || 'Pembeli Lynk.id';
+  if (!text) {
+    window.showToast('Harap tempel email pembeli terlebih dahulu.');
+    return;
+  }
+  const res = window.LMS_DB.addWhitelistBatch(text, note);
+  document.getElementById('inputBatchEmails').value = '';
+  renderWhitelistTable();
+  window.showToast(`Berhasil menambahkan ${res.added} email baru ke whitelist! Total: ${res.total}`);
+}
+
+function deleteEmail(email) {
+  if (confirm(`Hapus akses untuk email ${email}?`)) {
+    window.LMS_DB.removeWhitelistEmail(email);
+    renderWhitelistTable();
+    window.showToast(`Email ${email} telah dihapus.`);
+  }
+}
+
+function applyFilterEmail() {
+  const q = document.getElementById('filterEmailInput').value.toLowerCase();
+  document.querySelectorAll('#whitelistTableRows tr').forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function downloadWhitelistCsv() {
+  const list = window.LMS_DB.getWhitelist();
+  let csv = 'Email,Catatan,Tanggal\n';
+  list.forEach(i => csv += `"${i.email}","${i.note || ''}","${i.dateAdded || ''}"\n`);
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `whitelist-lynk-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ==========================================================================
+// 4. MODULES & CATEGORIES LOGIC
+// ==========================================================================
+function refreshCategorySelect() {
+  const sel = document.getElementById('selCategory');
+  const categories = window.LMS_DB.getModuleCategories();
+  sel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+
+  const preview = document.getElementById('catalogListPreview');
+  preview.innerHTML = categories.map(cat => `
+    <div style="background:#f8faf8;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">
+      <strong>${cat.categoryTitle} (${cat.cards.length} Kartu)</strong>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">
+        ${cat.cards.map(k => `• ${k.title}`).join(' | ')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleAddCardSubmit() {
+  const catIdx = parseInt(document.getElementById('selCategory').value, 10);
+  const title = document.getElementById('inCardTitle').value.trim();
+  const desc = document.getElementById('inCardDesc').value.trim();
+  const badge = document.getElementById('inCardBadge').value.trim() || 'Modul Baru';
+  let video = document.getElementById('inCardVideo').value.trim();
+
+  // Konversi otomatis format link youtube ke embed
+  if (video && video.includes('watch?v=')) {
+    const vId = video.split('watch?v=')[1].split('&')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  } else if (video && video.includes('youtu.be/')) {
+    const vId = video.split('youtu.be/')[1].split('?')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  }
+
+  const success = window.LMS_DB.addCardToCategory(catIdx, {
+    title: title,
+    desc: desc,
+    badge: badge,
+    thumbnail: 'banner-2.jpg',
+    videoUrl: video,
+    type: video ? 'single_video' : 'custom_link',
+    url: video ? '#' : '#'
+  });
+
+  if (success) {
+    window.showToast(`Kartu "${title}" berhasil ditambahkan ke dashboard siswa!`);
+    document.getElementById('inCardTitle').value = '';
+    document.getElementById('inCardDesc').value = '';
+    document.getElementById('inCardVideo').value = '';
+    refreshCategorySelect();
+  }
+}
+
+// ==========================================================================
+// 5. INFORMASI & TOOLS LOGIC
+// ==========================================================================
+function loadInfoData() {
+  const info = window.LMS_DB.getInfoSettings();
+  if (info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
+  if (info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
+  if (info.memberHubUrl) document.getElementById('editMemberHub').value = info.memberHubUrl;
+}
+
+function saveInfoEdits() {
+  const info = window.LMS_DB.getInfoSettings();
+  info.announcements[0] = document.getElementById('editAnnounce1').value.trim();
+  info.announcements[1] = document.getElementById('editAnnounce2').value.trim();
+  info.memberHubUrl = document.getElementById('editMemberHub').value.trim();
+  window.LMS_DB.saveInfoSettings(info);
+  window.showToast('Informasi penting pengajar berhasil diperbarui!');
+}
+
+// ==========================================================================
+// 6. BANK PROMPT LOGIC
+// ==========================================================================
+function renderAdminPrompts() {
+  const list = window.LMS_DB.getPrompts();
+  const box = document.getElementById('adminPromptList');
+  box.innerHTML = list.map(p => `
+    <div style="background:#f8faf8;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>${p.title} (${p.targetTool})</strong>
+        <button type="button" class="btn-del" onclick="handleDeletePrompt('${p.id}')">Hapus</button>
+      </div>
+      <p style="margin:4px 0;font-size:12px;color:var(--muted)">${p.description}</p>
+      <div style="font-family:monospace;font-size:12px;color:#243d31;margin-top:6px;background:white;padding:8px;border-radius:8px;border:1px solid var(--line)">${p.promptText}</div>
+    </div>
+  `).join('');
+}
+
+function handleAddPromptSubmit() {
+  const title = document.getElementById('inPromptTitle').value.trim();
+  const tool = document.getElementById('inPromptTool').value.trim();
+  const desc = document.getElementById('inPromptDesc').value.trim();
+  const text = document.getElementById('inPromptText').value.trim();
+
+  window.LMS_DB.addPrompt({
+    title: title,
+    targetTool: tool,
+    description: desc,
+    promptText: text
+  });
+
+  window.showToast(`Prompt "${title}" berhasil disimpan!`);
+  document.getElementById('inPromptTitle').value = '';
+  document.getElementById('inPromptDesc').value = '';
+  document.getElementById('inPromptText').value = '';
+  renderAdminPrompts();
+}
+
+function handleDeletePrompt(id) {
+  if (confirm('Hapus prompt ini dari bank prompt?')) {
+    window.LMS_DB.deletePrompt(id);
+    renderAdminPrompts();
+    window.showToast('Prompt telah dihapus.');
+  }
+}
+
+// ==========================================================================
+// 7. SUPABASE & BACKUP
+// ==========================================================================
+function downloadBackup() {
+  const dataStr = window.LMS_DB.exportAllData();
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `backup-asdos-lms-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  window.showToast('File cadangan (.json) berhasil diunduh.');
+}
+
+function copySchema() {
+  navigator.clipboard.writeText(window.LMS_DB.SUPABASE_SQL_SCHEMA).then(() => {
+    window.showToast('Skrip SQL Supabase berhasil disalin.');
+  });
+}
+
+function saveSbSettings() {
+  const u = document.getElementById('sbUrlInput').value;
+  const k = document.getElementById('sbKeyInput').value;
+  window.LMS_DB.saveSupabaseConfig(u, k);
+  window.showToast('Pengaturan Supabase tersimpan.');
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  renderWhitelistTable();
+  refreshCategorySelect();
+  loadInfoData();
+  renderAdminPrompts();
+  const cfg = window.LMS_DB.getSupabaseConfig();
+  if (cfg.url) document.getElementById('sbUrlInput').value = cfg.url;
+  if (cfg.anonKey) document.getElementById('sbKeyInput').value = cfg.anonKey;
+});
+</script>
+
+</body>
+</html>

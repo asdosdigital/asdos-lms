@@ -1,0 +1,1898 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#F3F8E9">
+  <title>Day 1 · Kenalan dengan Flow - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    /* =====================================================================
+       PALETTE C SYSTEM: DDEB9D · 27667B · A0C878
+       ===================================================================== */
+    :root {
+      --bg: #F3F8E9;              /* Soft Matcha Bud Canvas */
+      --card-bg: #FFFFFF;         /* Crisp Bento Milk White */
+      --card-radius: 30px;        /* Super-rounded Bento geometry */
+      --ink: #102720;             /* Deep Lagoon/Forest Ink for ultra crisp text */
+      --muted: #4B6356;           /* Soft muted teal-sage */
+      --line: #A0C878;            /* Meadow Green Border */
+      --teal: #27667B;            /* Pacific Deep Teal (Brand Hero Anchor) */
+      --teal-dark: #174554;
+      --meadow: #A0C878;          /* Fresh Meadow Green */
+      --matcha: #DDEB9D;          /* Matcha Lime Bud */
+      --matcha-tint: #EBF5C8;     /* Soft Buttercream Matcha Tint */
+      --primary: #27667B;
+      --accent: #A0C878;
+      --gold: #F59E0B;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Fullscreen Celebration Canvas */
+    .celebration-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    /* Top Navigation Bar */
+    .deck-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(243, 248, 233, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(160, 200, 120, 0.35);
+      padding: 10px 16px;
+    }
+    .deck-topbar-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn-top-back {
+      font-size: 13px;
+      font-weight: 850;
+      color: #18181B;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(16, 39, 32, 0.14);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-top-back:active { background: #EBF5C8; transform: scale(0.98); }
+    .btn-top-back svg {
+      width: 15px;
+      height: 15px;
+      stroke: #18181B;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .btn-top-help {
+      font-size: 11.5px;
+      font-weight: 850;
+      color: #18181B;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(16, 39, 32, 0.14);
+      padding: 6px 13px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-top-help:active { background: #EBF5C8; transform: scale(0.98); }
+    .btn-top-help svg {
+      width: 14px;
+      height: 14px;
+      stroke: #18181B;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Segmented Dots Indicator */
+    .deck-progress-wrap {
+      max-width: 500px;
+      margin: 10px auto 0;
+      padding: 0 16px;
+    }
+    .deck-segments {
+      display: flex;
+      gap: 6px;
+      height: 6px;
+    }
+    .deck-seg {
+      flex: 1;
+      height: 100%;
+      background: rgba(39, 102, 123, 0.12);
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+
+    /* Multi-tone Segments */
+    .deck-seg:nth-child(1).done, .deck-seg:nth-child(1).active { background: #A0C878; }
+    .deck-seg:nth-child(2).done, .deck-seg:nth-child(2).active { background: #B8DE8F; }
+    .deck-seg:nth-child(3).done, .deck-seg:nth-child(3).active { background: #27667B; }
+    .deck-seg:nth-child(4).done, .deck-seg:nth-child(4).active { background: #71A9B8; }
+    .deck-seg:nth-child(5).done, .deck-seg:nth-child(5).active { background: #DDEB9D; }
+    .deck-seg:nth-child(6).done, .deck-seg:nth-child(6).active { background: #27667B; }
+
+    .deck-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 850;
+      color: #18181B;
+      letter-spacing: 0.3px;
+    }
+
+    /* Deck Viewport & Slides */
+    .deck-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 12px 16px 115px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .mission-card {
+      display: none;
+      background: var(--card-bg);
+      border: 1.5px solid rgba(160, 200, 120, 0.45);
+      border-radius: var(--card-radius);
+      padding: 22px 18px 26px;
+      box-shadow: 0 10px 32px rgba(39, 102, 123, 0.08);
+      transform-origin: center top;
+      position: relative;
+    }
+
+    /* =====================================================================
+       ANIMASI 1: PEEK NUDGE (ISYARAT GESER DI AWAL PADA CARD 0)
+       ===================================================================== */
+    .peek-nudge {
+      animation: cardPeekNudge 1.4s cubic-bezier(0.2, 0.95, 0.3, 1) 0.5s 1 normal forwards;
+    }
+    @keyframes cardPeekNudge {
+      0% { transform: translateX(0); }
+      22% { transform: translateX(-48px); }
+      48% { transform: translateX(12px); }
+      72% { transform: translateX(-4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Floating Hand Swipe Guide on Card 0 */
+    .swipe-hand-guide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 39, 32, 0.92);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 25;
+      pointer-events: none;
+      animation: swipeHandAnimation 3.5s ease-in-out forwards;
+      border: 1.5px solid rgba(221, 235, 157, 0.6);
+    }
+    .swipe-hand-guide svg {
+      width: 18px;
+      height: 18px;
+      stroke: #DDEB9D;
+      stroke-width: 2.4;
+      fill: none;
+    }
+    .swipe-hand-guide span {
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    @keyframes swipeHandAnimation {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.95); pointer-events: none; }
+    }
+
+    /* =====================================================================
+       ANIMASI 2: INDIKATOR SCROLL KE BAWAH (AGAR TIDAK KETINGGALAN)
+       ===================================================================== */
+    .scroll-affordance-pill {
+      position: fixed;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      color: var(--teal);
+      border: 1.5px solid var(--meadow);
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 16px rgba(39, 102, 123, 0.18);
+      z-index: 38;
+      cursor: pointer;
+      transition: opacity 0.25s, transform 0.25s;
+      animation: gentleBounceDown 1.8s infinite ease-in-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .scroll-affordance-pill svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--teal);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    @keyframes gentleBounceDown {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(5px); }
+    }
+    .scroll-affordance-pill.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(8px);
+    }
+
+    /* Card Transition Animations */
+    .mission-card.active {
+      display: block;
+    }
+    .mission-card.slide-in-right {
+      display: block;
+      animation: animSlideInRight 0.32s cubic-bezier(0.12, 0.88, 0.28, 1) forwards;
+    }
+    .mission-card.slide-in-left {
+      display: block;
+      animation: animSlideInLeft 0.32s cubic-bezier(0.12, 0.88, 0.28, 1) forwards;
+    }
+    @keyframes animSlideInRight {
+      0% { opacity: 0; transform: translateX(45px) scale(0.97); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @keyframes animSlideInLeft {
+      0% { opacity: 0; transform: translateX(-45px) scale(0.97); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .mission-card.active .card-badge {
+      animation: badgePop 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Card Typography & Layout */
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #174554;
+      background: var(--matcha);
+      border: 1px solid var(--meadow);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .card-badge svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .card-title {
+      font-size: 21px;
+      font-weight: 850;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      margin: 0 0 6px;
+      color: var(--teal);
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0 0 16px;
+    }
+
+    /* Visual Showcase Frame with Pacific Teal Aura */
+    .target-preview-box {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1.5px solid rgba(39, 102, 123, 0.12);
+      background: var(--teal);
+      position: relative;
+      margin-bottom: 16px;
+      text-align: center;
+      padding: 22px 14px;
+      box-shadow: 0 8px 24px rgba(39, 102, 123, 0.18);
+    }
+    .target-preview-img-wrap {
+      width: min(100%, 250px);
+      aspect-ratio: 9/16;
+      margin: 0 auto 12px;
+      border-radius: 16px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 26%, rgba(221, 235, 157, 0.65) 50%, rgba(160, 200, 120, 0.35) 72%, transparent 73%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .cat-illustration-art {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .cat-silhouette {
+      width: 86px;
+      height: 86px;
+      fill: #FFFFFF;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+      margin-bottom: 12px;
+    }
+    .target-preview-badge {
+      position: absolute;
+      bottom: 10px;
+      background: rgba(16, 39, 32, 0.88);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Video Frame in Steps */
+    .step-video-frame {
+      width: 100%;
+      aspect-ratio: 9/16;
+      max-width: 290px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #142921;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border: 2px solid rgba(160, 200, 120, 0.4);
+    }
+    .step-video-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* Action Checklist Box */
+    .action-steps-box {
+      background: #F9FCF3;
+      border: 1.5px solid rgba(160, 200, 120, 0.35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .action-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+    .action-step-item:not(:last-child) {
+      border-bottom: 1px dashed rgba(160, 200, 120, 0.4);
+    }
+    .action-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--meadow);
+      color: #102914;
+      font-weight: 850;
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .action-step-num svg {
+      width: 12px;
+      height: 12px;
+      stroke: #102914;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* 1-Click Copy Box */
+    .prompt-copy-card {
+      background: var(--matcha-tint);
+      border: 1.5px solid var(--meadow);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .prompt-copy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .prompt-copy-header small {
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--teal);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .prompt-copy-header small svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+    }
+    .prompt-copy-text {
+      background: white;
+      border: 1px solid rgba(160, 200, 120, 0.4);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      color: #102720;
+      line-height: 1.5;
+      margin: 0 0 10px;
+      user-select: all;
+    }
+    .btn-copy-action {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--meadow);
+      color: #0E2B14;
+      font-weight: 850;
+      font-size: 14px;
+      padding: 12px;
+      border: 0;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(160, 200, 120, 0.35);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-copy-action:active {
+      transform: scale(0.98);
+      background: #8DBB60;
+    }
+    .btn-copy-action.copied {
+      background: var(--teal);
+      color: white;
+    }
+    .btn-copy-action svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+    }
+
+    /* Outbound Link Button (Open Flow) */
+    .btn-outbound-tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: white;
+      color: var(--teal);
+      border: 1.5px solid var(--meadow);
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      font-weight: 850;
+      margin-bottom: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(39, 102, 123, 0.06);
+    }
+    .btn-outbound-tool:active { background: var(--matcha-tint); }
+    .btn-outbound-tool svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+
+    .quick-trouble-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--teal);
+      text-decoration: underline;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+    .quick-trouble-link svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+
+    /* Floating Thumb Bottom Bar */
+    .deck-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1.5px solid rgba(160, 200, 120, 0.4);
+      padding: 10px 16px 14px;
+    }
+    .deck-bottom-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-deck-prev {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(160, 200, 120, 0.4);
+      background: #F9FCF3;
+      color: var(--teal);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-deck-prev:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .btn-deck-prev svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .btn-deck-next {
+      flex: 1;
+      height: 48px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--teal);
+      color: white;
+      font-size: 14.5px;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(39, 102, 123, 0.3);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-deck-next:active {
+      transform: scale(0.98);
+      background: var(--teal-dark);
+    }
+    .btn-deck-next svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* =====================================================================
+       CARD 5: GRAND ACHIEVEMENT SELEBRASI LEBIH MERIAH
+       ===================================================================== */
+    .celebration-showcase {
+      text-align: center;
+      position: relative;
+      padding: 10px 0 16px;
+    }
+    .celebration-trophy-wrap {
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFFBEB 20%, #FDE68A 65%, #F59E0B 100%);
+      border: 3px solid #FCD34D;
+      display: grid;
+      place-items: center;
+      color: #78350F;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+      position: relative;
+    }
+    .mission-card.active .celebration-trophy-wrap {
+      animation: trophyGrandBounce 0.75s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes trophyGrandBounce {
+      0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+      55% { transform: scale(1.24) rotate(6deg); opacity: 1; }
+      75% { transform: scale(0.92) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .celebration-trophy-wrap svg {
+      width: 44px;
+      height: 44px;
+      stroke: #78350F;
+      stroke-width: 2.2;
+      fill: #FEF3C7;
+    }
+
+    /* Glowing Rotating Aura behind trophy */
+    .trophy-glow-aura {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(221, 235, 157, 0.2) 60%, transparent 75%);
+      z-index: -1;
+      animation: pulseAura 2.2s infinite ease-in-out;
+    }
+    @keyframes pulseAura {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.18); opacity: 1; }
+    }
+
+    .completion-banner {
+      background: linear-gradient(135deg, #F3F8E9, #E4F2CC);
+      border: 1.5px solid var(--meadow);
+      border-radius: 22px;
+      padding: 22px 18px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .completion-banner h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      font-weight: 850;
+      color: var(--teal);
+    }
+    .completion-banner p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #264536;
+      line-height: 1.5;
+    }
+
+    .check-list-final {
+      display: grid;
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+    .check-item-final {
+      background: #F9FCF3;
+      border: 1.5px solid rgba(160, 200, 120, 0.4);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      text-align: left;
+    }
+    .check-icon-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--meadow);
+      color: #102914;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .check-icon-circle svg {
+      width: 13px;
+      height: 13px;
+      stroke: #102914;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* Kuis Interaktif dengan Efek Visual & Audio Tegas */
+    .quiz-box {
+      background: #F8FCF3;
+      border: 1.5px solid var(--meadow);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .quiz-title {
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.6px;
+      color: var(--teal);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .quiz-title svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+    }
+    .quiz-q {
+      font-size: 14.5px;
+      font-weight: 800;
+      margin: 0 0 12px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      gap: 8px;
+    }
+    .quiz-btn {
+      position: relative;
+      text-align: left;
+      background: white;
+      border: 1.5px solid rgba(160, 200, 120, 0.45);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .quiz-btn:active {
+      transform: scale(0.99);
+    }
+    .quiz-btn .quiz-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--meadow);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.2s;
+    }
+    .quiz-btn .quiz-indicator svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* KUIS BENAR: POP & CHECKMARK SVG */
+    .quiz-btn.quiz-correct {
+      border-color: var(--teal) !important;
+      background: #EBF5C8 !important;
+      color: var(--teal) !important;
+      font-weight: 800;
+      animation: animPopSuccess 0.38s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+      box-shadow: 0 4px 14px rgba(39, 102, 123, 0.18);
+    }
+    .quiz-btn.quiz-correct .quiz-indicator {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+    @keyframes animPopSuccess {
+      0% { transform: scale(0.96); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    /* KUIS SALAH: GETAR (SHAKE ERROR) & CROSS SVG */
+    .quiz-btn.quiz-wrong {
+      border-color: #EF4444 !important;
+      background: #FEF2F2 !important;
+      color: #991B1B !important;
+      animation: animShakeError 0.45s ease-in-out forwards;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
+    }
+    .quiz-btn.quiz-wrong .quiz-indicator {
+      background: #EF4444;
+      border-color: #EF4444;
+      color: white;
+    }
+    @keyframes animShakeError {
+      0%, 100% { transform: translateX(0); }
+      18% { transform: translateX(-9px); }
+      36% { transform: translateX(9px); }
+      54% { transform: translateX(-6px); }
+      72% { transform: translateX(6px); }
+      90% { transform: translateX(-2px); }
+    }
+
+    .quiz-msg {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.45;
+      display: none;
+    }
+    .quiz-msg.ok {
+      background: #EBF5C8;
+      color: var(--teal);
+      border: 1px solid var(--meadow);
+    }
+    .quiz-msg.no {
+      background: #FBEEE8;
+      color: #922;
+      border: 1px solid #ECC9C3;
+    }
+
+    /* Next Day Card Preview */
+    .next-day-card {
+      border: 1.5px solid var(--meadow);
+      background: #F5F9EC;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .next-day-card small {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 850;
+      color: var(--teal);
+      letter-spacing: 0.5px;
+    }
+    .next-day-card strong {
+      display: block;
+      font-size: 15.5px;
+      color: var(--ink);
+      margin: 3px 0 5px;
+    }
+    .next-day-card p {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* Bottom Sheet / Help Center */
+    .help-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 39, 32, 0.45);
+      z-index: 100;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      backdrop-filter: blur(4px);
+    }
+    .help-drawer-backdrop.open {
+      display: block;
+      opacity: 1;
+    }
+    .help-drawer-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 26px 26px 0 0;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 22px 20px 32px;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .help-drawer-backdrop.open .help-drawer-sheet {
+      transform: translateY(0);
+    }
+    .help-drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #D8DED8;
+      border-radius: 99px;
+      margin: 0 auto 16px;
+    }
+    .help-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .help-drawer-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--teal);
+    }
+    .help-drawer-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 0;
+      background: #EDF1EE;
+      color: var(--ink);
+      font-size: 16px;
+      display: grid;
+      place-items: center;
+    }
+    .help-drawer-close svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--ink);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .faq-item {
+      border: 1px solid rgba(160, 200, 120, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #F9FCF3;
+    }
+    .faq-item strong {
+      display: block;
+      font-size: 13.5px;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+    .faq-item p {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .btn-wa-sheet {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #25D366;
+      color: #0B3E1C;
+      font-weight: 850;
+      font-size: 14px;
+      padding: 13px;
+      border-radius: 999px;
+      margin-top: 14px;
+    }
+    .btn-wa-sheet svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: #102720;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-pill svg {
+      width: 14px;
+      height: 14px;
+      stroke: #DDEB9D;
+      stroke-width: 2.5;
+      fill: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- CANNON CONFETTI CANVAS OVERLAY -->
+<canvas id="celebrationCanvas" class="celebration-canvas"></canvas>
+
+<!-- FLOATING SCROLL DOWN AFFORDANCE (PETUNJUK BISA DI-SCROLL KE BAWAH) -->
+<div class="scroll-affordance-pill" id="scrollAffordancePill" onclick="scrollCardDown()">
+  <span>Gulir ke bawah</span>
+  <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+</div>
+
+<!-- TOP NAVIGATION -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="dashboard.html" class="btn-top-back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top-help" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Pusat Bantuan</span>
+    </button>
+  </div>
+</header>
+
+<!-- PROGRESS BAR SEGMENTS -->
+<div class="deck-progress-wrap">
+  <div class="deck-segments" id="deckSegments">
+    <div class="deck-seg active" data-index="0"></div>
+    <div class="deck-seg" data-index="1"></div>
+    <div class="deck-seg" data-index="2"></div>
+    <div class="deck-seg" data-index="3"></div>
+    <div class="deck-seg" data-index="4"></div>
+    <div class="deck-seg" data-index="5"></div>
+  </div>
+  <div class="deck-meta-bar">
+    <span id="deckStepTitle">Target & Gambaran Hasil</span>
+    <span id="deckStepNum">Tahap 1 dari 6</span>
+  </div>
+</div>
+
+<!-- DECK CARDS CONTAINER -->
+<main class="deck-container" id="deckViewport">
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 0: TARGET & GAMBARAN HASIL (WITH INITIAL SWIPE PEEK NUDGE) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card active peek-nudge" id="card-0">
+    
+    <!-- Floating Hand Swipe Guide on Card 0 -->
+    <div class="swipe-hand-guide" id="swipeHandGuide">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Geser layar ke kiri untuk mulai</span>
+    </div>
+
+    <span class="card-badge">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg>
+      Target Hari ke-1
+    </span>
+    <h1 class="card-title">Membuat Gambar Kucing Pertama di HP</h1>
+    <p class="card-desc">Tidak perlu bakat menggambar atau keahlian teknis komputer. Cukup 10 menit, gambar animasi kucing lucu ini tersimpan rapi di galeri HP.</p>
+
+    <div class="target-preview-box">
+      <div class="target-preview-img-wrap">
+        <div class="cat-illustration-art">
+          <svg class="cat-silhouette" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          <strong style="color:var(--teal);font-size:14px;margin-bottom:4px">Kucing Oren di Taman</strong>
+          <small style="color:#2D5A46;font-size:11px">Gaya Animasi 3D Lembut</small>
+        </div>
+        <div class="target-preview-badge">Format Tegak 9:16 (Layar HP)</div>
+      </div>
+      <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.9)">Inilah gambar yang akan dihasilkan dari instruksi sederhana hari ini.</p>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <div><strong>Durasi Praktik:</strong> Cukup 10–15 menit sambil santai.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <div><strong>Akses Praktik:</strong> Menggunakan akun Google biasa di Google Flow.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 1: MISI 1 (MASUK KE GOOGLE FLOW) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-1">
+    <span class="card-badge">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Misi 1 dari 4
+    </span>
+    <h2 class="card-title">Masuk ke Google Flow</h2>
+    <p class="card-desc">Google Flow adalah studio tempat memesan gambar ke AI. Tonton video 45 detik ini, lalu buka situs Flow di tab baru.</p>
+
+    <!-- Video Step 1 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/ahtYHSTSNeM?rel=0&playsinline=1" title="Misi 1: Masuk Flow" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Tekan tombol <strong>Buka Google Flow</strong> di bawah.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Masuk menggunakan akun Google yang ada di HP.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Ketuk tombol <strong>New project</strong> untuk membuka kanvas kerja.</div>
+      </div>
+    </div>
+
+    <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener noreferrer" class="btn-outbound-tool">
+      <span>Buka Google Flow di Tab Baru</span>
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Bingung atau mentok saat masuk? Buka bantuan
+    </span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 2: MISI 2 (PESAN GAMBAR KUCING) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-2">
+    <span class="card-badge">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Misi 2 dari 4
+    </span>
+    <h2 class="card-title">Pesan Gambar Kucing Pertama</h2>
+    <p class="card-desc">Salin kalimat perintah di bawah, lalu tempelkan di kolom teks Google Flow.</p>
+
+    <!-- Video Step 2 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/gUmTEnx0hOg?rel=0&playsinline=1" title="Misi 2: Bikin Gambar Kucing" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <!-- 1-Click Copy Box -->
+    <div class="prompt-copy-card">
+      <div class="prompt-copy-header">
+        <small>
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Mantra Perintah Kucing
+        </small>
+        <span style="font-size:11px;color:var(--muted)">1-Klik Salin</span>
+      </div>
+      <div class="prompt-copy-text" id="promptTextCat">Seekor kucing oren duduk santai di taman kecil yang penuh bunga warna-warni. Suasana cerah dan hangat, format 9:16.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyCat" onclick="copyPromptText('promptTextCat', 'btnCopyCat')">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Mantra Perintah</span>
+      </button>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Buka tab Google Flow, tahan layar di kolom teks, lalu pilih <strong>Tempel</strong>.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Pastikan rasio ukuran memilih <strong>9:16</strong> (layar tegak).</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Tekan tombol panah atau <strong>Generate</strong> dan tunggu 10 detik.</div>
+      </div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Kucingnya aneh atau belum mirip? Buka bantuan
+    </span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 3: MISI 3 (SENTUHAN AJAIB / UBAH WARNA) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-3">
+    <span class="card-badge">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Misi 3 dari 4
+    </span>
+    <h2 class="card-title">Sentuhan Ajaib: Ubah Warna</h2>
+    <p class="card-desc">AI bisa merevisi gambar sesuai instruksi. Coba ubah kucing oren tadi menjadi abu-abu.</p>
+
+    <!-- Video Step 3 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/rfBNapDZ3RE?rel=0&playsinline=1" title="Misi 3: Edit Gambar" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="prompt-copy-card">
+      <div class="prompt-copy-header">
+        <small>
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Mantra Perubahan Warna
+        </small>
+        <span style="font-size:11px;color:var(--muted)">1-Klik Salin</span>
+      </div>
+      <div class="prompt-copy-text" id="promptTextEdit">Ubah kucing jadi abu-abu.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyEdit" onclick="copyPromptText('promptTextEdit', 'btnCopyEdit')">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Perintah Ubah</span>
+      </button>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Ketuk gambar kucing yang baru jadi di layar Flow.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Ketuk kolom perubahan (<em>What do you want to change?</em>).</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Tempelkan kalimat di atas lalu tekan tombol kirim.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 4: MISI 4 (SIMPAN KE HP) -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-4">
+    <span class="card-badge">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Misi 4 dari 4
+    </span>
+    <h2 class="card-title">Simpan Karya ke Galeri HP</h2>
+    <p class="card-desc">Gambar ini adalah modal utama yang akan digerakkan menjadi video di hari-hari berikutnya.</p>
+
+    <!-- Video Step 4 -->
+    <div class="step-video-frame">
+      <iframe src="https://www.youtube-nocookie.com/embed/wdUPxm_5zak?rel=0&playsinline=1" title="Misi 4: Download Gambar" loading="lazy" allowfullscreen></iframe>
+    </div>
+
+    <div class="action-steps-box">
+      <div class="action-step-item">
+        <span class="action-step-num">1</span>
+        <div>Ketuk ikon titik tiga di pojok gambar hasil latihan.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">2</span>
+        <div>Pilih menu <strong>Download</strong> atau <strong>Unduh</strong>.</div>
+      </div>
+      <div class="action-step-item">
+        <span class="action-step-num">3</span>
+        <div>Buka galeri atau folder Download untuk memastikan gambar sudah tersimpan.</div>
+      </div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Tidak menemukan tombol download? Buka bantuan
+    </span>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KARTU 5: SELEBRASI MERIAH & TIKET DAY 2 -->
+  <!-- ===================================================================== -->
+  <section class="mission-card" id="card-5">
+    <div class="celebration-showcase">
+      
+      <!-- Grand Trophy Showcase with Gleaming Aura -->
+      <div class="celebration-trophy-wrap">
+        <div class="trophy-glow-aura"></div>
+        <svg viewBox="0 0 24 24">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1h10v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34"/>
+          <path d="M6 4h12v7a6 6 0 0 1-12 0V4z"/>
+        </svg>
+      </div>
+
+      <div class="completion-banner">
+        <span class="card-badge" style="background:#DDEB9D;color:#174554">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg>
+          Misi Hari ke-1 Tuntas
+        </span>
+        <h3>Selamat! Karya Pertama Selesai</h3>
+        <p>Satu karya animasi AI pertama berhasil dibuat dan tersimpan rapi. Langkah awal yang luar biasa untuk terus berkarya!</p>
+      </div>
+    </div>
+
+    <!-- Cek Mandiri Interaktif with SVG Checkmarks -->
+    <div class="check-list-final">
+      <div class="check-item-final">
+        <span class="check-icon-circle">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Berhasil masuk ke Google Flow</span>
+      </div>
+      <div class="check-item-final">
+        <span class="check-icon-circle">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Berhasil membuat dan merevisi gambar kucing</span>
+      </div>
+      <div class="check-item-final">
+        <span class="check-icon-circle">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Gambar kucing sudah aman di galeri HP</span>
+      </div>
+    </div>
+
+    <!-- Kuis Refleksi Santai dengan Efek Audio & Visual -->
+    <div class="quiz-box">
+      <div class="quiz-title">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Kuis Refleksi Day 1
+      </div>
+      <p class="quiz-q">Kenapa format ukuran rasio 9:16 dipilih untuk animasi ini?</p>
+      
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, true, 'Tepat sekali! Ukuran tegak 9:16 adalah standar paling pas untuk layar HP, Instagram Reels, dan TikTok.')">
+          <span class="quiz-indicator"></span>
+          <span>A. Supaya pas dan penuh di layar HP & Reels/TikTok</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, false, 'Kurang tepat. Ukuran rasio menentukan bentuk layar berdiri atau mendatar, bukan ukuran kuota internet.')">
+          <span class="quiz-indicator"></span>
+          <span>B. Supaya kuota internet lebih hemat saat download</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this, false, 'Kurang tepat. Warna gambar ditentukan oleh kata-kata prompt, bukan dari rasio ukuran layar.')">
+          <span class="quiz-indicator"></span>
+          <span>C. Supaya warnanya otomatis jadi tajam</span>
+        </button>
+      </div>
+
+      <div class="quiz-msg" id="quizFeedbackDeck"></div>
+    </div>
+
+    <!-- Preview Hari Esok -->
+    <div class="next-day-card">
+      <small>BESOK DI DAY 2</small>
+      <strong>Membuat Karakter Konsisten (Character Sheet)</strong>
+      <p>Membuat tokoh animasi yang wajah dan bajunya tetap sama saat dilihat dari depan, samping, dan serong.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- FLOATING THUMB BOTTOM BAR -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Langkah Sebelumnya">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Mulai Misi 1</span>
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</footer>
+
+<!-- BOTTOM SHEET / HELP CENTER -->
+<div class="help-drawer-backdrop" id="helpDrawer" onclick="closeHelpDrawerOnBg(event)">
+  <div class="help-drawer-sheet">
+    <div class="help-drawer-handle"></div>
+    <div class="help-drawer-header">
+      <h3>Pusat Bantuan Praktik</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Kucingnya belum sesuai atau tampak aneh?</strong>
+      <p>AI kadang butuh kesempatan kedua. Tekan tombol <em>Generate</em> sekali lagi di Flow untuk mendapatkan variasi baru yang lebih rapi.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Gambarnya gepeng atau melebar?</strong>
+      <p>Pastikan sebelum membuat gambar, menu ukuran/rasio <strong>9:16</strong> (tegak) sudah terpilih.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Perlu bantuan langsung?</strong>
+      <p>Admin siap mendampingi proses latihan sampai berhasil.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Admin%2C%20saya%20sedang%20belajar%20Day%201%20dan%20butuh%20panduan%20praktik" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span>Tanya Admin via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<!-- TOAST PILL -->
+<div class="toast-pill" id="toastPill">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Tersalin ke papan klip!</span>
+</div>
+
+<script src="lms-db.js"></script>
+<script>
+  let currentCardIndex = 0;
+  let previousCardIndex = 0;
+  const totalCards = 6;
+  const cards = [
+    document.getElementById('card-0'),
+    document.getElementById('card-1'),
+    document.getElementById('card-2'),
+    document.getElementById('card-3'),
+    document.getElementById('card-4'),
+    document.getElementById('card-5')
+  ];
+  const segments = document.querySelectorAll('.deck-seg');
+  const btnPrev = document.getElementById('btnDeckPrev');
+  const btnNext = document.getElementById('btnDeckNext');
+  const btnNextLabel = document.getElementById('btnNextLabel');
+  const stepTitle = document.getElementById('deckStepTitle');
+  const stepNum = document.getElementById('deckStepNum');
+  const scrollPill = document.getElementById('scrollAffordancePill');
+  const swipeGuide = document.getElementById('swipeHandGuide');
+
+  const metaTitles = [
+    "Target & Gambaran Hasil",
+    "Misi 1 · Masuk Google Flow",
+    "Misi 2 · Buat Gambar Kucing",
+    "Misi 3 · Sentuhan Ubah Warna",
+    "Misi 4 · Simpan ke Galeri HP",
+    "Tuntas · Tiket Menuju Day 2"
+  ];
+
+  const nextLabels = [
+    "Mulai Misi 1",
+    "Lanjut ke Misi 2",
+    "Lanjut ke Misi 3",
+    "Lanjut ke Misi 4",
+    "Lihat Hasil Akhir",
+    "Buka Modul Day 2"
+  ];
+
+  // SVG Check & Cross constants for Quiz
+  const SVG_CHECK = '<svg viewBox="0 0 24 24" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>';
+  const SVG_CROSS = '<svg viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+  // Audio Context for sound synthesis
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  // Synthesized audio feedback (Zero external MP3 dependencies)
+  function playTone(type) {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      if (type === 'success' || type === 'quiz-correct') {
+        // Joyful ascending chime (E5 -> G#5 -> B5)
+        const notes = [659.25, 830.61, 987.77];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.07);
+          gain.gain.setValueAtTime(0.09, ctx.currentTime + idx * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.07 + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.07);
+          osc.stop(ctx.currentTime + idx * 0.07 + 0.3);
+        });
+      } else if (type === 'quiz-wrong') {
+        // Double soft bump thud (180Hz -> 120Hz)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(175, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(115, ctx.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.22);
+      } else if (type === 'celebration') {
+        // Triumphant Fanfare Chord Progression
+        const fanfare = [
+          { f: 523.25, t: 0.00 }, // C5
+          { f: 659.25, t: 0.08 }, // E5
+          { f: 783.99, t: 0.16 }, // G5
+          { f: 1046.5, t: 0.24 }, // C6
+          { f: 1318.5, t: 0.36 }  // E6 sustain
+        ];
+        fanfare.forEach(item => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(item.f, ctx.currentTime + item.t);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime + item.t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + item.t + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + item.t);
+          osc.stop(ctx.currentTime + item.t + 0.5);
+        });
+      }
+    } catch(e){}
+  }
+
+  // Check if content overflows to show/hide scroll indicator
+  const cardScrolledV3 = {};
+  function checkScrollAffordance() {
+    if (!scrollPill) return;
+    const activeCard = cards[currentCardIndex];
+    if (!activeCard) return;
+
+    // Jika user sudah scroll pada kartu ini atau scrollY > 20px, sembunyikan!
+    if (window.scrollY > 20 || cardScrolledV3[currentCardIndex]) {
+      scrollPill.classList.add('hidden');
+      return;
+    }
+
+    const cardBottom = activeCard.getBoundingClientRect().bottom;
+    const windowHeight = window.innerHeight;
+
+    if (cardBottom > windowHeight + 50) {
+      scrollPill.classList.remove('hidden');
+    } else {
+      scrollPill.classList.add('hidden');
+    }
+  }
+
+  function scrollCardDown() {
+    cardScrolledV3[currentCardIndex] = true;
+    if (scrollPill) scrollPill.classList.add('hidden');
+    window.scrollBy({ top: 260, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      cardScrolledV3[currentCardIndex] = true;
+      if (scrollPill) scrollPill.classList.add('hidden');
+    }
+  }, { passive: true });
+  window.addEventListener('resize', checkScrollAffordance);
+
+  function updateDeckUI(direction = 1) {
+    if (swipeGuide) swipeGuide.style.display = 'none';
+    if (scrollPill) scrollPill.classList.add('hidden');
+
+    cards.forEach((card, idx) => {
+      card.classList.remove('active', 'slide-in-right', 'slide-in-left', 'peek-nudge');
+      if (idx === currentCardIndex) {
+        card.classList.add('active');
+        if (direction === 1) {
+          card.classList.add('slide-in-right');
+        } else if (direction === -1) {
+          card.classList.add('slide-in-left');
+        }
+      }
+    });
+
+    // Update progress segments
+    segments.forEach((seg, idx) => {
+      seg.classList.remove('active', 'done');
+      if (idx < currentCardIndex) {
+        seg.classList.add('done');
+      } else if (idx === currentCardIndex) {
+        seg.classList.add('active');
+      }
+    });
+
+    // Update Titles
+    stepTitle.textContent = metaTitles[currentCardIndex];
+    stepNum.textContent = `Tahap ${currentCardIndex + 1} dari ${totalCards}`;
+    btnNextLabel.textContent = nextLabels[currentCardIndex];
+
+    // Prev button state
+    btnPrev.disabled = currentCardIndex === 0;
+
+    // Grand Celebration on Card 5
+    if (currentCardIndex === 5) {
+      triggerConfetti();
+      playTone('celebration');
+      if (navigator.vibrate) navigator.vibrate([80, 40, 80, 40, 150]);
+    }
+
+    // Persist progress to LMS LocalStorage for Day 1
+    if (currentCardIndex >= 1) {
+      try {
+        const stepFlags = [
+          currentCardIndex >= 2,
+          currentCardIndex >= 3,
+          currentCardIndex >= 4,
+          currentCardIndex >= 5
+        ];
+        localStorage.setItem('asdos_day1_preview_steps_v2', JSON.stringify(stepFlags));
+      } catch(e){}
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(checkScrollAffordance, 350);
+  }
+
+  function navigateDeck(direction) {
+    getAudioContext();
+    if (direction === 1 && currentCardIndex === totalCards - 1) {
+      window.location.href = 'day2-preview.html';
+      return;
+    }
+
+    const nextIndex = currentCardIndex + direction;
+    if (nextIndex >= 0 && nextIndex < totalCards) {
+      previousCardIndex = currentCardIndex;
+      currentCardIndex = nextIndex;
+      updateDeckUI(direction);
+    }
+  }
+
+  // 1-Click Copy Prompt
+  function copyPromptText(elementId, buttonId) {
+    getAudioContext();
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const text = el.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById(buttonId);
+      if (btn) {
+        const originalHTML = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> <span>Tersalin! Tinggal Tempel di Flow</span>`;
+        showToast("Tersalin ke papan klip! Buka Flow lalu tahan layar & pilih Tempel.");
+        playTone('success');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = originalHTML;
+        }, 3500);
+      }
+    }).catch(() => {
+      showToast("Gagal menyalin otomatis. Silakan salin manual.");
+    });
+  }
+
+  // Toast Pill Helper
+  function showToast(msg) {
+    const toast = document.getElementById('toastPill');
+    const msgEl = document.getElementById('toastMsg');
+    if (!toast || !msgEl) return;
+    msgEl.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
+  }
+
+  // KUIS INTERAKTIF DENGAN SUARA & ANIMASI VISUAL
+  function handleQuizAnswer(btn, isCorrect, explanation) {
+    getAudioContext();
+    const msg = document.getElementById('quizFeedbackDeck');
+    const allBtns = btn.parentElement.querySelectorAll('.quiz-btn');
+
+    // Reset all buttons
+    allBtns.forEach(b => {
+      b.classList.remove('quiz-correct', 'quiz-wrong', 'selected');
+      const ind = b.querySelector('.quiz-indicator');
+      if (ind) ind.innerHTML = '';
+      b.style.pointerEvents = 'none'; // Lock temporarily
+    });
+
+    btn.classList.add('selected');
+    const indicator = btn.querySelector('.quiz-indicator');
+
+    if (isCorrect) {
+      // JAWABAN BENAR: Animasi Pop + Ceklis SVG + Nada Joyful Bell
+      btn.classList.add('quiz-correct');
+      if (indicator) indicator.innerHTML = SVG_CHECK;
+      msg.className = 'quiz-msg ok';
+      msg.innerHTML = `<strong>Tepat Sekali!</strong><br>${explanation}`;
+      playTone('quiz-correct');
+      if (navigator.vibrate) navigator.vibrate([90]);
+    } else {
+      // JAWABAN SALAH: Animasi Getar (Shake Error) + Silang SVG + Nada Thud
+      btn.classList.add('quiz-wrong');
+      if (indicator) indicator.innerHTML = SVG_CROSS;
+      msg.className = 'quiz-msg no';
+      msg.innerHTML = `<strong>Coba Lagi:</strong><br>${explanation}`;
+      playTone('quiz-wrong');
+      if (navigator.vibrate) navigator.vibrate([50, 40, 50]);
+      
+      // Allow re-trying after shake finishes
+      setTimeout(() => {
+        allBtns.forEach(b => b.style.pointerEvents = 'auto');
+      }, 650);
+    }
+
+    msg.style.display = 'block';
+    setTimeout(checkScrollAffordance, 200);
+  }
+
+  // DUAL CANNON FULL-SCREEN CONFETTI GENERATOR (MERIAH)
+  function triggerConfetti() {
+    const canvas = document.getElementById('celebrationCanvas');
+    if (!canvas) return;
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#27667B', '#A0C878', '#DDEB9D', '#F59E0B', '#FCD34D', '#FFFFFF', '#61A3BA'];
+    const particles = [];
+    const count = 140;
+
+    // Dual cannons bursting from bottom left and bottom right
+    for (let i = 0; i < count; i++) {
+      const isLeft = i % 2 === 0;
+      const angle = isLeft ? (Math.random() * 45 + 35) * (Math.PI / 180) : (Math.random() * 45 + 100) * (Math.PI / 180);
+      const speed = Math.random() * 18 + 12;
+
+      particles.push({
+        x: isLeft ? canvas.width * 0.15 : canvas.width * 0.85,
+        y: canvas.height * 0.95,
+        vx: Math.cos(angle) * speed * (isLeft ? 1 : -1),
+        vy: -Math.sin(angle) * speed,
+        size: Math.random() * 7 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 12,
+        gravity: 0.38,
+        drag: 0.985,
+        opacity: 1
+      });
+    }
+
+    let animationId;
+    let frames = 0;
+
+    function render() {
+      frames++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.vx *= p.drag;
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+
+        if (frames > 90) {
+          p.opacity -= 0.015;
+        }
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.5);
+        ctx.restore();
+      });
+
+      if (frames < 170) {
+        animationId = requestAnimationFrame(render);
+      } else {
+        cancelAnimationFrame(animationId);
+        canvas.style.display = 'none';
+      }
+    }
+    render();
+  }
+
+  // Help Drawer Handlers
+  function openHelpDrawer() {
+    getAudioContext();
+    const drawer = document.getElementById('helpDrawer');
+    if (drawer) drawer.classList.add('open');
+  }
+  function closeHelpDrawer() {
+    const drawer = document.getElementById('helpDrawer');
+    if (drawer) drawer.classList.remove('open');
+  }
+  function closeHelpDrawerOnBg(e) {
+    if (e.target.id === 'helpDrawer') {
+      closeHelpDrawer();
+    }
+  }
+
+  // Touch Swipe Gestures
+  (() => {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+      if (swipeGuide) swipeGuide.style.display = 'none';
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 75) {
+        if (diff < 0) {
+          navigateDeck(1);
+        } else {
+          navigateDeck(-1);
+        }
+      }
+    }
+  })();
+
+  // Remove peek nudge class after initial animation completes
+  setTimeout(() => {
+    const c0 = document.getElementById('card-0');
+    if (c0) c0.classList.remove('peek-nudge');
+  }, 2200);
+
+  // Initialize UI
+  updateDeckUI(0);
+</script>
+</body>
+</html>

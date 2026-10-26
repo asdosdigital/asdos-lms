@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Ruang Belajar Siswa - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    /* =====================================================================
+       PALET v3 "Dapur Hangat": krem hangat + teal tenang + hijau daun
+       Semua teks dijaga kontras tinggi (min. 4.5:1) agar nyaman dibaca
+       ===================================================================== */
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --shadow: 0 4px 24px rgba(80, 55, 30, 0.07);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .wrap { max-width: 1060px; margin: auto; padding: 0 20px; }
+
+    /* Top Nav */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1.5px solid var(--line);
+    }
+    .top-nav-in {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 850;
+      font-size: 16px;
+      color: var(--brand-dark);
+    }
+    .brand-link img {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+    }
+    .top-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-tag {
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-exit {
+      background: transparent;
+      border: 1.5px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      padding: 6px 12px;
+      border-radius: 10px;
+      transition: .15s;
+    }
+    .btn-exit:hover {
+      background: var(--danger-bg);
+      border-color: #E9B3A4;
+      color: var(--danger-ink);
+    }
+
+    /* Modal Rincian 7 Hari */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 36, 32, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-box {
+      background: #ffffff;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(42, 36, 32, 0.2);
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1.5px solid var(--line);
+      padding-bottom: 14px;
+    }
+    .modal-head h3 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .modal-close {
+      border: 2px solid var(--line);
+      background: #FBF6EC;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--ink);
+      transition: .15s;
+    }
+    .modal-close:hover {
+      background: var(--peach);
+      border-color: var(--peach-line);
+    }
+    .modal-lesson-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      background: #FBF6EC;
+      transition: .15s;
+    }
+    .modal-lesson-item:hover {
+      background: var(--leaf);
+      border-color: var(--leaf-line);
+      transform: translateY(-1px);
+    }
+    .modal-lesson-item.done {
+      background: #ffffff;
+      border-color: var(--leaf-line);
+    }
+
+    /* Video Player Modal */
+    .video-modal-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: 0;
+      border-radius: 14px;
+      background: #000;
+    }
+
+    /* Auth Screen */
+    .auth-box-wrap {
+      max-width: 460px;
+      margin: 60px auto;
+      background: #ffffff;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 36px 30px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .auth-box-wrap h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 850;
+      letter-spacing: -.4px;
+      color: var(--brand-dark);
+    }
+    .auth-box-wrap p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0 0 24px;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 14px;
+      background: #FBF6EC;
+      color: var(--ink);
+    }
+    .auth-input:focus {
+      border-color: var(--brand);
+      background: #ffffff;
+    }
+    .btn-auth-submit {
+      width: 100%;
+      background: var(--brand);
+      color: white;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--brand-dark);
+      transition: .15s;
+    }
+    .btn-auth-submit:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 var(--brand-dark);
+    }
+
+    /* Swipe Indicator Hint for Mobile */
+    .swipe-hint-pill {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .wrap {
+        padding: 0 14px;
+      }
+      .top-nav-in {
+        height: 60px;
+        gap: 8px;
+      }
+      .brand-link {
+        font-size: 14px;
+        gap: 8px;
+      }
+      .brand-link img {
+        width: 28px;
+        height: 28px;
+      }
+      .user-tag {
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+      .btn-exit {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      /* Single column student profile card */
+      .student-profile-card {
+        grid-template-columns: 1fr !important;
+        padding: 18px 16px !important;
+        gap: 16px !important;
+        margin: 14px 0 18px !important;
+      }
+      .profile-meta h2 {
+        font-size: 22px !important;
+        margin: 4px 0 6px !important;
+      }
+      .profile-meta p {
+        font-size: 14px !important;
+        margin-bottom: 14px !important;
+      }
+      .profile-level-badge {
+        border-radius: 14px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+        padding: 10px 14px !important;
+        box-sizing: border-box !important;
+      }
+      .level-badge-icon {
+        width: 48px !important;
+        height: 48px !important;
+      }
+      .profile-level-texts span {
+        font-size: 11px !important;
+        font-weight: 750 !important;
+        color: #8C5311 !important;
+      }
+      .profile-level-texts strong {
+        font-size: 14px !important;
+        font-weight: 850 !important;
+        color: #422006 !important;
+      }
+      .profile-stats-box {
+        width: 100% !important;
+        padding: 16px 14px !important;
+        box-sizing: border-box !important;
+      }
+      .profile-stats-box .stat-val {
+        font-size: 32px !important;
+      }
+      .profile-quick-links {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+        margin-top: 14px !important;
+      }
+      .quick-link-pill {
+        width: 100% !important;
+        min-height: 44px !important;
+        padding: 10px 14px !important;
+        font-size: 13.5px !important;
+        font-weight: 800 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+      }
+
+      /* Single column Continue card */
+      .continue-highlight-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 18px 16px !important;
+        gap: 14px !important;
+        margin-bottom: 22px !important;
+      }
+      .ch-info {
+        width: 100% !important;
+      }
+      .ch-info h3 {
+        font-size: 19px !important;
+        line-height: 1.35 !important;
+        word-break: normal !important;
+        margin: 4px 0 6px !important;
+      }
+      .ch-info p {
+        font-size: 14px !important;
+      }
+      .ch-btn {
+        width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex !important;
+        min-height: 48px !important;
+        font-size: 15px !important;
+        font-weight: 850 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Tab bar on mobile */
+      .dash-tabs-nav {
+        margin: 14px 0 16px !important;
+        padding: 4px !important;
+      }
+      .dash-tab-btn {
+        padding: 10px 6px !important;
+        font-size: 13px !important;
+        gap: 5px !important;
+      }
+      .dash-tab-btn svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
+      .swipe-hint-pill {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 750;
+        color: var(--muted);
+        margin: 8px auto 14px;
+        background: #F5EBE0;
+        padding: 5px 12px;
+        border-radius: 999px;
+        width: fit-content;
+      }
+      .swipe-hint-pill svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        fill: none;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+      .tools-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="top-nav">
+  <div class="wrap top-nav-in">
+    <a class="brand-link" href="index.html">
+      <img src="asdos-square.png" alt="Asdos Digital">
+      <span>asdos digital academy</span>
+    </a>
+    <div id="topUserNav" class="top-nav-right">
+      <!-- Dinamis via JS -->
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="dashboardMainArea" style="padding-top: 18px; padding-bottom: 60px;">
+  <!-- Konten Portal Dirender Dinamis di Sini -->
+</main>
+
+<!-- FLOATING BOTTOM NAVIGATION (UNTUK HP) -->
+<nav class="mobile-bottom-nav d-none" id="mobileBottomNav" aria-label="Navigasi Menu Belajar">
+  <button type="button" class="mobile-bottom-btn active" data-tab-index="0" onclick="goToDashboardTab(0)">
+    <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+    <span>Belajar</span>
+  </button>
+  <button type="button" class="mobile-bottom-btn" data-tab-index="1" onclick="goToDashboardTab(1)">
+    <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+    <span>Prompt</span>
+  </button>
+  <button type="button" class="mobile-bottom-btn" data-tab-index="2" onclick="goToDashboardTab(2)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <span>Informasi</span>
+  </button>
+</nav>
+
+<!-- MODAL: DAFTAR BAB PROGRAM 7 HARI -->
+<div id="modal7Day" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3>Program Fundamental 7 Hari Animasi AI</h3>
+        <p style="margin:2px 0 0;font-size:13px;color:var(--muted)">Selesaikan langkah bertahap untuk membuka sertifikat di Day 7</p>
+      </div>
+      <button type="button" class="modal-close" onclick="closeModal7Day()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="modal7DayList">
+      <!-- Dinamis via JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PEMUTAR VIDEO TUTORIAL TAMBAHAN -->
+<div id="modalVideoPlayer" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalVideoTitle">Tutorial Video</h3>
+      <button type="button" class="modal-close" onclick="closeVideoModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <iframe id="modalVideoIframe" class="video-modal-frame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+// ==========================================================================
+// STATE TAB & SWIPE GESTURES
+// ==========================================================================
+let currentTabIndex = 0;
+let swipeStartX = 0;
+let swipeStartY = 0;
+let swipeStartTime = 0;
+let isHorizontalGesture = false;
+
+function goToDashboardTab(index, smooth = true) {
+  if (index < 0) index = 0;
+  if (index > 2) index = 2;
+  currentTabIndex = index;
+
+  const track = document.getElementById('dashSwipeTrack');
+  if (track) {
+    track.style.transition = smooth ? 'transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
+    track.style.transform = `translateX(-${index * (100 / 3)}%)`;
+  }
+
+  // Sync tombol aktif di Desktop tab dan Mobile bottom nav
+  document.querySelectorAll('.dash-tab-btn, .mobile-bottom-btn').forEach(btn => {
+    const btnIdx = parseInt(btn.dataset.tabIndex, 10);
+    btn.classList.toggle('active', btnIdx === index);
+  });
+}
+
+function initSwipeGestures() {
+  const viewport = document.getElementById('dashSwipeViewport');
+  if (!viewport) return;
+
+  viewport.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    swipeStartX = e.touches[0].clientX;
+    swipeStartY = e.touches[0].clientY;
+    swipeStartTime = Date.now();
+    isHorizontalGesture = false;
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', (e) => {
+    if (e.touches.length !== 1) return;
+    const diffX = e.touches[0].clientX - swipeStartX;
+    const diffY = e.touches[0].clientY - swipeStartY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+      isHorizontalGesture = true;
+    }
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (e) => {
+    if (!isHorizontalGesture) return;
+    const diffX = e.changedTouches[0].clientX - swipeStartX;
+    const duration = Date.now() - swipeStartTime;
+
+    const isFlick = duration < 320 && Math.abs(diffX) > 35;
+    const isDrag = Math.abs(diffX) > 65;
+
+    if (isFlick || isDrag) {
+      if (diffX < 0) {
+        goToDashboardTab(currentTabIndex + 1);
+      } else {
+        goToDashboardTab(currentTabIndex - 1);
+      }
+    }
+    isHorizontalGesture = false;
+  }, { passive: true });
+}
+
+// Audio synthesizer for feedback
+let audioCtx = null;
+function playSuccessTone() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!audioCtx && AudioContext) audioCtx = new AudioContext();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (!audioCtx) return;
+
+    const notes = [659.25, 830.61, 987.77];
+    notes.forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 0.28);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + idx * 0.08);
+      osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
+    });
+  } catch(e) {}
+}
+
+// ==========================================================================
+// RENDER UTAMA DASHBOARD
+// ==========================================================================
+function renderDashboard() {
+  const main = document.getElementById('dashboardMainArea');
+  const userNav = document.getElementById('topUserNav');
+  const bottomNav = document.getElementById('mobileBottomNav');
+  const student = window.LMS_DB.getCurrentStudent();
+
+  // KONDISI 1: BELUM MASUK AKUN
+  if (!student) {
+    if (bottomNav) bottomNav.classList.add('d-none');
+
+    userNav.innerHTML = `
+      <a href="index.html" style="font-size:14px;font-weight:750;color:var(--brand);display:inline-flex;align-items:center;gap:4px">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Halaman Depan</span>
+      </a>
+    `;
+
+    main.innerHTML = `
+      <div class="auth-box-wrap">
+        <h2>Masuk ke Ruang Belajar</h2>
+        <p>Gunakan email yang terdaftar saat melakukan pembelian modul kelas di Lynk.id.</p>
+        
+        <form onsubmit="event.preventDefault(); doLogin();">
+          <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus>
+          <button type="submit" class="btn-auth-submit">Buka Kelas Saya &rarr;</button>
+          <div id="authErrorMsg" style="display:none;color:var(--danger-ink);font-size:13px;margin-top:12px;font-weight:750;text-align:left;background:var(--danger-bg);padding:8px 12px;border-radius:8px"></div>
+        </form>
+
+        <div style="margin-top:24px;padding-top:18px;border-top:1.5px solid var(--line);font-size:13px;color:var(--muted);text-align:left;line-height:1.6">
+          <p style="margin:0 0 8px"><strong>Belum terdaftar?</strong> <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20tertarik%20ikut%20Kelas%20Animasi%20AI%207%20Hari" target="_blank" rel="noopener" style="color:var(--brand);font-weight:750;text-decoration:underline">Hubungi Tim Asdos di WhatsApp</a></p>
+          <p style="margin:0"><strong>Ingin coba dulu?</strong> <a href="v3.1/day1-v3.1.html" style="color:var(--go);font-weight:750;text-decoration:underline">Buka Day 1 Gratis (Tanpa Akun) &rarr;</a></p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // KONDISI 2: SUDAH MASUK AKUN
+  if (bottomNav) bottomNav.classList.remove('d-none');
+
+  userNav.innerHTML = `
+    <span class="user-tag">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>${student.name}</span>
+    </span>
+    <button type="button" class="btn-exit" onclick="doLogout()">Keluar</button>
+  `;
+
+  const overall = window.getOverallLmsProgress ? window.getOverallLmsProgress() : { completedDays: 0, totalDays: 7, percent: 0, nextDayToLearn: 1, nextDayUrl: 'v3.1/day1-v3.1.html' };
+  const levelInfo = window.LMS_DB.getStudentLevel(overall.completedDays);
+  const categories = window.LMS_DB.getModuleCategories();
+  const infoSettings = window.LMS_DB.getInfoSettings();
+  const promptsList = window.LMS_DB.getPrompts();
+
+  // Highlight Next Day
+  const currentNextDay = window.ASDOS_CURRICULUM ? window.ASDOS_CURRICULUM.find(c => c.day === overall.nextDayToLearn) : null;
+  const nextTitle = currentNextDay ? `Day ${currentNextDay.day} - ${currentNextDay.title}` : `Day ${overall.nextDayToLearn}`;
+  const nextDesc = currentNextDay ? currentNextDay.desc : 'Lanjutkan materi praktik belajar Anda';
+  const nextUrl = (currentNextDay && currentNextDay.url) ? currentNextDay.url : (overall.nextDayUrl || 'v3.1/day1-v3.1.html');
+
+  // Render HTML Struktur Lengkap dengan Navigasi Atas & Carousel Slide
+  main.innerHTML = `
+    <!-- 1. KARTU PROFIL & LEVEL SISWA -->
+    <section class="student-profile-card">
+      <div class="profile-meta">
+        <div class="profile-level-badge">
+          <img src="${levelInfo.badgeSvg || 'assets/badges/level-' + levelInfo.levelNumber + '.svg'}" alt="${levelInfo.title}" class="level-badge-icon" width="52" height="52">
+          <div class="profile-level-texts">
+            <span>[ ${levelInfo.statusBadge} ]</span>
+            <strong>${levelInfo.title}</strong>
+          </div>
+        </div>
+        <h2>Halo, ${student.name}!</h2>
+        <p>${levelInfo.desc}</p>
+      </div>
+
+      <div class="profile-stats-box">
+        <div class="stat-val">${overall.percent}%</div>
+        <div class="stat-lbl">TUNTAS (${overall.completedDays} DARI 7 HARI)</div>
+        <div class="bar" style="height:8px;background:#EADFCF;border-radius:99px;overflow:hidden;margin-top:10px">
+          <div style="height:100%;width:${overall.percent}%;background:var(--go);border-radius:99px;transition:width .4s ease"></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">${student.email}</div>
+      </div>
+    </section>
+
+    <!-- 2. NAVIGASI TAB DESKTOP / TABLET (TAMPIL DI LAYAR LEBAR) -->
+    <nav class="dash-tabs-nav" aria-label="Navigasi Menu Belajar">
+      <button type="button" class="dash-tab-btn active" data-tab-index="0" onclick="goToDashboardTab(0)">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+        <span>Belajar</span>
+      </button>
+      <button type="button" class="dash-tab-btn" data-tab-index="1" onclick="goToDashboardTab(1)">
+        <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span>Prompt</span>
+      </button>
+      <button type="button" class="dash-tab-btn" data-tab-index="2" onclick="goToDashboardTab(2)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Informasi</span>
+      </button>
+    </nav>
+
+    <!-- PETUNJUK GESER DENGAN JEMPOL (KHUSUS HP) -->
+    <div class="swipe-hint-pill">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Geser layar untuk pindah menu</span>
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <!-- 3. VIEWPORT CAROUSEL GESER (THUMB SWIPE CONTAINER) -->
+    <div class="dash-swipe-viewport" id="dashSwipeViewport">
+      <div class="dash-swipe-track" id="dashSwipeTrack">
+        
+        <!-- SLIDE 0: BELAJAR -->
+        <div class="dash-swipe-slide" id="slide-belajar">
+          <!-- Kartu Sorotan Lanjut Belajar -->
+          <div class="continue-highlight-card">
+            <div class="ch-info">
+              <strong style="text-transform:uppercase;letter-spacing:1px;font-size:12px;opacity:0.9">Lanjutkan Hari Ini</strong>
+              <h3 style="margin:4px 0 6px;font-size:22px;letter-spacing:-.3px">${nextTitle}</h3>
+              <p style="margin:0;font-size:15px;opacity:0.92">${nextDesc}</p>
+            </div>
+            <a href="${nextUrl}" class="ch-btn">
+              <span>Buka Materi Sekarang &rarr;</span>
+            </a>
+          </div>
+
+          <!-- Kategori & Galeri Modul Belajar (Notion Gallery Cards) -->
+          ${renderCategoriesHtml(categories, overall)}
+        </div>
+
+        <!-- SLIDE 1: PROMPT -->
+        <div class="dash-swipe-slide" id="slide-prompt">
+          <div class="gallery-sec-head" style="margin-bottom:18px">
+            <h3>Bank Prompt Praktik</h3>
+            <p>Kumpulan perintah kata-kata siap pakai untuk Google Flow, ChatGPT, dan Voice Over. Cukup ketuk satu tombol untuk menyalin.</p>
+          </div>
+          <div class="prompt-list">
+            ${renderPromptsHtml(promptsList)}
+          </div>
+        </div>
+
+        <!-- SLIDE 2: INFORMASI -->
+        <div class="dash-swipe-slide" id="slide-informasi">
+          <!-- Informasi Penting -->
+          <div class="info-block">
+            <h3>Informasi Penting Pengajar</h3>
+            <ol class="info-announcement-list">
+              ${infoSettings.announcements.map(txt => `<li>${txt}</li>`).join('')}
+            </ol>
+            <div style="margin-top:18px">
+              <a href="${infoSettings.memberHubUrl}" target="_blank" rel="noopener" class="quick-link-pill" style="background:#edf5ee;color:var(--brand);font-weight:850;padding:10px 18px;border-color:var(--leaf-line)">
+                <span>Buka Asdos Member Hub &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Link Penting Belajar -->
+          <div class="info-block">
+            <h3>Link Penting Praktik</h3>
+            <div class="tools-grid">
+              ${infoSettings.importantLinks.map(link => `
+                <a href="${link.url}" target="_blank" rel="noopener" class="tool-card-item">
+                  <strong>${link.title}</strong>
+                  <small>${link.desc}</small>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Tools Asdos -->
+          <div class="info-block">
+            <h3>Tools Asdos</h3>
+            <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">Aplikasi bantu yang dirancang khusus untuk mempercepat produksi video animasi Anda.</p>
+            <div class="tools-grid">
+              ${infoSettings.toolsAsdos.map(tool => `
+                <a href="${tool.url}" target="_blank" rel="noopener" class="tool-card-item">
+                  <strong>${tool.name}</strong>
+                  <small>${tool.desc}</small>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  // Inisialisasi gestur sentuh (thumb swipe)
+  initSwipeGestures();
+  goToDashboardTab(currentTabIndex, false);
+}
+
+// ==========================================================================
+// RENDER KARTU GALERI MATERI
+// ==========================================================================
+function renderCategoriesHtml(categories, overall) {
+  return categories.map(cat => {
+    const cardsHtml = cat.cards.map(card => {
+      let clickAction = '';
+      let badgeLabel = card.badge || 'Modul';
+      let footStatus = '';
+
+      if (card.type === 'core_7day') {
+        clickAction = `onclick="openModal7Day(); return false;"`;
+        badgeLabel = `Program 7 Hari &bull; Selesai ${overall.completedDays}/7`;
+        footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--brand);font-weight:850">Lihat Bab &rarr;</span>`;
+      } else if (card.videoUrl) {
+        clickAction = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}'); return false;"`;
+        footStatus = `<span style="color:var(--go);font-weight:800">Tonton Video Tutorial</span>`;
+      } else {
+        clickAction = `href="${card.url || '#'}"`;
+        footStatus = `<span style="color:var(--muted)">Materi Tambahan</span>`;
+      }
+
+      return `
+        <a href="${card.url || '#'}" class="gallery-card" ${clickAction}>
+          <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="gallery-card-thumb">
+          <div class="gallery-card-body">
+            <div>
+              <span class="gallery-badge">${badgeLabel}</span>
+              <h4>${card.title}</h4>
+              <p>${card.desc || ''}</p>
+            </div>
+            <div class="gallery-card-foot">
+              ${footStatus}
+            </div>
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    return `
+      <section class="gallery-section">
+        <div class="gallery-sec-head">
+          <h3>${cat.categoryTitle}</h3>
+          ${cat.categorySubtitle ? `<p>${cat.categorySubtitle}</p>` : ''}
+        </div>
+        <div class="gallery-grid">
+          ${cardsHtml}
+        </div>
+      </section>
+    `;
+  }).join('');
+}
+
+// ==========================================================================
+// RENDER BANK PROMPT
+// ==========================================================================
+function renderPromptsHtml(prompts) {
+  return prompts.map(p => `
+    <article class="prompt-card">
+      <div class="prompt-head">
+        <div>
+          <span class="gallery-badge">${p.targetTool || 'AI Tool'}</span>
+          <h4>${p.title}</h4>
+          <p>${p.description || ''}</p>
+        </div>
+      </div>
+      <div class="prompt-box" id="box_${p.id}">${escapeHtml(p.promptText)}</div>
+      <button type="button" class="btn-copy-prompt" onclick="copyPromptText('box_${p.id}')">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.3" fill="none" style="vertical-align:-2px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Prompt Lengkap</span>
+      </button>
+    </article>
+  `).join('');
+}
+
+// ==========================================================================
+// MODAL PROGRAM 7 HARI
+// ==========================================================================
+function openModal7Day() {
+  const modal = document.getElementById('modal7Day');
+  const container = document.getElementById('modal7DayList');
+  const progress = window.getLmsProgress ? window.getLmsProgress() : {};
+
+  container.innerHTML = window.ASDOS_CURRICULUM.map(item => {
+    const isDone = window.isDayCompleted ? window.isDayCompleted(item.day) : false;
+    const arr = progress['day' + item.day] || [];
+    const count = Array.isArray(arr) ? arr.filter(Boolean).length : 0;
+
+    let statusPill = '';
+    if (isDone) {
+      statusPill = `
+        <span style="font-size:13px;font-weight:800;color:var(--go);display:inline-flex;align-items:center;gap:4px">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Selesai</span>
+        </span>
+      `;
+    } else if (count > 0) {
+      statusPill = `<span style="font-size:13px;font-weight:800;color:var(--brand)">${count}/${item.steps}</span>`;
+    } else {
+      statusPill = `<span style="font-size:13px;font-weight:800;color:var(--muted)">Mulai &rarr;</span>`;
+    }
+
+    return `
+      <a href="${item.url}" class="modal-lesson-item ${isDone ? 'done' : ''}">
+        <div>
+          <strong style="display:block;font-size:15px;color:var(--ink)">Day ${item.day} - ${item.title}</strong>
+          <small style="color:var(--muted);font-size:13px">${item.desc}</small>
+        </div>
+        ${statusPill}
+      </a>
+    `;
+  }).join('');
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal7Day() {
+  document.getElementById('modal7Day').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ==========================================================================
+// MODAL PEMUTAR VIDEO
+// ==========================================================================
+function openVideoModal(titleEncoded, videoUrl) {
+  const modal = document.getElementById('modalVideoPlayer');
+  document.getElementById('modalVideoTitle').textContent = decodeURIComponent(titleEncoded);
+  document.getElementById('modalVideoIframe').src = videoUrl;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+  const modal = document.getElementById('modalVideoPlayer');
+  document.getElementById('modalVideoIframe').src = '';
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ==========================================================================
+// SALIN PROMPT PRAKTIK
+// ==========================================================================
+function copyPromptText(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+
+  navigator.clipboard.writeText(text).then(() => {
+    playSuccessTone();
+    window.showToast('Teks prompt berhasil disalin ke clipboard!');
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    window.showToast('Teks dipilih. Silakan ketuk Salin.');
+  });
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ==========================================================================
+// AUTH LOGIC
+// ==========================================================================
+function doLogin() {
+  const input = document.getElementById('inputStudentEmail');
+  const err = document.getElementById('authErrorMsg');
+  const email = (input.value || '').trim();
+
+  const res = window.LMS_DB.loginStudent(email);
+  if (res.success) {
+    playSuccessTone();
+    window.showToast('Selamat datang, ' + res.student.name + '!');
+    renderDashboard();
+  } else {
+    err.textContent = res.message || 'Email belum terdaftar di whitelist Lynk.id.';
+    err.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  if (confirm('Keluar dari ruang belajar?')) {
+    window.LMS_DB.logoutStudent();
+    window.showToast('Anda telah keluar dari akun.');
+    renderDashboard();
+  }
+}
+
+// Close modals when clicking backdrop
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-backdrop')) {
+    closeModal7Day();
+    closeVideoModal();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', renderDashboard);
+</script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Day 1 · Kenalan dengan Flow - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    /* =====================================================================
+       PALET v3 "Dapur Hangat": krem hangat + teal tenang + hijau daun
+       Semua teks dijaga kontras tinggi (min. 4.5:1) agar nyaman dibaca
+       ===================================================================== */
+    :root {
+      --bg: #FFF9F0;          /* krem hangat, tidak silau */
+      --card: #FFFFFF;
+      --ink: #2A2420;         /* teks utama, hampir hitam hangat */
+      --muted: #5E544C;       /* teks pendukung, tetap terbaca jelas */
+      --line: #E8DCCB;        /* garis lembut */
+      --brand: #1F6B7A;       /* teal: tombol utama & judul */
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;          /* hijau: aksi "salin / berhasil" */
+      --go-dark: #226139;
+      --leaf: #E6F4E4;        /* latar sukses */
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;       /* latar tips / perintah */
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;         /* sorotan istilah */
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;           /* lebih besar dari sebelumnya (13.5px) */
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* ---------- BAR ATAS ---------- */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 46px;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 520px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 10px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.4s ease;
+    }
+
+    /* ---------- AREA KARTU ---------- */
+    .deck-container {
+      max-width: 520px; margin: 0 auto;
+      padding: 14px 16px 130px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+    .mission-card.slide-in-right { animation: inRight 0.3s ease forwards; }
+    .mission-card.slide-in-left { animation: inLeft 0.3s ease forwards; }
+    @keyframes inRight { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+    @keyframes inLeft  { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 14px; font-weight: 800;
+      color: var(--brand-dark); background: var(--sun);
+      border: 1.5px solid #E8CF6A;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 26px; font-weight: 800; line-height: 1.25;
+      letter-spacing: -0.3px; margin: 0 0 8px; color: var(--brand-dark);
+    }
+    .card-desc { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+
+    .goal-line {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin: 0 0 18px;
+      font-size: 16.5px; font-weight: 600;
+    }
+    .goal-line b { color: var(--go-dark); }
+
+    /* ---------- PRATINJAU HASIL (KARTU 0) ---------- */
+    .preview-box {
+      border-radius: 22px; background: var(--brand);
+      padding: 20px 14px; text-align: center; margin-bottom: 18px;
+      color: #fff;
+    }
+    .preview-frame {
+      width: min(100%, 220px); aspect-ratio: 9 / 16;
+      margin: 0 auto 12px; border-radius: 18px;
+      background: linear-gradient(180deg, #CDE9D3 0%, #F7E7B7 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 14px; color: var(--ink);
+      border: 4px solid #fff;
+    }
+    .preview-frame svg { width: 120px; height: 120px; margin-bottom: 10px; }
+    .preview-frame strong { font-size: 16px; }
+    .preview-frame small { font-size: 13.5px; color: var(--muted); }
+    .preview-box p { margin: 0; font-size: 15px; }
+
+    /* ---------- KOTAK-KOTAK INFO ---------- */
+    .info-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .info-box h3 { margin: 0 0 8px; font-size: 17px; color: var(--brand-dark); }
+    .info-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 7px 0; font-size: 16.5px;
+    }
+    .info-row + .info-row { border-top: 1px dashed var(--line); }
+    .info-ico { flex-shrink: 0; width: 26px; text-align: center; }
+
+    .glossary { margin: 0; padding: 0; }
+    .glossary dt {
+      display: inline-block; background: var(--sun); font-weight: 800;
+      padding: 1px 8px; border-radius: 8px; margin-top: 8px;
+    }
+    .glossary dd { margin: 3px 0 0; color: var(--ink); font-size: 16px; }
+
+    /* ---------- VIDEO ---------- */
+    .video-wrap { margin-bottom: 18px; }
+    .step-video-frame {
+      width: 100%; aspect-ratio: 9 / 16; max-width: 280px;
+      margin: 0 auto 8px; border-radius: 18px; overflow: hidden;
+      background: #231C17; border: 3px solid var(--line);
+    }
+    .step-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .video-cap { text-align: center; font-size: 14.5px; color: var(--muted); margin: 0; }
+
+    /* ---------- LANGKAH-LANGKAH ---------- */
+    .steps-title { font-size: 18px; font-weight: 800; margin: 0 0 10px; color: var(--ink); }
+    .steps-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 10px; }
+    .steps-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 16px; padding: 12px 14px; font-size: 17px;
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--brand); color: #fff; font-weight: 800; font-size: 16px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+
+    /* ---------- KOTAK SALIN PERINTAH ---------- */
+    .prompt-copy-card {
+      background: var(--peach); border: 2px dashed var(--peach-line);
+      border-radius: 20px; padding: 16px; margin-bottom: 18px;
+    }
+    .prompt-copy-card h3 { margin: 0 0 4px; font-size: 17px; color: var(--ink); }
+    .prompt-copy-card .hint { margin: 0 0 10px; font-size: 15px; color: var(--muted); }
+    .prompt-copy-text {
+      background: #fff; border: 2px solid var(--peach-line);
+      border-radius: 14px; padding: 14px; margin: 0 0 12px;
+      font-size: 18px; font-weight: 600; line-height: 1.5;
+      user-select: all; -webkit-user-select: all;
+    }
+    .btn-copy-action {
+      width: 100%; min-height: 58px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--go); color: #fff;
+      font-weight: 800; font-size: 18px;
+      border: 0; border-radius: 16px;
+      box-shadow: 0 4px 0 var(--go-dark);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+    .btn-copy-action:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--go-dark); }
+    .btn-copy-action.copied { background: var(--brand); box-shadow: 0 4px 0 var(--brand-dark); }
+    .btn-copy-action svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.3; fill: none; }
+
+    /* ---------- TOMBOL BUKA FLOW ---------- */
+    .btn-outbound-tool {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 58px; background: var(--brand); color: #fff;
+      border-radius: 16px; padding: 12px 16px;
+      font-size: 18px; font-weight: 800; margin-bottom: 14px; text-align: center;
+      box-shadow: 0 4px 0 var(--brand-dark);
+    }
+    .btn-outbound-tool:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark); }
+    .btn-outbound-tool svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.3; fill: none; }
+
+    /* ---------- TIPS & TANDA BERHASIL ---------- */
+    .tip-box {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--sun); border: 2px solid #E8CF6A;
+      border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; font-size: 16.5px;
+    }
+    .success-box {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; font-size: 16.5px;
+    }
+    .success-box strong { color: var(--go-dark); display: block; margin-bottom: 2px; }
+
+    .btn-help-inline {
+      display: block; width: 100%; min-height: 50px;
+      background: #fff; color: var(--brand-dark);
+      border: 2px solid var(--brand); border-radius: 14px;
+      font-size: 16.5px; font-weight: 700; padding: 10px 14px; text-align: center;
+    }
+    .btn-help-inline:active { background: var(--peach); }
+
+    /* ---------- BAR BAWAH ---------- */
+    .deck-bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: rgba(255, 255, 255, 0.97);
+      border-top: 2px solid var(--line);
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+    .deck-bottom-inner {
+      max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+    }
+    .btn-deck-prev {
+      min-width: 76px; height: 58px; border-radius: 16px;
+      border: 2px solid var(--line); background: #fff; color: var(--ink);
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-deck-prev:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-deck-prev svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .btn-deck-next {
+      flex: 1; height: 58px; border-radius: 16px; border: 0;
+      background: var(--brand); color: #fff;
+      font-size: 18px; font-weight: 800;
+      box-shadow: 0 4px 0 var(--brand-dark);
+    }
+    .btn-deck-next:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark); }
+
+    /* ---------- KARTU AKHIR ---------- */
+    .achievement-medal {
+      width: 84px; height: 84px; margin: 0 auto 14px; border-radius: 50%;
+      background: var(--sun); border: 3px solid #E8CF6A;
+      display: grid; place-items: center; font-size: 42px;
+    }
+    .completion-banner {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 20px; padding: 18px 16px; text-align: center; margin-bottom: 18px;
+    }
+    .completion-banner h3 { margin: 6px 0; font-size: 24px; color: var(--go-dark); }
+    .completion-banner p { margin: 0; font-size: 17px; }
+
+    .check-list-final { display: grid; gap: 8px; margin-bottom: 18px; }
+    .check-item-final {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 14px; padding: 12px 14px;
+      display: flex; align-items: center; gap: 12px; font-size: 16.5px;
+    }
+    .check-item-final .tick {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--go); color: #fff; display: grid; place-items: center;
+      font-weight: 800; flex-shrink: 0;
+    }
+
+    .recap-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .recap-box h3 { margin: 0 0 6px; font-size: 18px; color: var(--brand-dark); }
+    .recap-box ul { margin: 0; padding-left: 20px; }
+    .recap-box li { margin: 4px 0; }
+
+    /* ---------- KUIS ---------- */
+    .quiz-box {
+      background: #fff; border: 2px solid var(--brand);
+      border-radius: 20px; padding: 16px; margin-bottom: 18px;
+    }
+    .quiz-title { font-size: 14px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .quiz-q { font-size: 18.5px; font-weight: 800; margin: 0 0 12px; line-height: 1.4; }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-btn {
+      text-align: left; background: #fff; color: var(--ink);
+      border: 2px solid var(--line); padding: 14px; min-height: 56px;
+      border-radius: 14px; font-size: 17px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .quiz-btn:active { background: var(--peach); }
+    .quiz-indicator {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--brand); display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px; font-weight: 800; font-size: 14px;
+    }
+    .quiz-btn.quiz-correct { border-color: var(--go); background: var(--leaf); font-weight: 700; }
+    .quiz-btn.quiz-correct .quiz-indicator { background: var(--go); border-color: var(--go); color: #fff; }
+    .quiz-btn.quiz-wrong { border-color: #C0492B; background: var(--danger-bg); }
+    .quiz-btn.quiz-wrong .quiz-indicator { background: #C0492B; border-color: #C0492B; color: #fff; }
+    .quiz-msg {
+      margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+      font-size: 16.5px; line-height: 1.5; display: none;
+    }
+    .quiz-msg.ok { background: var(--leaf); border: 2px solid var(--leaf-line); }
+    .quiz-msg.no { background: var(--danger-bg); border: 2px solid #E9B3A4; color: var(--danger-ink); }
+
+    .next-day-card {
+      border: 2px solid var(--peach-line); background: var(--peach);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 8px;
+    }
+    .next-day-card small { display: block; font-size: 14px; font-weight: 800; color: var(--brand-dark); }
+    .next-day-card strong { display: block; font-size: 18px; margin: 3px 0 4px; }
+    .next-day-card p { margin: 0; font-size: 16px; color: var(--muted); }
+
+    /* ---------- PUSAT BANTUAN ---------- */
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(42, 36, 32, 0.5);
+      z-index: 100; display: none;
+    }
+    .help-drawer-backdrop.open { display: block; }
+    .help-drawer-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-radius: 26px 26px 0 0;
+      max-width: 520px; margin: 0 auto;
+      padding: 18px 18px calc(24px + env(safe-area-inset-bottom));
+      max-height: 86vh; overflow-y: auto;
+    }
+    .help-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .help-drawer-header h3 { margin: 0; font-size: 21px; color: var(--brand-dark); }
+    .help-drawer-close {
+      min-width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--line);
+      background: #fff; color: var(--ink); font-size: 20px; font-weight: 800;
+    }
+    .faq-item {
+      border: 2px solid var(--line); border-radius: 14px;
+      padding: 12px 14px; margin-bottom: 10px; background: #FBF6EC;
+    }
+    .faq-item strong { display: block; font-size: 17px; color: var(--brand-dark); margin-bottom: 4px; }
+    .faq-item p { margin: 0; font-size: 16px; color: var(--ink); }
+    .btn-wa-sheet {
+      width: 100%; min-height: 58px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #1FA855; color: #fff; font-weight: 800; font-size: 18px;
+      border-radius: 16px; margin-top: 14px;
+    }
+
+    /* ---------- TOAST ---------- */
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 32px); max-width: 420px; text-align: center;
+      background: var(--ink); color: #fff; padding: 12px 18px;
+      border-radius: 16px; font-size: 16px; font-weight: 700;
+      z-index: 150; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    .toast-pill.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+<!-- BAR ATAS -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Bantuan</span>
+    </button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="deckStepTitle">Kenalan dulu</span>
+      <span id="deckStepNum">Langkah 1 dari 6</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<main class="deck-container" id="deckViewport">
+
+  <!-- ============ KARTU 0: KENALAN & PERSIAPAN ============ -->
+  <section class="mission-card active" id="card-0" aria-label="Kenalan dan persiapan">
+    <span class="card-badge">Day 1 · sekitar 15 menit</span>
+    <h1 class="card-title">Hari Ini Kita Buat Gambar Kucing Pertama di HP</h1>
+    <p class="card-desc">Tenang, tidak perlu bisa menggambar dan tidak perlu paham komputer. Anda cukup menulis kalimat biasa, lalu AI yang menggambarkan.</p>
+
+    <div class="preview-box">
+      <div class="preview-frame">
+        <svg viewBox="0 0 120 120" role="img" aria-label="Contoh ilustrasi kucing oren">
+          <polygon points="22,48 24,12 52,32" fill="#E8893A"/>
+          <polygon points="98,48 96,12 68,32" fill="#E8893A"/>
+          <polygon points="28,40 29,22 44,32" fill="#F7B9A0"/>
+          <polygon points="92,40 91,22 76,32" fill="#F7B9A0"/>
+          <ellipse cx="60" cy="68" rx="42" ry="38" fill="#F29A4A"/>
+          <ellipse cx="60" cy="80" rx="20" ry="15" fill="#FFE9D0"/>
+          <circle cx="44" cy="62" r="6" fill="#2A2420"/>
+          <circle cx="76" cy="62" r="6" fill="#2A2420"/>
+          <circle cx="46" cy="60" r="2" fill="#fff"/>
+          <circle cx="78" cy="60" r="2" fill="#fff"/>
+          <polygon points="55,73 65,73 60,79" fill="#D9627A"/>
+          <path d="M60 79 Q54 87 48 83 M60 79 Q66 87 72 83" stroke="#2A2420" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M30 74 L10 70 M30 80 L10 84 M90 74 L110 70 M90 80 L110 84" stroke="#2A2420" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <strong>Kucing Oren di Taman</strong>
+        <small>Contoh gambaran hasilnya</small>
+      </div>
+      <p>Gambar sejenis ini akan Anda buat sendiri hari ini.</p>
+    </div>
+
+    <div class="info-box">
+      <h3>Yang perlu disiapkan</h3>
+      <div class="info-row"><span class="info-ico">📱</span><div>HP dengan internet (Wi-Fi lebih nyaman)</div></div>
+      <div class="info-row"><span class="info-ico">✉️</span><div>Akun Google (Gmail) yang biasa dipakai di HP</div></div>
+      <div class="info-row"><span class="info-ico">☕</span><div>Waktu santai 15 menit. Tidak ada batas waktu, silakan pelan-pelan.</div></div>
+    </div>
+
+    <div class="info-box">
+      <h3>Istilah yang akan Anda temui</h3>
+      <dl class="glossary">
+        <dt>Google Flow</dt>
+        <dd>Tempat kita "memesan" gambar ke AI. Gratis, cukup pakai akun Google.</dd>
+        <dt>Perintah (prompt)</dt>
+        <dd>Kalimat biasa yang kita tulis untuk memberi tahu AI apa yang ingin digambar.</dd>
+        <dt>Tempel (paste)</dt>
+        <dd>Memasukkan kalimat yang sudah disalin. Tahan layar di kolom tulisan, lalu pilih Tempel.</dd>
+        <dt>Rasio 9:16</dt>
+        <dd>Bentuk gambar yang berdiri tegak, pas untuk layar HP, Reels, dan TikTok.</dd>
+      </dl>
+    </div>
+
+    <div class="tip-box"><span>💡</span><div><b>Boleh salah, boleh diulang.</b> Kalau hasil gambar belum bagus, cukup tekan tombol buat lagi. Tidak ada yang rusak.</div></div>
+  </section>
+
+  <!-- ============ KARTU 1: MASUK GOOGLE FLOW ============ -->
+  <section class="mission-card" id="card-1" aria-label="Misi 1">
+    <span class="card-badge">Misi 1 dari 4 · ± 3 menit</span>
+    <h2 class="card-title">Masuk ke Google Flow</h2>
+    <p class="goal-line"><b>Tujuan:</b> sampai di halaman kerja Flow yang masih kosong.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/ahtYHSTSNeM?rel=0&playsinline=1" title="Misi 1: Masuk Flow" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Video 45 detik. Boleh ditonton dulu atau langsung ikuti langkah di bawah.</p>
+    </div>
+
+    <h3 class="steps-title">Ikuti 3 langkah ini</h3>
+    <ol class="steps-list">
+      <li><span class="step-num">1</span><div>Tekan tombol hijau-biru <strong>Buka Google Flow</strong> di bawah. Flow akan terbuka di tab baru.</div></li>
+      <li><span class="step-num">2</span><div>Pilih akun Google yang ada di HP Anda untuk masuk.</div></li>
+      <li><span class="step-num">3</span><div>Ketuk tombol <strong>New project</strong> (artinya: proyek baru).</div></li>
+    </ol>
+
+    <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener noreferrer" class="btn-outbound-tool">
+      <span>Buka Google Flow</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+
+    <div class="tip-box"><span>💡</span><div>Halaman belajar ini tetap terbuka. Setelah selesai di Flow, kembali ke sini lewat tab atau tombol "kembali" di HP, lalu ketuk <b>Lanjut</b>.</div></div>
+
+    <div class="success-box"><strong>✅ Tandanya berhasil</strong>Anda melihat halaman Flow dengan kolom tulisan di bagian bawah.</div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Belum berhasil? Lihat bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 2: PESAN GAMBAR KUCING ============ -->
+  <section class="mission-card" id="card-2" aria-label="Misi 2">
+    <span class="card-badge">Misi 2 dari 4 · ± 4 menit</span>
+    <h2 class="card-title">Pesan Gambar Kucing</h2>
+    <p class="goal-line"><b>Tujuan:</b> AI menggambarkan kucing oren dari kalimat yang Anda tempel.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/gUmTEnx0hOg?rel=0&playsinline=1" title="Misi 2: Bikin Gambar Kucing" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Lihat contoh cara menempel dan menekan tombol buat gambar.</p>
+    </div>
+
+    <div class="prompt-copy-card">
+      <h3>Kalimat perintah untuk AI</h3>
+      <p class="hint">Ketuk tombol hijau di bawah untuk menyalin kalimat ini.</p>
+      <div class="prompt-copy-text" id="promptTextCat">Seekor kucing oren duduk santai di taman kecil yang penuh bunga warna-warni. Suasana cerah dan hangat, format 9:16.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyCat" onclick="copyPromptText('promptTextCat','btnCopyCat')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Kalimat</span>
+      </button>
+    </div>
+
+    <h3 class="steps-title">Ikuti 3 langkah ini</h3>
+    <ol class="steps-list">
+      <li><span class="step-num">1</span><div>Pindah ke tab Flow. <strong>Tahan</strong> jari di kolom tulisan, lalu pilih <strong>Tempel</strong> (Paste).</div></li>
+      <li><span class="step-num">2</span><div>Cari pilihan ukuran, lalu pilih <strong>9:16</strong> (gambar berdiri tegak).</div></li>
+      <li><span class="step-num">3</span><div>Ketuk tombol panah atau <strong>Generate</strong> (artinya: buat). Tunggu sekitar 10 detik.</div></li>
+    </ol>
+
+    <div class="tip-box"><span>💡</span><div>Hasilnya mungkin tidak persis sama dengan contoh. Itu wajar, setiap AI menggambar sedikit berbeda.</div></div>
+
+    <div class="success-box"><strong>✅ Tandanya berhasil</strong>Muncul gambar kucing oren di layar Flow.</div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Gambarnya aneh? Lihat bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 3: UBAH WARNA ============ -->
+  <section class="mission-card" id="card-3" aria-label="Misi 3">
+    <span class="card-badge">Misi 3 dari 4 · ± 3 menit</span>
+    <h2 class="card-title">Ubah Warna Kucing</h2>
+    <p class="goal-line"><b>Tujuan:</b> membuktikan bahwa gambar bisa diubah hanya dengan kata-kata.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/rfBNapDZ3RE?rel=0&playsinline=1" title="Misi 3: Edit Gambar" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Contoh mengubah gambar lewat perintah singkat.</p>
+    </div>
+
+    <div class="prompt-copy-card">
+      <h3>Perintah untuk mengubah warna</h3>
+      <p class="hint">Ketuk tombol hijau untuk menyalin.</p>
+      <div class="prompt-copy-text" id="promptTextEdit">Ubah kucing jadi abu-abu.</div>
+      <button type="button" class="btn-copy-action" id="btnCopyEdit" onclick="copyPromptText('promptTextEdit','btnCopyEdit')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Perintah</span>
+      </button>
+    </div>
+
+    <h3 class="steps-title">Ikuti 3 langkah ini</h3>
+    <ol class="steps-list">
+      <li><span class="step-num">1</span><div>Di Flow, ketuk gambar kucing yang tadi sudah jadi.</div></li>
+      <li><span class="step-num">2</span><div>Ketuk kolom tulisan perubahan (biasanya bertuliskan <em>What do you want to change?</em>).</div></li>
+      <li><span class="step-num">3</span><div>Tempel kalimatnya, lalu ketuk tombol kirim.</div></li>
+    </ol>
+
+    <div class="tip-box"><span>💡</span><div>Setelah ini Anda bebas bereksperimen. Coba ganti dengan <b>"Ubah kucing jadi putih"</b> atau <b>"Tambahkan topi merah"</b>.</div></div>
+
+    <div class="success-box"><strong>✅ Tandanya berhasil</strong>Kucing di layar berubah menjadi abu-abu.</div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Belum berubah? Lihat bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 4: SIMPAN ============ -->
+  <section class="mission-card" id="card-4" aria-label="Misi 4">
+    <span class="card-badge">Misi 4 dari 4 · ± 3 menit</span>
+    <h2 class="card-title">Simpan Gambar ke Galeri HP</h2>
+    <p class="goal-line"><b>Tujuan:</b> gambar kucing tersimpan di HP. Gambar ini akan kita gerakkan jadi video di hari-hari berikutnya.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/wdUPxm_5zak?rel=0&playsinline=1" title="Misi 4: Download Gambar" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Contoh cara mengunduh gambar hasil Flow.</p>
+    </div>
+
+    <h3 class="steps-title">Ikuti 3 langkah ini</h3>
+    <ol class="steps-list">
+      <li><span class="step-num">1</span><div>Ketuk ikon <strong>titik tiga</strong> (⋮) di pojok gambar hasil Anda.</div></li>
+      <li><span class="step-num">2</span><div>Pilih menu <strong>Download</strong> atau <strong>Unduh</strong>.</div></li>
+      <li><span class="step-num">3</span><div>Buka <strong>Galeri</strong> atau folder <strong>Download</strong> di HP untuk memastikan gambarnya ada.</div></li>
+    </ol>
+
+    <div class="success-box"><strong>✅ Tandanya berhasil</strong>Gambar kucing terlihat di Galeri atau folder Download HP Anda.</div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Tidak menemukan tombol download? Lihat bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 5: SELESAI ============ -->
+  <section class="mission-card" id="card-5" aria-label="Selesai">
+    <div style="text-align:center">
+      <div class="achievement-medal" aria-hidden="true">🏅</div>
+    </div>
+
+    <div class="completion-banner">
+      <span class="card-badge">Day 1 selesai</span>
+      <h3>Selamat, Bu! Gambar Pertama Sudah Jadi</h3>
+      <p>Anda baru saja membuktikan bahwa AI bisa dipelajari dari HP, dengan kalimat sehari-hari.</p>
+    </div>
+
+    <div class="check-list-final">
+      <div class="check-item-final"><span class="tick" aria-hidden="true">✓</span><span>Masuk ke Google Flow</span></div>
+      <div class="check-item-final"><span class="tick" aria-hidden="true">✓</span><span>Membuat dan mengubah gambar kucing</span></div>
+      <div class="check-item-final"><span class="tick" aria-hidden="true">✓</span><span>Menyimpan gambar ke Galeri HP</span></div>
+    </div>
+
+    <div class="recap-box">
+      <h3>Yang sudah Anda pelajari</h3>
+      <ul>
+        <li>AI menggambar dari <b>kalimat perintah</b> biasa.</li>
+        <li>Gambar bisa <b>diubah</b> dengan kalimat singkat.</li>
+        <li>Kalau kurang bagus, <b>ulangi</b>. Itu hal normal.</li>
+      </ul>
+    </div>
+
+    <!-- KUIS 1 -->
+    <div class="quiz-box" data-quiz="1">
+      <div class="quiz-title">KUIS SANTAI 1 DARI 2 · tidak ada nilai</div>
+      <p class="quiz-q">Kenapa kita memilih ukuran 9:16?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,true,'Ukuran tegak 9:16 pas untuk layar HP, Reels, dan TikTok.')"><span class="quiz-indicator"></span><span>Supaya pas dan penuh di layar HP, Reels, dan TikTok</span></button>
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,false,'Ukuran gambar menentukan bentuk layar (tegak atau mendatar), tidak berhubungan dengan kuota.')"><span class="quiz-indicator"></span><span>Supaya kuota internet lebih hemat</span></button>
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,false,'Warna ditentukan oleh kalimat perintah, bukan oleh ukuran gambar.')"><span class="quiz-indicator"></span><span>Supaya warnanya otomatis lebih tajam</span></button>
+      </div>
+      <div class="quiz-msg" aria-live="polite"></div>
+    </div>
+
+    <!-- KUIS 2 -->
+    <div class="quiz-box" data-quiz="2">
+      <div class="quiz-title">KUIS SANTAI 2 DARI 2 · tidak ada nilai</div>
+      <p class="quiz-q">Kalau gambar yang jadi kurang bagus, apa yang sebaiknya dilakukan?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,false,'Jangan menyerah dulu. AI memang sering perlu dicoba lebih dari sekali.')"><span class="quiz-indicator"></span><span>Berhenti, berarti saya tidak bisa</span></button>
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,true,'Betul. Mengulang atau mengubah dengan kalimat baru adalah cara kerja AI yang normal.')"><span class="quiz-indicator"></span><span>Tekan buat lagi, atau ubah dengan kalimat baru</span></button>
+        <button type="button" class="quiz-btn" onclick="handleQuizAnswer(this,false,'HP Anda tidak bermasalah. Hasil AI memang bisa bervariasi di setiap percobaan.')"><span class="quiz-indicator"></span><span>Ganti HP yang lebih bagus</span></button>
+      </div>
+      <div class="quiz-msg" aria-live="polite"></div>
+    </div>
+
+    <div class="next-day-card">
+      <small>BESOK DI DAY 2</small>
+      <strong>Membuat Karakter yang Konsisten</strong>
+      <p>Kita buat tokoh yang wajah dan bajunya tetap sama dari depan, samping, dan serong.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- BAR BAWAH -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Kembali ke langkah sebelumnya">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Balik</span>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Mulai Misi 1</span>
+    </button>
+  </div>
+</footer>
+
+<!-- PUSAT BANTUAN -->
+<div class="help-drawer-backdrop" id="helpDrawer" onclick="closeHelpDrawerOnBg(event)" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help-drawer-sheet">
+    <div class="help-drawer-header">
+      <h3 id="helpTitle">Pusat Bantuan</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Tutup bantuan">✕</button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Saya tidak bisa masuk ke Flow</strong>
+      <p>Pastikan Anda memakai akun Google (Gmail) yang aktif di HP. Kalau halaman tidak terbuka, coba pakai Wi-Fi atau tutup lalu buka lagi tombol "Buka Google Flow".</p>
+    </div>
+    <div class="faq-item">
+      <strong>Saya tidak tahu cara "Tempel"</strong>
+      <p>Tahan jari Anda di kolom tulisan selama 1–2 detik sampai muncul pilihan, lalu ketuk <b>Tempel</b> atau <b>Paste</b>.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Kucingnya aneh atau belum mirip</strong>
+      <p>Tekan tombol buat (Generate) sekali lagi. Setiap percobaan menghasilkan gambar yang sedikit berbeda.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Gambarnya gepeng atau melebar</strong>
+      <p>Pilih ukuran <b>9:16</b> sebelum menekan tombol buat, lalu coba lagi.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Tombol Salin tidak bekerja</strong>
+      <p>Tahan jari di kalimat perintah, pilih semua teksnya, lalu ketuk <b>Salin</b> atau <b>Copy</b>.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Masih bingung atau mentok?</strong>
+      <p>Tidak apa-apa, itu hal yang wajar. Admin kami siap menemani sampai Anda berhasil.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Admin%20Haniyo%2C%20saya%20sedang%20belajar%20Day%201%20dan%20butuh%20bantuan%20praktik" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <span>Tanya Admin via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script>
+  const totalCards = 6;
+  const cards = Array.from({ length: totalCards }, (_, i) => document.getElementById('card-' + i));
+  const btnPrev = document.getElementById('btnDeckPrev');
+  const btnNextLabel = document.getElementById('btnNextLabel');
+  const stepTitle = document.getElementById('deckStepTitle');
+  const stepNum = document.getElementById('deckStepNum');
+  const progressFill = document.getElementById('progressFill');
+  const progressTrack = document.getElementById('progressTrack');
+  const PROGRESS_KEY = 'asdos_day1_preview_steps_v2';
+  const POSITION_KEY = 'asdos_day1_v3_position';
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const metaTitles = [
+    'Kenalan dulu',
+    'Misi 1 · Masuk Flow',
+    'Misi 2 · Buat Gambar',
+    'Misi 3 · Ubah Warna',
+    'Misi 4 · Simpan',
+    'Selesai!'
+  ];
+  const nextLabels = [
+    'Mulai Misi 1',
+    'Lanjut ke Misi 2',
+    'Lanjut ke Misi 3',
+    'Lanjut ke Misi 4',
+    'Lihat Hasil Saya',
+    'Buka Day 2'
+  ];
+
+  let currentCardIndex = 0;
+  try {
+    const saved = parseInt(localStorage.getItem(POSITION_KEY), 10);
+    if (saved >= 0 && saved < totalCards - 1) currentCardIndex = saved;
+  } catch (e) {}
+
+  function updateDeckUI(direction) {
+    cards.forEach((card, idx) => {
+      card.classList.remove('active', 'slide-in-right', 'slide-in-left');
+      if (idx === currentCardIndex) {
+        card.classList.add('active');
+        if (direction === 1) card.classList.add('slide-in-right');
+        if (direction === -1) card.classList.add('slide-in-left');
+      }
+    });
+
+    const pct = ((currentCardIndex + 1) / totalCards) * 100;
+    progressFill.style.width = pct + '%';
+    progressTrack.setAttribute('aria-valuenow', String(currentCardIndex + 1));
+    stepTitle.textContent = metaTitles[currentCardIndex];
+    stepNum.textContent = 'Langkah ' + (currentCardIndex + 1) + ' dari ' + totalCards;
+    btnNextLabel.textContent = nextLabels[currentCardIndex];
+    btnPrev.disabled = currentCardIndex === 0;
+
+    if (currentCardIndex === totalCards - 1) {
+      triggerConfetti();
+      if (navigator.vibrate) { try { navigator.vibrate([80, 40, 80]); } catch (e) {} }
+    }
+
+    try {
+      if (currentCardIndex >= 1) {
+        const stepFlags = [
+          currentCardIndex >= 2,
+          currentCardIndex >= 3,
+          currentCardIndex >= 4,
+          currentCardIndex >= 5
+        ];
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(stepFlags));
+      }
+      localStorage.setItem(POSITION_KEY, String(currentCardIndex));
+    } catch (e) {}
+
+    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+  }
+
+  function navigateDeck(direction) {
+    if (direction === 1 && currentCardIndex === totalCards - 1) {
+      window.location.href = 'day2-preview.html';
+      return;
+    }
+    const next = currentCardIndex + direction;
+    if (next >= 0 && next < totalCards) {
+      currentCardIndex = next;
+      updateDeckUI(direction);
+    }
+  }
+
+  /* ---------- SALIN PERINTAH ---------- */
+  function copyPromptText(elementId, buttonId) {
+    const el = document.getElementById(elementId);
+    const btn = document.getElementById(buttonId);
+    if (!el || !btn) return;
+    const text = el.textContent.trim();
+    const originalHTML = btn.innerHTML;
+
+    function onDone() {
+      btn.classList.add('copied');
+      btn.innerHTML = '<span>✓ Sudah Tersalin</span>';
+      showToast('Tersalin! Sekarang buka Flow, tahan layar di kolom tulisan, lalu pilih Tempel.');
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = originalHTML; }, 3500);
+    }
+    function fallbackCopy() {
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        const ok = document.execCommand('copy');
+        sel.removeAllRanges();
+        if (ok) { onDone(); return; }
+      } catch (e) {}
+      showToast('Belum bisa menyalin otomatis. Tahan kalimatnya lalu pilih Salin.');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onDone).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toastPill');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
+  }
+
+  /* ---------- KUIS (bisa dicoba lagi sampai benar) ---------- */
+  function handleQuizAnswer(btn, isCorrect, explanation) {
+    const box = btn.closest('.quiz-box');
+    const msg = box.querySelector('.quiz-msg');
+    const allBtns = box.querySelectorAll('.quiz-btn');
+
+    allBtns.forEach(b => {
+      b.classList.remove('quiz-correct', 'quiz-wrong');
+      const ind = b.querySelector('.quiz-indicator');
+      if (ind) ind.textContent = '';
+    });
+
+    const indicator = btn.querySelector('.quiz-indicator');
+    if (isCorrect) {
+      btn.classList.add('quiz-correct');
+      if (indicator) indicator.textContent = '✓';
+      msg.className = 'quiz-msg ok';
+      msg.innerHTML = '<strong>Betul, Bu! 🎉</strong><br>' + explanation;
+      allBtns.forEach(b => { b.disabled = true; });
+    } else {
+      btn.classList.add('quiz-wrong');
+      if (indicator) indicator.textContent = '✕';
+      msg.className = 'quiz-msg no';
+      msg.innerHTML = '<strong>Belum pas, coba pilihan lain ya.</strong><br>' + explanation;
+    }
+    msg.style.display = 'block';
+  }
+
+  /* ---------- KONFETI (dilewati bila pengguna mengurangi animasi) ---------- */
+  function triggerConfetti() {
+    if (prefersReduced) return;
+    const canvas = document.getElementById('celebrationCanvas');
+    if (!canvas) return;
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ['#1F6B7A', '#2E7D4F', '#F29A4A', '#F7D154', '#E58BA0'];
+    const particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.3,
+      r: Math.random() * 5 + 3,
+      v: Math.random() * 2 + 2,
+      drift: Math.random() * 2 - 1,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    }));
+    let frames = 0;
+    (function render() {
+      frames++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.y += p.v; p.x += p.drift;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.r * 1.6, p.r);
+      });
+      if (frames < 120) requestAnimationFrame(render);
+      else canvas.style.display = 'none';
+    })();
+  }
+
+  /* ---------- BANTUAN ---------- */
+  function openHelpDrawer() { document.getElementById('helpDrawer').classList.add('open'); }
+  function closeHelpDrawer() { document.getElementById('helpDrawer').classList.remove('open'); }
+  function closeHelpDrawerOnBg(e) { if (e.target.id === 'helpDrawer') closeHelpDrawer(); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelpDrawer(); });
+
+  /* ---------- GESER: hanya geseran mendatar yang jelas,
+     tidak aktif saat menyentuh video atau saat bantuan terbuka ---------- */
+  (function () {
+    let sx = 0, sy = 0, ignore = false;
+    document.addEventListener('touchstart', e => {
+      const t = e.target;
+      ignore = !!(t.closest && (t.closest('iframe') || t.closest('.help-drawer-backdrop') || t.closest('.prompt-copy-text')));
+      sx = e.changedTouches[0].clientX;
+      sy = e.changedTouches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      if (ignore) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 90 && Math.abs(dx) > Math.abs(dy) * 2) {
+        navigateDeck(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+  })();
+
+  updateDeckUI(0);
+</script>
+</body>
+</html>
