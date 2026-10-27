@@ -416,15 +416,10 @@
   background: #edf5eb;
 }
 
-/* 8. NAVIGASI BAWAH BERPASANGAN (PAIRED BOTTOM NAVIGATION) */
-.paired-bottom-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+/* 8. NAVIGASI BAWAH BERPASANGAN (PAIRED BOTTOM NAVIGATION - HIDDEN) */
+.paired-bottom-nav,
+#lmsPairedBottomNav {
+  display: none !important;
 }
 .btn-nav-prev, .btn-nav-next {
   display: inline-flex;

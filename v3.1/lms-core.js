@@ -401,42 +401,11 @@ window.getOverallLmsProgress = function() {
 };
 
 // ==========================================================================
-// 7. PAIRED BOTTOM NAVIGATION (PREV & NEXT BUTTONS)
+// 7. PAIRED BOTTOM NAVIGATION (DINONAKTIFKAN KARENA SUDAH ADA DI BAR BAWAH)
 // ==========================================================================
 window.initPairedBottomNav = function(currentDayNumber) {
-  if (document.getElementById('lmsPairedBottomNav')) return;
-  const main = document.querySelector('main.page, main');
-  if (!main) return;
-
-  const nav = document.createElement('div');
-  nav.id = 'lmsPairedBottomNav';
-  nav.className = 'paired-bottom-nav';
-
-  let prevHtml = '';
-  if (currentDayNumber === 1) {
-    const isStudent = window.LMS_DB && window.LMS_DB.getCurrentStudent();
-    prevHtml = `<a href="${isStudent ? 'dashboard.html' : 'index.html'}" class="btn-nav-prev">&larr; ${isStudent ? 'Ruang Belajar' : 'Halaman Utama'}</a>`;
-  } else {
-    const prevDay = currentDayNumber - 1;
-    prevHtml = `<a href="v3.1/day${prevDay}-v3.1.html" class="btn-nav-prev">&larr; Day ${prevDay}</a>`;
-  }
-
-  let nextHtml = '';
-  if (currentDayNumber < 7) {
-    const nextDay = currentDayNumber + 1;
-    nextHtml = `<a href="v3.1/day${nextDay}-v3.1.html" class="btn-nav-next">Lanjut ke Day ${nextDay} &rarr;</a>`;
-  } else if (currentDayNumber === 7) {
-    nextHtml = `<a href="v3.1/day7-v3.1.html" class="btn-nav-next">Cetak Sertifikat Kelulusan</a>`;
-  }
-
-  nav.innerHTML = `${prevHtml}${nextHtml}`;
-
-  const foot = main.querySelector('.foot');
-  if (foot) {
-    main.insertBefore(nav, foot);
-  } else {
-    main.appendChild(nav);
-  }
+  // Dinonaktifkan sesuai permintaan pengguna karena navigasi sudah ada di sticky bottom bar / kartu evaluasi
+  return;
 };
 
 // ==========================================================================
@@ -546,9 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.checkDayAccess(currentDay);
   }
   if (currentDay > 0) {
-    // 2. Inisialisasi drawer & paired bottom nav jika ada
+    // 2. Inisialisasi drawer jika ada
     if (window.initCurriculumDrawer) window.initCurriculumDrawer(currentDay);
-    if (window.initPairedBottomNav) window.initPairedBottomNav(currentDay);
     if (window.initLiteYouTubePlayers) window.initLiteYouTubePlayers();
   }
 });
