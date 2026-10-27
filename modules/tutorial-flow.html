@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Tutorial Google Flow & Manajemen Kredit - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="../lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* BAR ATAS */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 46px;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 520px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 10px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.4s ease;
+    }
+
+    /* AREA KARTU */
+    .deck-container {
+      max-width: 520px; margin: 0 auto;
+      padding: 14px 16px 140px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+    .mission-card.slide-in-right { animation: inRight 0.3s ease forwards; }
+    .mission-card.slide-in-left { animation: inLeft 0.3s ease forwards; }
+    @keyframes inRight { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+    @keyframes inLeft  { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 14px; font-weight: 800;
+      color: var(--brand-dark); background: var(--sun);
+      border: 1.5px solid #E8CF6A;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 26px; font-weight: 800; line-height: 1.25;
+      letter-spacing: -0.3px; margin: 0 0 8px; color: var(--brand-dark);
+    }
+    .card-desc { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+
+    .goal-line {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin: 0 0 18px;
+      font-size: 16.5px; font-weight: 600;
+    }
+    .goal-line b { color: var(--go-dark); }
+
+    /* VIDEO WRAP */
+    .video-wrap { margin-bottom: 18px; }
+    .step-video-frame {
+      position: relative; width: 100%; aspect-ratio: 16/9; max-width: 100%;
+      margin: 0 auto; border-radius: 18px; overflow: hidden;
+      background: #172b25; border: 2px solid var(--line);
+      box-shadow: 0 6px 18px rgba(80, 55, 30, 0.08);
+    }
+    .step-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .video-cap {
+      font-size: 14px; color: var(--muted); text-align: center; margin: 8px 0 0;
+    }
+
+    /* TABEL / KARTU PERBANDINGAN TOKEN */
+    .token-grid {
+      display: grid; gap: 12px; margin-bottom: 18px;
+    }
+    .token-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; border-radius: 14px;
+      border: 2px solid var(--line); background: #FBF6EC;
+    }
+    .token-item.highlight {
+      background: var(--leaf); border-color: var(--leaf-line);
+    }
+    .token-item.warning {
+      background: var(--danger-bg); border-color: #E9B3A4;
+    }
+    .token-name {
+      font-weight: 800; font-size: 16px; color: var(--ink);
+    }
+    .token-desc {
+      font-size: 13.5px; color: var(--muted); margin-top: 2px;
+    }
+    .token-cost-badge {
+      padding: 6px 12px; border-radius: 999px;
+      font-size: 14.5px; font-weight: 800;
+      white-space: nowrap;
+    }
+    .cost-free { background: var(--go); color: #fff; }
+    .cost-normal { background: var(--brand); color: #fff; }
+    .cost-high { background: #C0492B; color: #fff; }
+
+    /* STEPS LIST */
+    .steps-title { font-size: 18px; font-weight: 800; margin: 18px 0 10px; color: var(--brand-dark); }
+    .steps-list { margin: 0 0 18px; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .steps-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 14px; padding: 12px 14px; font-size: 16.5px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--brand); color: #fff;
+      font-weight: 800; font-size: 14.5px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+
+    /* PROMPT COPY CARD */
+    .prompt-copy-card {
+      background: #FBF6EC; border: 2px solid var(--brand);
+      border-radius: 18px; padding: 16px; margin-bottom: 18px;
+    }
+    .prompt-copy-card h3 { font-size: 17px; margin: 0 0 4px; color: var(--brand-dark); }
+    .prompt-copy-card p.hint { font-size: 14.5px; color: var(--muted); margin: 0 0 10px; }
+    .prompt-copy-text {
+      background: #fff; border: 2px dashed var(--brand);
+      border-radius: 12px; padding: 12px 14px; font-size: 16px;
+      line-height: 1.5; color: var(--ink); margin-bottom: 12px;
+      word-break: break-word; user-select: all; font-family: monospace;
+    }
+    .btn-copy-action {
+      width: 100%; min-height: 52px; border-radius: 14px; border: 0;
+      background: var(--go); color: #fff; font-size: 16.5px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 0 var(--go-dark);
+    }
+    .btn-copy-action:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--go-dark); }
+    .btn-copy-action svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* OUTBOUND BUTTON */
+    .btn-outbound-tool {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 52px; border-radius: 14px;
+      background: var(--brand); color: #fff; font-size: 16.5px; font-weight: 800;
+      margin-bottom: 16px; box-shadow: 0 4px 0 var(--brand-dark); text-decoration: none;
+    }
+    .btn-outbound-tool:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brand-dark); }
+    .btn-outbound-tool svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* TIP & SUCCESS BOX */
+    .tip-box {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--sun); border: 2px solid #E8CF6A;
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .tip-ico-wrap {
+      flex-shrink: 0; width: 22px; height: 22px; color: #D97706; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tip-ico-wrap svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .success-box {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .success-box-title {
+      color: var(--go-dark); font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+    }
+    .success-box-title svg {
+      width: 18px; height: 18px; stroke: var(--go-dark); stroke-width: 2.5; fill: none; flex-shrink: 0;
+    }
+
+    .btn-help-inline {
+      width: 100%; padding: 10px 14px; border-radius: 12px;
+      background: transparent; border: 1.5px dashed var(--brand);
+      color: var(--brand); font-size: 15px; font-weight: 750;
+      text-align: center; margin-top: 6px;
+    }
+    .btn-help-inline:active { background: var(--peach); }
+
+    /* TROPHY & CELEBRATION */
+    .achievement-showcase {
+      position: relative; width: 120px; height: 120px;
+      margin: 4px auto 18px; display: flex; align-items: center; justify-content: center;
+    }
+    .trophy-aura {
+      position: absolute; inset: -12px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0) 70%);
+      animation: pulseAura 2.2s infinite ease-in-out; pointer-events: none;
+    }
+    @keyframes pulseAura { 0%, 100% { transform: scale(0.9); opacity: 0.55; } 50% { transform: scale(1.18); opacity: 1; } }
+    .achievement-medal-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #FFF3BF 0%, #FDE68A 100%);
+      border: 3.5px solid #E8CF6A; box-shadow: 0 8px 24px rgba(232, 137, 58, 0.28);
+      display: grid; place-items: center; position: relative; z-index: 2;
+    }
+    .completion-banner {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 20px; padding: 18px 16px; text-align: center; margin-bottom: 18px;
+    }
+    .completion-banner h3 { margin: 6px 0; font-size: 24px; color: var(--go-dark); }
+    .completion-banner p { margin: 0; font-size: 16.5px; }
+
+    .recap-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .recap-box h3 { margin: 0 0 6px; font-size: 18px; color: var(--brand-dark); }
+    .recap-box ul { margin: 0; padding-left: 20px; }
+    .recap-box li { margin: 4px 0; font-size: 16px; }
+
+    /* KUIS REFLEKSI */
+    .quiz-box {
+      background: #fff; border: 2px solid var(--brand);
+      border-radius: 20px; padding: 16px; margin-bottom: 18px;
+    }
+    .quiz-title { font-size: 14px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .quiz-q { font-size: 18px; font-weight: 800; margin: 0 0 12px; line-height: 1.4; color: var(--ink); }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-btn {
+      text-align: left; background: #fff; color: var(--ink);
+      border: 2px solid var(--line); padding: 14px; min-height: 56px;
+      border-radius: 14px; font-size: 16.5px;
+      display: flex; align-items: flex-start; gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+    .quiz-btn:active { background: var(--peach); }
+    .quiz-indicator {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--brand); display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px; font-weight: 800; font-size: 14px;
+    }
+    .quiz-btn.quiz-correct { border-color: var(--go); background: var(--leaf); font-weight: 700; }
+    .quiz-btn.quiz-correct .quiz-indicator { background: var(--go); border-color: var(--go); color: #fff; }
+    .quiz-btn.quiz-wrong { border-color: #C0492B; background: var(--danger-bg); }
+    .quiz-btn.quiz-wrong .quiz-indicator { background: #C0492B; border-color: #C0492B; color: #fff; }
+    .quiz-msg {
+      margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+      font-size: 16px; line-height: 1.5; display: none;
+    }
+    .quiz-msg.ok { background: var(--leaf); border: 2px solid var(--leaf-line); color: var(--go-dark); }
+    .quiz-msg.no { background: var(--danger-bg); border: 2px solid #E9B3A4; color: var(--danger-ink); }
+
+    /* BAR BAWAH */
+    .deck-bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: rgba(255, 255, 255, 0.97);
+      border-top: 2px solid var(--line);
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+    .deck-bottom-inner {
+      max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+    }
+    .btn-deck-prev {
+      min-width: 76px; height: 58px; border-radius: 16px;
+      border: 2px solid var(--line); background: #fff; color: var(--ink);
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-deck-prev:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-deck-prev svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .btn-deck-next {
+      flex: 1; height: 58px; border-radius: 16px; border: 0;
+      background: var(--brand); color: #fff;
+      font-size: 18px; font-weight: 800;
+      box-shadow: 0 4px 0 var(--brand-dark);
+    }
+    .btn-deck-next:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark); }
+
+    /* DRAWER BANTUAN */
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; z-index: 80;
+      background: rgba(42, 36, 32, 0.45);
+      display: none; opacity: 0; transition: opacity 0.25s ease;
+    }
+    .help-drawer-backdrop.show { display: block; opacity: 1; }
+    .help-drawer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+      max-width: 520px; margin: 0 auto;
+      background: #fff; border-radius: 28px 28px 0 0;
+      padding: 22px 18px calc(24px + env(safe-area-inset-bottom));
+      box-shadow: 0 -8px 30px rgba(42, 36, 32, 0.18);
+      max-height: 82vh; overflow-y: auto;
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .help-drawer-backdrop.show .help-drawer { transform: translateY(0); }
+    .help-drawer-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .help-drawer-header h3 { font-size: 20px; margin: 0; color: var(--brand-dark); font-weight: 800; }
+    .help-drawer-close {
+      min-width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line);
+      background: #fff; color: var(--ink); display: grid; place-items: center;
+    }
+    .help-drawer-close svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .faq-item {
+      border: 2px solid var(--line); border-radius: 14px;
+      padding: 12px 14px; margin-bottom: 10px; background: #FBF6EC;
+    }
+    .faq-item strong { display: block; font-size: 16.5px; color: var(--brand-dark); margin-bottom: 4px; }
+    .faq-item p { margin: 0; font-size: 15.5px; color: var(--ink); }
+    .btn-wa-sheet {
+      width: 100%; min-height: 54px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #1FA855; color: #fff; font-weight: 800; font-size: 17px;
+      border-radius: 16px; margin-top: 14px; text-decoration: none;
+    }
+    .btn-wa-sheet svg { width: 22px; height: 22px; fill: currentColor; }
+
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 32px); max-width: 420px; text-align: center;
+      background: var(--ink); color: #fff; padding: 12px 18px;
+      border-radius: 16px; font-size: 16px; font-weight: 700;
+      z-index: 150; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    .toast-pill.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+<!-- BAR ATAS -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="../dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Bantuan</span>
+    </button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="deckStepTitle">Orientasi Modul</span>
+      <span id="deckStepNum">Langkah 1 dari 5</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<main class="deck-container" id="deckViewport">
+
+  <!-- ============ KARTU 0: ORIENTASI & PENGENALAN ============ -->
+  <section class="mission-card active" id="card-0" aria-label="Orientasi modul Google Flow">
+    <span class="card-badge">Modul Lanjutan · ± 15 menit</span>
+    <h1 class="card-title">Kuasai Google Flow Tanpa Takut Boros Kuota</h1>
+    <p class="card-desc">Pelajari antarmuka Google Flow, trik kalkulasi token harian, dan strategi membuat video animasi berkualitas tinggi secara efisien.</p>
+
+    <div class="goal-line">
+      <b>Tujuan modul ini:</b> Memahami mekanisme token kredit Google Flow, memilih model video yang hemat, dan mengeksekusi render video dengan rasio aspek yang tepat.
+    </div>
+
+    <!-- Video Utama Tutorial Flow dari Notion -->
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/eOZVJUmjjwA?rel=0&playsinline=1" title="Dasar Generate Google Flow" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton rekaman panduan dasar generate video di Google Flow.</p>
+    </div>
+
+    <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener noreferrer" class="btn-outbound-tool">
+      <span>Buka Google Flow di Tab Baru</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+      Ada pertanyaan seputar akun Google? Buka bantuan
+    </button>
+  </section>
+
+  <!-- ============ KARTU 1: ATURAN TOKEN & KALKULASI ============ -->
+  <section class="mission-card" id="card-1" aria-label="Aturan token di Google Flow">
+    <span class="card-badge">Langkah 1 · Manajemen Token</span>
+    <h2 class="card-title">Katalog Biaya Kredit di Google Flow</h2>
+    <p class="card-desc">Setiap akun Gmail memiliki jatah kredit tertentu. Pahami konsumsi kredit tiap aksi sebelum menekan tombol render.</p>
+
+    <div class="tip-box">
+      <div class="tip-ico-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <strong>Jatah Kuota Akun:</strong>
+        <div>• Akun Gmail Gratis (Free Plan): Mendapatkan <b>50 Kredit</b> (refresh otomatis setiap hari).</div>
+        <div>• Akun Gemini Pro: Mendapatkan <b>1000 Kredit</b> (refresh bulanan).</div>
+      </div>
+    </div>
+
+    <div class="token-grid">
+      <div class="token-item highlight">
+        <div>
+          <div class="token-name">Generate Image (Nano Banana 2)</div>
+          <div class="token-desc">Membuat gambar konsep acuan awal</div>
+        </div>
+        <span class="token-cost-badge cost-free">0 Kredit (Gratis)</span>
+      </div>
+
+      <div class="token-item">
+        <div>
+          <div class="token-name">Generate Video Veo 3.1 Lite</div>
+          <div class="token-desc">Render klip gerak durasi standar (hemat)</div>
+        </div>
+        <span class="token-cost-badge cost-normal">10 Kredit</span>
+      </div>
+
+      <div class="token-item">
+        <div>
+          <div class="token-name">Generate Video Gemini Omni / Fast</div>
+          <div class="token-desc">Model rekomendasi seimbang (durasi 10 detik)</div>
+        </div>
+        <span class="token-cost-badge cost-normal">15 Kredit</span>
+      </div>
+
+      <div class="token-item warning">
+        <div>
+          <div class="token-name">Generate Video Veo 3.1 Quality</div>
+          <div class="token-desc">Render kualitas maksimal (sangat boros kuota)</div>
+        </div>
+        <span class="token-cost-badge cost-high">100 Kredit</span>
+      </div>
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Formula Hemat Harian (Target 1 Video/Hari)</span>
+      </div>
+      <div>
+        Gunakan 1 akun Gmail gratisan: Buat gambar di Nano Banana (0 kredit) lalu generate 2 video Gemini Omni (2 x 15 = 30 kredit). Kuota masih bersisa 20 kredit untuk cadangan percobaan.
+      </div>
+    </div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+      Kredit harian habis? Cek solusinya di sini
+    </button>
+  </section>
+
+  <!-- ============ KARTU 2: PRAKTIK STEP BY STEP ============ -->
+  <section class="mission-card" id="card-2" aria-label="Alur praktik generate di Flow">
+    <span class="card-badge">Langkah 2 · Alur Praktik</span>
+    <h2 class="card-title">Alur Eksekusi Render Video</h2>
+    <p class="card-desc">Ikuti tahapan standar berikut agar hasil gambar dan video presisi tanpa membuang token sia-sia.</p>
+
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <strong>Buka Fitur Image:</strong> Pilih model <b>Nano Banana 2</b> dan tentukan rasio aspek vertikal <b>9:16</b> (untuk layar HP) atau <b>1:1</b>.
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <strong>Generate Gambar Acuan:</strong> Ketik prompt visual karakter atau latar. Karena biaya gambar adalah 0 kredit, kamu bebas mencoba beberapa kali hingga hasilnya pas.
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <strong>Kunci Gambar sebagai Referensi:</strong> Masukkan gambar hasil tadi ke kolom <i>Image Reference</i> pada panel pembuatan video.
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>
+          <strong>Pilih Model Video:</strong> Gunakan model <b>Gemini Omni</b> (15 kredit) atau <b>Veo 3.1 Lite</b> (10 kredit).
+        </div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>
+          <strong>Unduh Hasil:</strong> Setelah render selesai, ketuk tombol download dan simpan klip berdurasi 5-10 detik ke perangkatmu.
+        </div>
+      </li>
+    </ol>
+
+    <div class="prompt-copy-card">
+      <h3>Formula Prompt Perintah Gerak Kamera</h3>
+      <p class="hint">Salin rumus ini untuk mengarahkan gerakan video di Google Flow:</p>
+      <div class="prompt-copy-text" id="flowPromptCode">Slow cinematic camera pan right, character turns head and smiles gently, soft natural lighting, consistent facial details, 4k high quality, vertical 9:16</div>
+      <button type="button" class="btn-copy-action" onclick="copyFlowPrompt()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Prompt Gerak</span>
+      </button>
+    </div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+      Gerakan karakter rusak atau bergeser? Buka panduan bantuan
+    </button>
+  </section>
+
+  <!-- ============ KARTU 3: KUIS PEMAHAMAN ============ -->
+  <section class="mission-card" id="card-3" aria-label="Kuis pemahaman kredit">
+    <span class="card-badge">Langkah 3 · Uji Pemahaman</span>
+    <h2 class="card-title">Kuis Evaluasi Token Google Flow</h2>
+    <p class="card-desc">Jawab pertanyaan di bawah ini untuk memastikan strategi penggunaan kreditmu sudah tepat.</p>
+
+    <div class="quiz-box">
+      <div class="quiz-title">Pertanyaan Refleksi</div>
+      <p class="quiz-q">Jika kamu menggunakan Akun Gmail Gratis (kuota 50 kredit/hari), model video apa yang sebaiknya dihindari agar kuotamu tidak langsung habis dalam 1 kali percobaan?</p>
+      
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="checkFlowQuiz(this, false, 'Veo 3.1 Lite hanya menghabiskan 10 kredit, sangat aman untuk akun gratisan.')">
+          <span class="quiz-indicator">A</span>
+          <span>Veo 3.1 Lite (10 Kredit)</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="checkFlowQuiz(this, false, 'Gemini Omni menghabiskan 15 kredit, masih cukup untuk 2-3 klip per hari.')">
+          <span class="quiz-indicator">B</span>
+          <span>Gemini Omni (15 Kredit)</span>
+        </button>
+
+        <button type="button" class="quiz-btn" onclick="checkFlowQuiz(this, true, 'Veo 3.1 Quality membutuhkan 100 kredit, melebihi kuota harian akun gratis (50 kredit), sehingga tidak dapat diproses!')">
+          <span class="quiz-indicator">C</span>
+          <span>Veo 3.1 Quality (100 Kredit)</span>
+        </button>
+      </div>
+
+      <div id="quizMsgFlow" class="quiz-msg" role="status" aria-live="polite"></div>
+    </div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+      Masih bingung dengan sistem kredit? Buka panduan bantuan
+    </button>
+  </section>
+
+  <!-- ============ KARTU 4: RANGKUMAN & KELULUSAN ============ -->
+  <section class="mission-card" id="card-4" aria-label="Rangkuman dan penyelesaian modul">
+    <span class="card-badge">Selesai Belajar</span>
+    
+    <div class="achievement-showcase">
+      <div class="trophy-aura"></div>
+      <div class="achievement-medal-icon">
+        <svg viewBox="0 0 24 24" width="46" height="46" stroke="#B45309" stroke-width="2.2" fill="none"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      </div>
+    </div>
+
+    <div class="completion-banner">
+      <h3>Modul Berhasil Dikuasai</h3>
+      <p>Kamu sudah memahami mekanisme kredit Google Flow dan siap memproduksi video tanpa kendala kuota.</p>
+    </div>
+
+    <div class="recap-box">
+      <h3>Poin Kunci yang Perlu Diingat:</h3>
+      <ul>
+        <li>Generate gambar di Nano Banana 2 adalah <b>0 kredit (gratis)</b>. Maksimalkan gambar acuan sebelum membuat video.</li>
+        <li>Akun gratisan mendapatkan <b>50 kredit/hari</b>. Selalu prioritaskan Gemini Omni atau Veo 3.1 Lite.</li>
+        <li>Jika kuota habis, manfaatkan rotasi akun Gmail kedua atau konsultasikan pembelian kuota tambahan.</li>
+      </ul>
+    </div>
+
+    <button type="button" class="btn-outbound-tool" onclick="finishModuleAndReturn()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>Tandai Selesai & Kembali ke Ruang Belajar</span>
+    </button>
+  </section>
+
+</main>
+
+<!-- BAR NAVIGASI BAWAH -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Kembali ke langkah sebelumnya">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Balik</span>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      Lanjut
+    </button>
+  </div>
+</footer>
+
+<!-- DRAWER BANTUAN -->
+<div class="help-drawer-backdrop" id="helpBackdrop" onclick="closeHelpDrawer(event)">
+  <div class="help-drawer" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-drawer-header">
+      <h3 id="helpTitle">Pusat Bantuan Google Flow</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Tutup Bantuan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Kredit 50 harian habis di tengah jalan?</strong>
+      <p>Kamu bisa menggunakan akun Gmail cadangan (login akun lain di browser) untuk mendapatkan 50 kredit baru, atau tunggu reset harian pada jam 07.00 pagi.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Gambar hasilnya melebar atau gepeng di HP?</strong>
+      <p>Pastikan sebelum menekan generate kamu memilih rasio aspek vertikal 9:16 pada pengaturan rasio.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Wajah karakter berubah saat dijadikan video?</strong>
+      <p>Gunakan gambar karakter sebagai Image Reference di panel video, dan gunakan instruksi gerakan kamera yang pelan (slow camera pan) agar AI tidak merombak fitur wajah.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Admin%2C%20saya%20sedang%20mempelajari%20Modul%20Google%20Flow%20dan%20butuh%20bantuan" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      <span>Tanya Admin via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
+
+<script src="../lms-db.js"></script>
+<script src="../lms-core.js"></script>
+<script>
+// ==========================================================================
+// DECK ENGINE: STATE & LOGIC
+// ==========================================================================
+let currentCard = 0;
+const totalCards = 5;
+
+const cardTitles = [
+  'Orientasi Modul',
+  'Manajemen Token',
+  'Alur Praktik',
+  'Uji Pemahaman',
+  'Penyelesaian'
+];
+
+function updateDeckView(direction = 0) {
+  for (let i = 0; i < totalCards; i++) {
+    const card = document.getElementById('card-' + i);
+    if (!card) continue;
+    card.classList.remove('active', 'slide-in-right', 'slide-in-left');
+    if (i === currentCard) {
+      card.classList.add('active');
+      if (direction > 0) card.classList.add('slide-in-right');
+      else if (direction < 0) card.classList.add('slide-in-left');
+    }
+  }
+
+  // Stepper Header
+  const titleEl = document.getElementById('deckStepTitle');
+  const numEl = document.getElementById('deckStepNum');
+  const fillEl = document.getElementById('progressFill');
+  const trackEl = document.getElementById('progressTrack');
+
+  if (titleEl) titleEl.textContent = cardTitles[currentCard] || `Langkah ${currentCard + 1}`;
+  if (numEl) numEl.textContent = `Langkah ${currentCard + 1} dari ${totalCards}`;
+  
+  const pct = Math.round(((currentCard + 1) / totalCards) * 100);
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (trackEl) trackEl.setAttribute('aria-valuenow', currentCard + 1);
+
+  // Bottom Navigation Buttons
+  const btnPrev = document.getElementById('btnDeckPrev');
+  const btnNext = document.getElementById('btnDeckNext');
+
+  if (btnPrev) btnPrev.disabled = (currentCard === 0);
+  if (btnNext) {
+    if (currentCard === totalCards - 1) {
+      btnNext.textContent = 'Kembali ke Ruang Belajar';
+      btnNext.style.background = 'var(--go)';
+    } else {
+      btnNext.textContent = 'Lanjut';
+      btnNext.style.background = 'var(--brand)';
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateDeck(delta) {
+  if (delta > 0) {
+    if (currentCard < totalCards - 1) {
+      currentCard++;
+      updateDeckView(1);
+    } else {
+      finishModuleAndReturn();
+    }
+  } else if (delta < 0) {
+    if (currentCard > 0) {
+      currentCard--;
+      updateDeckView(-1);
+    }
+  }
+}
+
+function copyFlowPrompt() {
+  const el = document.getElementById('flowPromptCode');
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Prompt gerak berhasil disalin.');
+  }).catch(() => {
+    showToast('Gagal menyalin otomatis, silakan salin teks manual.');
+  });
+}
+
+function checkFlowQuiz(btn, isCorrect, feedback) {
+  const box = btn.closest('.quiz-box');
+  if (!box) return;
+  box.querySelectorAll('.quiz-btn').forEach(b => {
+    b.classList.remove('quiz-correct', 'quiz-wrong');
+  });
+  const msg = document.getElementById('quizMsgFlow');
+  if (isCorrect) {
+    btn.classList.add('quiz-correct');
+    msg.className = 'quiz-msg ok';
+    msg.innerHTML = '<strong>Tepat sekali!</strong> ' + feedback;
+    triggerConfetti();
+  } else {
+    btn.classList.add('quiz-wrong');
+    msg.className = 'quiz-msg no';
+    msg.innerHTML = '<strong>Kurang tepat.</strong> ' + feedback;
+  }
+  msg.style.display = 'block';
+}
+
+function finishModuleAndReturn() {
+  // Simpan status progres modul ke lms-db jika tersedia
+  try {
+    const completedKey = 'asdos_module_completed_card-flow-generate';
+    localStorage.setItem(completedKey, 'true');
+  } catch(e) {}
+  triggerConfetti();
+  setTimeout(() => {
+    window.location.href = '../dashboard.html';
+  }, 700);
+}
+
+function openHelpDrawer() {
+  document.getElementById('helpBackdrop').classList.add('show');
+}
+
+function closeHelpDrawer(e) {
+  if (e && e.target && e.target.id !== 'helpBackdrop' && !e.target.closest('.help-drawer-close')) return;
+  document.getElementById('helpBackdrop').classList.remove('show');
+}
+
+function showToast(text) {
+  const t = document.getElementById('toastPill');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 2500);
+}
+
+// Confetti Engine
+function triggerConfetti() {
+  const canvas = document.getElementById('celebrationCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#2E7D4F', '#1F6B7A', '#F59E0B', '#E8893A', '#EF4444', '#10B981'];
+  const particles = Array.from({ length: 60 }, () => ({
+    x: canvas.width * 0.5,
+    y: canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: (Math.random() - 0.7) * 16,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.opacity -= 0.015;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillRect(p.x, p.y, p.size, p.size * 1.3);
+    });
+    frame++;
+    if (frame < 55) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// Touch swipe gesture navigation
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 65) {
+    if (diff > 0 && currentCard < totalCards - 1) navigateDeck(1);
+    else if (diff < 0 && currentCard > 0) navigateDeck(-1);
+  }
+}, { passive: true });
+
+// Init
+updateDeckView();
+</script>
+</body>
+</html>

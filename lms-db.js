@@ -136,13 +136,13 @@
         },
         {
           id: 'card-flow-generate',
-          title: 'Cara Generate Pakai Flow Lanjutan',
-          badge: 'Tips Praktik',
-          desc: 'Mendalami pengaturan kamera, rasio aspek, dan trik variasi gerakan di Google Flow.',
+          title: 'Cara Generate Pakai Flow & Aturan Token',
+          badge: 'Modul Interaktif',
+          desc: 'Panduan lengkap antarmuka Google Flow, manajemen kredit/token harian, dan trik render video tanpa boros kuota.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
-          videoUrl: 'https://www.youtube-nocookie.com/embed/ahtYHSTSNeM?rel=0&playsinline=1',
-          url: '#',
+          type: 'interactive_module',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/eOZVJUmjjwA?rel=0&playsinline=1',
+          url: 'modules/tutorial-flow.html',
           isFree: false
         },
         {
