@@ -941,30 +941,75 @@
   padding: 0 2px;
 }
 
-/* Floating Bottom Navigation (Universal Dock) */
+/* Floating Bottom Navigation (Universal Dock for Desktop & Mobile) */
 .mobile-bottom-nav {
   display: flex !important;
   position: fixed;
-  bottom: 14px;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 28px);
-  max-width: 440px;
+  max-width: 420px;
   z-index: 1000;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(36, 107, 82, 0.16);
+  border: 1.5px solid var(--line, #E8DCCB);
   box-shadow: 0 10px 30px rgba(23, 61, 40, 0.14), 0 2px 8px rgba(0, 0, 0, 0.04);
   border-radius: 999px;
-  padding: 5px 6px;
+  padding: 6px;
   align-items: center;
   justify-content: space-around;
-  gap: 4px;
+  gap: 6px;
   box-sizing: border-box;
 }
 .mobile-bottom-nav.d-none {
   display: none !important;
+}
+
+.mobile-bottom-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--muted, #5E544C);
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.mobile-bottom-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--muted, #5E544C);
+  stroke-width: 2.2;
+  fill: none;
+  transition: stroke 0.2s, transform 0.2s;
+}
+.mobile-bottom-btn:hover:not(.active) {
+  background: #FBF6EC;
+  color: var(--ink, #2A2420);
+}
+.mobile-bottom-btn:hover:not(.active) svg {
+  stroke: var(--ink, #2A2420);
+}
+.mobile-bottom-btn.active {
+  background: var(--leaf, #E6F4E4);
+  color: var(--green, #2E7D4F);
+  font-weight: 850;
+}
+.mobile-bottom-btn.active svg {
+  stroke: var(--green, #2E7D4F);
+  transform: translateY(-1px);
 }
 
 /* Highlight Box: Lanjutkan Belajarmu */
@@ -1319,64 +1364,19 @@
     grid-template-columns: 1fr !important;
   }
 
-  /* Floating Bottom Navigation for Phone */
+  /* Mobile-specific adjustments for Floating Bottom Dock */
   .mobile-bottom-nav {
-    display: flex !important;
-    position: fixed;
-    bottom: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 28px);
-    max-width: 440px;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(36, 107, 82, 0.16);
-    box-shadow: 0 10px 30px rgba(23, 61, 40, 0.14), 0 2px 8px rgba(0, 0, 0, 0.04);
-    border-radius: 999px;
+    bottom: 12px;
     padding: 5px 6px;
-    align-items: center;
-    justify-content: space-around;
     gap: 4px;
-    box-sizing: border-box;
-  }
-  .mobile-bottom-nav.d-none {
-    display: none !important;
+    width: calc(100% - 24px);
   }
   .mobile-bottom-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    padding: 7px 10px;
-    border-radius: 999px;
-    border: 0;
-    background: transparent;
-    color: var(--muted);
+    padding: 6px 8px;
     font-size: 11px;
-    font-weight: 750;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
   }
   .mobile-bottom-btn svg {
-    width: 20px;
-    height: 20px;
-    stroke: var(--muted);
-    stroke-width: 2;
-    fill: none;
-    transition: stroke 0.2s;
-  }
-  .mobile-bottom-btn.active {
-    background: #eef5f0;
-    color: var(--green);
-    font-weight: 850;
-  }
-  .mobile-bottom-btn.active svg {
-    stroke: var(--green);
+    width: 19px;
+    height: 19px;
   }
 }

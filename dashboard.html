@@ -259,6 +259,77 @@
       box-shadow: 0 2px 0 var(--brand-dark);
     }
 
+    /* Floating Bottom Navigation Dock (Universal Desktop & Mobile) */
+    .mobile-bottom-nav {
+      display: flex !important;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 420px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid var(--line);
+      box-shadow: 0 12px 32px rgba(42, 36, 32, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: 999px;
+      padding: 6px;
+      align-items: center;
+      justify-content: space-around;
+      gap: 6px;
+      box-sizing: border-box;
+    }
+    .mobile-bottom-nav.d-none {
+      display: none !important;
+    }
+    .mobile-bottom-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      text-decoration: none;
+    }
+    .mobile-bottom-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--muted);
+      stroke-width: 2.2;
+      fill: none;
+      transition: stroke 0.2s, transform 0.2s;
+    }
+    .mobile-bottom-btn:hover:not(.active) {
+      background: #FBF6EC;
+      color: var(--ink);
+    }
+    .mobile-bottom-btn:hover:not(.active) svg {
+      stroke: var(--ink);
+    }
+    .mobile-bottom-btn.active {
+      background: var(--leaf);
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .mobile-bottom-btn.active svg {
+      stroke: var(--brand);
+      transform: translateY(-1px);
+    }
+
     /* Swipe Indicator Hint for Mobile */
     .swipe-hint-pill {
       display: none;
@@ -419,6 +490,21 @@
       .tools-grid {
         grid-template-columns: 1fr !important;
       }
+
+      .mobile-bottom-nav {
+        bottom: 12px;
+        padding: 5px 6px;
+        gap: 4px;
+        width: calc(100% - 24px);
+      }
+      .mobile-bottom-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+      .mobile-bottom-btn svg {
+        width: 19px;
+        height: 19px;
+      }
     }
   </style>
 </head>
@@ -440,18 +526,18 @@
   <!-- Konten Portal Dirender Dinamis di Sini -->
 </main>
 
-<!-- FLOATING BOTTOM NAVIGATION (UNTUK HP) -->
+<!-- FLOATING BOTTOM NAVIGATION (UNIVERSAL DOCK) -->
 <nav class="mobile-bottom-nav d-none" id="mobileBottomNav" aria-label="Navigasi Menu Belajar">
   <button type="button" class="mobile-bottom-btn active" data-tab-index="0" onclick="goToDashboardTab(0)">
-    <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
     <span>Belajar</span>
   </button>
   <button type="button" class="mobile-bottom-btn" data-tab-index="1" onclick="goToDashboardTab(1)">
-    <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
     <span>Prompt</span>
   </button>
   <button type="button" class="mobile-bottom-btn" data-tab-index="2" onclick="goToDashboardTab(2)">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <span>Informasi</span>
   </button>
 </nav>
