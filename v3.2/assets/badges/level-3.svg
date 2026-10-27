@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="100%" height="100%">
+  <defs>
+    <!-- Filter Glow & Drop Shadow -->
+    <filter id="shadow-l3" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#1E1B4B" flood-opacity="0.2"/>
+    </filter>
+    <filter id="ribbon-shadow-l3" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad-l3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#F5F3FF"/>
+      <stop offset="100%" stop-color="#EDE9FE"/>
+    </linearGradient>
+
+    <linearGradient id="rim-grad-l3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="50%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+
+    <linearGradient id="gold-grad-l3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="60%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <linearGradient id="ribbon-grad-l3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#312E81"/>
+      <stop offset="50%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+
+    <linearGradient id="clap-grad-l3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#1F2937"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#shadow-l3)">
+    <!-- Outer Shield / Medallion -->
+    <path d="M90 12 C124 12 152 24 152 58 C152 104 116 138 90 148 C64 138 28 104 28 58 C28 24 56 12 90 12 Z" 
+          fill="url(#bg-grad-l3)" stroke="url(#rim-grad-l3)" stroke-width="4.5" stroke-linejoin="round"/>
+    
+    <!-- Inner Dotted Ring -->
+    <path d="M90 20 C118 20 143 30 143 60 C143 98 112 128 90 137 C68 128 37 98 37 60 C37 30 62 20 90 20 Z" 
+          fill="none" stroke="#A5B4FC" stroke-width="1.6" stroke-dasharray="3.5 3.5"/>
+
+    <!-- Sparkles -->
+    <path d="M128 38 L130 43 L135 45 L130 47 L128 52 L126 47 L121 45 L126 43 Z" fill="#FFB300"/>
+    <path d="M52 44 L53 48 L57 49 L53 50 L52 54 L51 50 L47 49 L51 48 Z" fill="#818CF8"/>
+
+    <!-- Central Illustration: Director Clapperboard + Audio Voice Wave -->
+    <g transform="translate(90, 75)">
+      <!-- Clapperboard Base -->
+      <g transform="rotate(-6) translate(-22, -18)">
+        <!-- Lower Board -->
+        <rect x="0" y="14" width="44" height="28" rx="3" fill="url(#clap-grad-l3)" stroke="#111827" stroke-width="1.5"/>
+        <!-- Chalk Lines on Board -->
+        <line x1="6" y1="22" x2="38" y2="22" stroke="#9CA3AF" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="6" y1="30" x2="26" y2="30" stroke="#9CA3AF" stroke-width="1.2" stroke-linecap="round"/>
+        
+        <!-- Hinged Clapper Top -->
+        <g transform="rotate(-16, 0, 14)">
+          <rect x="0" y="2" width="44" height="12" rx="2" fill="url(#clap-grad-l3)" stroke="#111827" stroke-width="1.5"/>
+          <!-- Stripes on Clapper Top -->
+          <polygon points="6,2 12,2 8,14 2,14" fill="#FFFFFF"/>
+          <polygon points="16,2 22,2 18,14 12,14" fill="#FFFFFF"/>
+          <polygon points="26,2 32,2 28,14 22,14" fill="#FFFFFF"/>
+          <polygon points="36,2 42,2 38,14 32,14" fill="#FFFFFF"/>
+        </g>
+      </g>
+
+      <!-- Audio Waveform Glow Overlay (Front) -->
+      <g transform="translate(4, 8)">
+        <!-- Backing Glow Pill -->
+        <rect x="-30" y="4" width="56" height="22" rx="11" fill="#FFFFFF" stroke="#4F46E5" stroke-width="1.5" opacity="0.95"/>
+        
+        <!-- Voiceover Sound Bars (Equalizer) -->
+        <rect x="-24" y="11" width="3" height="8" rx="1.5" fill="#4F46E5"/>
+        <rect x="-18" y="8" width="3" height="14" rx="1.5" fill="#6366F1"/>
+        <rect x="-12" y="6" width="3" height="18" rx="1.5" fill="#F59E0B"/>
+        <rect x="-6" y="9" width="3" height="12" rx="1.5" fill="#6366F1"/>
+        <rect x="0" y="5" width="3" height="20" rx="1.5" fill="#F59E0B"/>
+        <rect x="6" y="8" width="3" height="14" rx="1.5" fill="#6366F1"/>
+        <rect x="12" y="10" width="3" height="10" rx="1.5" fill="#4F46E5"/>
+        <rect x="18" y="12" width="3" height="6" rx="1.5" fill="#818CF8"/>
+      </g>
+    </g>
+
+    <!-- Top Badge Level Pill with 3 Stars -->
+    <g transform="translate(90, 24)">
+      <rect x="-42" y="-12" width="84" height="24" rx="12" fill="url(#gold-grad-l3)" stroke="#FFFFFF" stroke-width="1.8"/>
+      <!-- Star 1 -->
+      <polygon points="0,-4 1.5,-1 5,-1 2,1 3.5,4 0,2 -3.5,4 -2,1 -5,-1 -1.5,-1" fill="#FFFFFF" transform="translate(-24, 0) scale(0.9)"/>
+      <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="900" fill="#422006" text-anchor="middle" letter-spacing="0.5">LEVEL 3</text>
+      <!-- Star 3 -->
+      <polygon points="0,-4 1.5,-1 5,-1 2,1 3.5,4 0,2 -3.5,4 -2,1 -5,-1 -1.5,-1" fill="#FFFFFF" transform="translate(24, 0) scale(0.9)"/>
+    </g>
+
+    <!-- Bottom Ribbon -->
+    <g filter="url(#ribbon-shadow-l3)">
+      <!-- Ribbon Tails -->
+      <polygon points="18 152 12 136 28 138" fill="#1E1B4B"/>
+      <polygon points="162 152 168 136 152 138" fill="#1E1B4B"/>
+      
+      <!-- Ribbon Center Plaque -->
+      <path d="M20 134 Q90 140 160 134 L156 154 Q90 160 24 154 Z" fill="url(#ribbon-grad-l3)" stroke="#A5B4FC" stroke-width="1.2"/>
+      
+      <!-- Ribbon Text -->
+      <text x="90" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">TINGKAT MENENGAH</text>
+    </g>
+  </g>
+</svg>

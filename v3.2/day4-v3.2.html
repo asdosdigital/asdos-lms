@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Day 4 · Membuat Video Fakta Unik - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* BAR ATAS */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 46px;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 520px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 10px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.4s ease;
+    }
+
+    /* AREA KARTU */
+    .deck-container {
+      max-width: 520px; margin: 0 auto;
+      padding: 14px 16px 140px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+    .mission-card.slide-in-right { animation: inRight 0.3s ease forwards; }
+    .mission-card.slide-in-left { animation: inLeft 0.3s ease forwards; }
+    @keyframes inRight { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+    @keyframes inLeft  { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 14px; font-weight: 800;
+      color: var(--brand-dark); background: var(--sun);
+      border: 1.5px solid #E8CF6A;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 26px; font-weight: 800; line-height: 1.25;
+      letter-spacing: -0.3px; margin: 0 0 8px; color: var(--brand-dark);
+    }
+    .card-desc { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+
+    .goal-line {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin: 0 0 18px;
+      font-size: 16.5px; font-weight: 600;
+    }
+    .goal-line b { color: var(--go-dark); }
+
+    /* JEMBATAN KEMARIN */
+    .bridging-box {
+      background: #FDFCF7; border: 2px solid #EDE8D5;
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .bridging-tag {
+      font-size: 12px; font-weight: 850; color: #856404;
+      letter-spacing: 0.8px; margin-bottom: 6px;
+    }
+    .bridging-box p { margin: 0; font-size: 16px; color: #554823; line-height: 1.5; }
+
+    /* VIDEO WRAP */
+    .video-wrap { margin-bottom: 18px; }
+    .step-video-frame {
+      position: relative; width: 100%; aspect-ratio: 9/16; max-width: 320px;
+      margin: 0 auto; border-radius: 18px; overflow: hidden;
+      background: #172b25; border: 2px solid var(--line);
+      box-shadow: 0 6px 18px rgba(80, 55, 30, 0.08);
+    }
+    .step-video-frame.aspect-16-9 { aspect-ratio: 16/9; max-width: 100%; }
+    .step-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .video-cap {
+      font-size: 14px; color: var(--muted); text-align: center; margin: 8px 0 0;
+    }
+
+    /* INFO & GLOSSARY */
+    .info-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 16px; margin-bottom: 18px;
+    }
+    .info-box h3 { margin: 0 0 10px; font-size: 18px; color: var(--brand-dark); }
+    .info-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 16px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-ico {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--peach);
+      color: var(--brand); display: grid; place-items: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .info-ico svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .glossary { margin: 0; padding: 0; }
+    .glossary dt { font-weight: 800; color: var(--brand-dark); margin-top: 8px; font-size: 16.5px; }
+    .glossary dt:first-child { margin-top: 0; }
+    .glossary dd { margin: 2px 0 0 0; font-size: 16px; color: var(--muted); }
+
+    /* STEPS LIST */
+    .steps-title { font-size: 18px; font-weight: 800; margin: 18px 0 10px; color: var(--brand-dark); }
+    .steps-list { margin: 0 0 18px; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .steps-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 14px; padding: 12px 14px; font-size: 16.5px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--brand); color: #fff;
+      font-weight: 800; font-size: 14.5px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+
+    /* PROMPT COPY CARD */
+    .prompt-copy-card {
+      background: #FBF6EC; border: 2px solid var(--brand);
+      border-radius: 18px; padding: 16px; margin-bottom: 18px;
+    }
+    .prompt-copy-card h3 { font-size: 17px; margin: 0 0 4px; color: var(--brand-dark); }
+    .prompt-copy-card p.hint { font-size: 14.5px; color: var(--muted); margin: 0 0 10px; }
+    .prompt-copy-text {
+      background: #fff; border: 2px dashed var(--brand);
+      border-radius: 12px; padding: 12px 14px; font-size: 15.5px;
+      line-height: 1.5; color: var(--ink); margin-bottom: 12px;
+      word-break: break-word; user-select: all; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: pre-wrap;
+    }
+    .btn-copy-action {
+      width: 100%; min-height: 52px; border-radius: 14px; border: 0;
+      background: var(--go); color: #fff; font-size: 16.5px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 0 var(--go-dark);
+    }
+    .btn-copy-action:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--go-dark); }
+    .btn-copy-action svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* CALLOUT */
+    .callout {
+      background: #F1F6ED; border-left: 4px solid #83AA6D;
+      border-radius: 12px; padding: 12px 14px; font-size: 15.5px;
+      color: #354D3C; margin: 14px 0;
+    }
+
+    /* TIP & SUCCESS BOX */
+    .tip-box {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--sun); border: 2px solid #E8CF6A;
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .tip-ico-wrap {
+      flex-shrink: 0; width: 22px; height: 22px; color: #D97706; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tip-ico-wrap svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .success-box {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .success-box-title {
+      color: var(--go-dark); font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+    }
+    .success-box-title svg {
+      width: 18px; height: 18px; stroke: var(--go-dark); stroke-width: 2.5; fill: none; flex-shrink: 0;
+    }
+
+    .btn-help-inline {
+      width: 100%; padding: 10px 14px; border-radius: 12px;
+      background: transparent; border: 1.5px dashed var(--brand);
+      color: var(--brand); font-size: 15px; font-weight: 750;
+      text-align: center; margin-top: 6px;
+    }
+    .btn-help-inline:active { background: var(--peach); }
+
+    /* CEK MANDIRI RUBRIK */
+    .self-check-card {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 14px 16px; margin: 16px 0;
+    }
+    .self-check-card strong { display: block; font-size: 16.5px; color: var(--go-dark); margin-bottom: 8px; }
+    .self-check-card ul { margin: 0; padding-left: 18px; }
+    .self-check-card li { font-size: 15.5px; color: var(--ink); margin-bottom: 5px; }
+
+    /* TROPHY & CELEBRATION */
+    .achievement-showcase {
+      position: relative; width: 120px; height: 120px;
+      margin: 4px auto 18px; display: flex; align-items: center; justify-content: center;
+    }
+    .trophy-aura {
+      position: absolute; inset: -12px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0) 70%);
+      animation: pulseAura 2.2s infinite ease-in-out; pointer-events: none;
+    }
+    @keyframes pulseAura { 0%, 100% { transform: scale(0.9); opacity: 0.55; } 50% { transform: scale(1.18); opacity: 1; } }
+    .achievement-medal-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #FFF3BF 0%, #FDE68A 100%);
+      border: 3.5px solid #E8CF6A; box-shadow: 0 8px 24px rgba(232, 137, 58, 0.28);
+      display: grid; place-items: center; position: relative; z-index: 2;
+    }
+    .star-sparkle {
+      position: absolute; width: 18px; height: 18px; z-index: 3;
+      animation: starSparkle 2.2s infinite ease-in-out;
+    }
+    .star-1 { top: 6px; right: 8px; animation-delay: 0.2s; }
+    .star-2 { bottom: 10px; left: 8px; width: 14px; height: 14px; animation-delay: 1.1s; }
+    @keyframes starSparkle { 0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.4; } 50% { transform: scale(1.15) rotate(90deg); opacity: 1; } }
+
+    .completion-banner {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 20px; padding: 18px 16px; text-align: center; margin-bottom: 18px;
+    }
+    .completion-banner h3 { margin: 6px 0; font-size: 24px; color: var(--go-dark); }
+    .completion-banner p { margin: 0; font-size: 16.5px; }
+
+    .recap-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .recap-box h3 { margin: 0 0 6px; font-size: 18px; color: var(--brand-dark); }
+    .recap-box ul { margin: 0; padding-left: 20px; }
+    .recap-box li { margin: 4px 0; font-size: 16px; }
+
+    /* KUIS REFLEKSI */
+    .quiz-box {
+      background: #fff; border: 2px solid var(--brand);
+      border-radius: 20px; padding: 16px; margin-bottom: 18px;
+    }
+    .quiz-title { font-size: 14px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .quiz-q { font-size: 18px; font-weight: 800; margin: 0 0 12px; line-height: 1.4; color: var(--ink); }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-btn {
+      text-align: left; background: #fff; color: var(--ink);
+      border: 2px solid var(--line); padding: 14px; min-height: 56px;
+      border-radius: 14px; font-size: 16.5px;
+      display: flex; align-items: flex-start; gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+    .quiz-btn:active { background: var(--peach); }
+    .quiz-indicator {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--brand); display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px; font-weight: 800; font-size: 13px;
+    }
+    .quiz-btn.quiz-correct { border-color: var(--go); background: var(--leaf); font-weight: 700; }
+    .quiz-btn.quiz-correct .quiz-indicator { background: var(--go); border-color: var(--go); color: #fff; }
+    .quiz-btn.quiz-wrong { border-color: #C0492B; background: var(--danger-bg); }
+    .quiz-btn.quiz-wrong .quiz-indicator { background: #C0492B; border-color: #C0492B; color: #fff; }
+    .quiz-msg {
+      margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+      font-size: 16px; line-height: 1.5; display: none;
+    }
+    .quiz-msg.ok { background: var(--leaf); border: 2px solid var(--leaf-line); color: var(--go-dark); }
+    .quiz-msg.no { background: var(--danger-bg); border: 2px solid #E9B3A4; color: var(--danger-ink); }
+
+    .next-day-card {
+      border: 2px solid var(--peach-line); background: var(--peach);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 8px;
+    }
+    .next-day-card small { display: block; font-size: 13.5px; font-weight: 800; color: var(--brand-dark); }
+    .next-day-card strong { display: block; font-size: 17.5px; margin: 2px 0 4px; }
+    .next-day-card p { margin: 0; font-size: 15.5px; color: var(--muted); }
+
+    /* BAR BAWAH */
+    .deck-bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: rgba(255, 255, 255, 0.97);
+      border-top: 2px solid var(--line);
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+    .deck-bottom-inner {
+      max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+    }
+    .btn-deck-prev {
+      min-width: 76px; height: 58px; border-radius: 16px;
+      border: 2px solid var(--line); background: #fff; color: var(--ink);
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-deck-prev:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-deck-prev svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .btn-deck-next {
+      flex: 1; height: 58px; border-radius: 16px; border: 0;
+      background: var(--brand); color: #fff;
+      font-size: 18px; font-weight: 800;
+      box-shadow: 0 4px 0 var(--brand-dark);
+    }
+    .btn-deck-next:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark); }
+
+    /* PUSAT BANTUAN DRAWER */
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(42, 36, 32, 0.5);
+      z-index: 100; display: none;
+    }
+    .help-drawer-backdrop.show { display: block; }
+    .help-drawer-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-radius: 26px 26px 0 0;
+      max-width: 520px; margin: 0 auto;
+      padding: 18px 18px calc(24px + env(safe-area-inset-bottom));
+      max-height: 84vh; overflow-y: auto;
+    }
+    .help-drawer-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .help-drawer-header h3 { margin: 0; font-size: 20px; color: var(--brand-dark); }
+    .help-drawer-close {
+      min-width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line);
+      background: #fff; color: var(--ink); display: grid; place-items: center;
+    }
+    .help-drawer-close svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .faq-item {
+      border: 2px solid var(--line); border-radius: 14px;
+      padding: 12px 14px; margin-bottom: 10px; background: #FBF6EC;
+    }
+    .faq-item strong { display: block; font-size: 16.5px; color: var(--brand-dark); margin-bottom: 4px; }
+    .faq-item p { margin: 0; font-size: 15.5px; color: var(--ink); }
+    .btn-wa-sheet {
+      width: 100%; min-height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #1FA855; color: #fff; font-weight: 800; font-size: 17px;
+      border-radius: 16px; margin-top: 14px; text-decoration: none;
+    }
+
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 32px); max-width: 420px; text-align: center;
+      background: var(--ink); color: #fff; padding: 12px 18px;
+      border-radius: 16px; font-size: 15.5px; font-weight: 700;
+      z-index: 150; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    .toast-pill.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+<!-- BAR ATAS -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="../dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Bantuan</span>
+    </button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="deckStepTitle">Kenalan &amp; Persiapan</span>
+      <span id="deckStepNum">Kartu 1 dari 7</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<main class="deck-container" id="deckViewport">
+
+  <!-- ============ KARTU 0: KENALAN & PERSIAPAN ============ -->
+  <section class="mission-card active" id="card-0" aria-label="Kenalan dan persiapan Day 4">
+    <span class="card-badge">Day 4 &bull; sekitar 15 menit</span>
+    <h1 class="card-title">Buat Video Fakta Unik</h1>
+    <p class="card-desc">Hari ini kamu akan memakai ChatGPT untuk menyiapkan tiga adegan, lalu membuat gambar dan video di Flow.</p>
+
+    <div class="goal-line">
+      <b>Hasil akhir hari ini:</b> Tiga klip video siap diedit (Format 9:16 Vertikal, 3 Babak Adegan Cerita, Bahan Siap untuk Day 5 &amp; 6).
+    </div>
+
+    <!-- JEMBATAN KEMARIN DAY 4 -->
+    <div class="bridging-box">
+      <div class="bridging-tag">[JEMBATAN KEMARIN]</div>
+      <p><strong>Dari 1 Adegan Latihan (Day 3) ke Cerita 3 Babak (Day 4):</strong> Kemarin kamu sudah membuktikan bahwa gambar bisa diubah jadi video. Hari ini kita buat alur cerita yang lebih utuh: merancang 3 adegan fakta unik menggunakan ChatGPT!</p>
+    </div>
+
+    <div class="info-box">
+      <h3>Yang perlu disiapkan</h3>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <div>Akun ChatGPT (buka lewat HP atau laptop) untuk merancang 3 adegan</div>
+      </div>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
+        <div>Akun Flow yang sudah aktif dari Day 1-3 untuk produksi gambar &amp; video</div>
+      </div>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <div>Aplikasi Catatan di HP untuk menyimpan hasil teks naskah narasi</div>
+      </div>
+    </div>
+
+    <!-- KAMUS SANTAI DAY 4 -->
+    <div class="info-box">
+      <h3>Kamus Santai Day 4</h3>
+      <dl class="glossary">
+        <dt>Hook</dt>
+        <dd>Kalimat pembuka di 3 detik pertama video yang membuat penonton penasaran dan tidak men-skip videomu.</dd>
+        <dt>Scene Prompt</dt>
+        <dd>Instruksi visual per adegan agar alur cerita mengalir runtut dari pembuka sampai penutup.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 1: LANGKAH 1 ============ -->
+  <section class="mission-card" id="card-1" aria-label="Langkah 1: Buka ChatGPT dan mulai chat baru">
+    <span class="card-badge">Langkah 1 dari 5 &bull; &plusmn; 2 menit</span>
+    <h2 class="card-title">Buka ChatGPT &amp; Mulai Chat Baru</h2>
+    <p class="goal-line"><b>Misi:</b> masuk ke ChatGPT dan mulai percakapan baru untuk menyusun cerita fakta unik.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/fgTLPmWLebk?rel=0&amp;playsinline=1" title="Day 4, langkah 1: Login ChatGPT dan mulai chat baru" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Cara membuka chat baru di ChatGPT</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Buka aplikasi ChatGPT di ponsel, atau buka browser menuju <strong>chatgpt.com</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Masuk dengan akun Google atau email yang ingin kamu gunakan.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Ketuk tombol <strong>Chat baru</strong> atau <strong>New Chat</strong> untuk memulai percakapan bersih.</div>
+      </li>
+    </ol>
+
+    <div class="callout">
+      <strong>Catatan:</strong> Masuk ke akun agar percakapan tersimpan rapi dan mudah dibuka lagi saat dibutuhkan.
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Kolom chat baru di ChatGPT sudah terbuka dan siap menerima instruksi prompt fakta unik.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 2: LANGKAH 2 ============ -->
+  <section class="mission-card" id="card-2" aria-label="Langkah 2: Minta ChatGPT membuat 3 adegan">
+    <span class="card-badge">Langkah 2 dari 5 &bull; &plusmn; 3 menit</span>
+    <h2 class="card-title">Minta ChatGPT Membuat 3 Adegan</h2>
+    <p class="goal-line"><b>Misi:</b> menggunakan template perintah terstruktur agar ChatGPT menghasilkan konsep, narasi, dan prompt visual.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/xxHefG4xmgQ?rel=0&amp;playsinline=1" title="Day 4, langkah 2: Membuat prompt 3 adegan di ChatGPT" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Menyusun prompt 3 adegan di ChatGPT</p>
+    </div>
+
+    <div class="prompt-copy-card">
+      <h3>Template Prompt ChatGPT: 3 Adegan</h3>
+      <p class="hint">Salin template di bawah, lalu tentukan topik dan gaya animasi yang kamu sukai:</p>
+      <div class="prompt-copy-text" id="promptChatGpt">Saya ingin membuat video fakta unik yang mudah dipahami dan menarik.
+Bantu saya membuat konsep, narasi, dan prompt gambar/video untuk tepat 3 adegan.
+
+Topik: [Isi topik, contoh: Mengapa Kucing Suka Masuk ke Dalam Kardus?]
+Gaya visual: [3D Cartoon ceria / Pixar style / Realistis]
+Bahasa narasi: Bahasa Indonesia santai dan ramah keluarga.
+
+Tolong susun dalam format:
+1. Konsep Utama &amp; Hook 3 Detik Pertama
+2. Narasi Full (akan dipakai untuk Voice Over AI)
+3. Adegan 1: Prompt Gambar &amp; Prompt Video (5 detik)
+4. Adegan 2: Prompt Gambar &amp; Prompt Video (5 detik)
+5. Adegan 3: Prompt Gambar &amp; Prompt Video (5 detik)
+
+Pastikan tidak ada tulisan teks di dalam gambarnya.</div>
+      <button type="button" class="btn-copy-action" onclick="copyPrompt('promptChatGpt', 'Template prompt ChatGPT berhasil disalin!')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Template Prompt</span>
+      </button>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-ico-wrap" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"/></svg></span>
+      <div><b>Tips Narasi Ringkas:</b> Jika balasan ChatGPT terlalu panjang, balas: <em>"Persingkat narasinya agar pas untuk durasi video 5-8 detik per adegan (maksimal 15 kata per adegan)."</em></div>
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Konsep, narasi full, dan prompt gambar serta video untuk ketiga adegan sudah tersedia rapi di ChatGPT.</div>
+    </div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Narasinya kepanjangan atau gaya tidak sesuai? Buka Bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 3: LANGKAH 3 ============ -->
+  <section class="mission-card" id="card-3" aria-label="Langkah 3: Buat gambar untuk 3 adegan">
+    <span class="card-badge">Langkah 3 dari 5 &bull; &plusmn; 4 menit</span>
+    <h2 class="card-title">Buat Gambar untuk 3 Adegan</h2>
+    <p class="goal-line"><b>Misi:</b> membuat satu gambar untuk setiap adegan dengan prompt gambar ChatGPT di Flow.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame aspect-16-9">
+        <iframe src="https://www.youtube-nocookie.com/embed/fkm4XJhgxcE?rel=0&amp;playsinline=1" title="Day 4, langkah 3: Generate gambar untuk semua adegan di Flow" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Menghasilkan gambar untuk ketiga adegan di Flow</p>
+    </div>
+
+    <div class="callout">
+      <strong>Pilih satu rasio:</strong> Gunakan rasio <strong>9:16</strong> (tegak / vertikal) untuk ketiga gambar agar formatnya seragam saat dirangkai nanti.
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Buka Flow dan project yang akan kamu gunakan.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Salin <strong>Prompt Gambar Adegan 1</strong> dari jawaban ChatGPT.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Tempel ke kolom <strong>"Apa yang ingin Anda buat?"</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Pilih mode gambar: <strong>Nano Banana 2</strong>, rasio <strong>9:16</strong>, dan jumlah <strong>1x</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>Ketuk tombol generate dan tunggu gambar adegan 1 selesai.</div>
+      </li>
+      <li>
+        <span class="step-num">6</span>
+        <div>Ulangi langkah yang sama untuk prompt gambar Adegan 2 dan Adegan 3.</div>
+      </li>
+    </ol>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Tiga gambar adegan (Adegan 1, 2, dan 3) sudah selesai dibuat di Flow dengan rasio 9:16 yang senada.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 4: LANGKAH 4 ============ -->
+  <section class="mission-card" id="card-4" aria-label="Langkah 4: Buat video untuk 3 adegan">
+    <span class="card-badge">Langkah 4 dari 5 &bull; &plusmn; 4 menit</span>
+    <h2 class="card-title">Buat Video untuk 3 Adegan</h2>
+    <p class="goal-line"><b>Misi:</b> menggerakkan ketiga gambar adegan dengan memasangkan prompt video yang tepat.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame aspect-16-9">
+        <iframe src="https://www.youtube-nocookie.com/embed/46nWpjoDKNM?rel=0&amp;playsinline=1" title="Day 4, langkah 4: Generate video di Flow" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Mengubah gambar menjadi 3 klip video di Flow</p>
+    </div>
+
+    <div class="callout">
+      <strong>Catatan penting:</strong> Pasangkan prompt video dan gambar dari nomor adegan yang sama agar alur cerita tidak tertukar.
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Salin <strong>Prompt Video Adegan 1</strong> dari jawaban ChatGPT.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Di project Flow, tempel prompt ke kolom teks.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Ketuk tombol <strong>+</strong>, pilih gambar Adegan 1, lalu ketuk <strong>Add to prompt</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Pilih mode <strong>Video</strong>, model <strong>Omni 1.1 Flash</strong>, rasio <strong>9:16</strong>, dan resolusi <strong>720p</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>Ketuk tombol generate dan tunggu sampai video adegan 1 selesai.</div>
+      </li>
+      <li>
+        <span class="step-num">6</span>
+        <div>Ulangi langkah ini untuk Adegan 2 dan Adegan 3 dengan gambarnya masing-masing.</div>
+      </li>
+    </ol>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Tiga klip video bergerak untuk Adegan 1, 2, dan 3 berhasil diproduksi di Flow.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 5: LANGKAH 5 ============ -->
+  <section class="mission-card" id="card-5" aria-label="Langkah 5: Download video ke perangkat">
+    <span class="card-badge">Langkah 5 dari 5 &bull; &plusmn; 2 menit</span>
+    <h2 class="card-title">Download Ketiga Klip Video</h2>
+    <p class="goal-line"><b>Misi:</b> menyimpan file ketiga klip video 720p ke galeri ponsel agar siap diberi suara di Day 5.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/a0P704b9KsY?rel=0&amp;playsinline=1" title="Day 4, langkah 5: Download video dari Flow" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Mengunduh video hasil generate ke Galeri HP</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Buka video Adegan 1 yang sudah selesai dibuat di Flow.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Ketuk titik tiga di bagian atas video, lalu pilih <strong>Download media</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Pilih resolusi <strong>720p</strong> jika tersedia, lalu simpan ke Galeri ponsel.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Ulangi untuk video Adegan 2 dan Adegan 3. Periksa file hasilnya di Galeri.</div>
+      </li>
+    </ol>
+
+    <!-- CEK MANDIRI KUALITAS DAY 4 -->
+    <div class="self-check-card">
+      <strong>Cek Kesiapan Bahan Day 4:</strong>
+      <ul>
+        <li>Apakah teks narasi 3 adegan sudah disalin/disimpan di catatan (untuk dipakai di Day 5)?</li>
+        <li>Apakah 3 klip video adegan sudah berhasil diunduh dan tersimpan di Galeri ponsel?</li>
+        <li>Apakah gaya visual ketiga adegan terasa senada dan selaras?</li>
+      </ul>
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Tiga klip video tersimpan di Galeri ponsel dan naskah narasi siap digunakan untuk Day 5!</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 6: PERAYAAN & EVALUASI ============ -->
+  <section class="mission-card" id="card-6" aria-label="Perayaan dan evaluasi Day 4">
+    <div class="achievement-showcase">
+      <div class="trophy-aura"></div>
+      <div class="achievement-medal-icon">
+        <svg viewBox="0 0 24 24" width="50" height="50" stroke="#B45309" stroke-width="2" fill="none">
+          <circle cx="12" cy="8" r="7"/>
+          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+        </svg>
+      </div>
+      <svg class="star-sparkle star-1" viewBox="0 0 24 24" fill="#F59E0B">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <svg class="star-sparkle star-2" viewBox="0 0 24 24" fill="#EAB308">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+
+    <div class="completion-banner">
+      <span class="card-badge">DAY 4 TUNTAS!</span>
+      <h3>Tiga Klip Video Siap Melangkah!</h3>
+      <p>Kamu sudah memiliki bahan visual dan narasi cerita 3 babak yang lengkap!</p>
+    </div>
+
+    <div class="recap-box">
+      <h3>Yang sudah kamu buktikan hari ini</h3>
+      <ul>
+        <li>Merancang alur cerita 3 babak dengan Hook memikat melalui ChatGPT.</li>
+        <li>Membuat 3 gambar adegan konsisten rasio 9:16 dengan Nano Banana 2.</li>
+        <li>Menggerakkan gambar menjadi 3 video klip menggunakan Omni 1.1 Flash.</li>
+        <li>Mengunduh 3 video klip ke ponsel dan mengamankan teks naskah untuk Voice Over.</li>
+      </ul>
+    </div>
+
+    <!-- KUIS REFLEKSI DAY 4 ASLI -->
+    <div class="quiz-box">
+      <div class="quiz-title">KUIS REFLEKSI DAY 4 &bull; tidak ada nilai</div>
+      <p class="quiz-q">Kenapa video fakta pendek membutuhkan 'Hook' di 3 detik pertama?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, true, 'Tepat! Hook berfungsi memikat rasa penasaran penonton agar tidak langsung menggeser (skip) ke video lain.')">
+          <span class="quiz-indicator">A</span>
+          <span>Supaya memikat rasa ingin tahu penonton sejak detik pertama</span>
+        </button>
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, false, 'Kualitas gambar diatur oleh model AI dan resolusi unduhan, bukan dari hook narasi.')">
+          <span class="quiz-indicator">B</span>
+          <span>Supaya gambar AI otomatis jadi lebih tajam</span>
+        </button>
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, false, 'Hook adalah bagian dari isi cerita naskah, bukan pengaturan teknis audio.')">
+          <span class="quiz-indicator">C</span>
+          <span>Supaya volume suara langsung kencang</span>
+        </button>
+      </div>
+      <div class="quiz-msg" id="quizFeedback" aria-live="polite"></div>
+    </div>
+
+    <div class="next-day-card">
+      <small>MATERI BERIKUTNYA</small>
+      <strong>Day 5 &bull; Audio, Narasi, dan Dialog AI</strong>
+      <p>Besok kita akan mengisi suara narasi profesional menggunakan Voice Over AI (Google AI Studio) agar videomu terdengar hidup dan alami!</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- BAR BAWAH -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Kembali ke langkah sebelumnya">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Balik</span>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Mulai Langkah 1</span>
+    </button>
+  </div>
+</footer>
+
+<!-- PUSAT BANTUAN DRAWER -->
+<div class="help-drawer-backdrop" id="helpBackdrop" onclick="closeHelpDrawer(event)" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help-drawer-sheet">
+    <div class="help-drawer-header">
+      <h3 id="helpTitle">Pusat Bantuan Day 4</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Tutup bantuan">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Teks narasi dari ChatGPT terlalu panjang?</strong>
+      <p>Ketik balasan ke ChatGPT: <em>"Persingkat narasinya agar pas untuk durasi video 5-8 detik per adegan (maksimal 15 kata per adegan)."</em></p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Gaya visual adegan kedua tidak sesuai atau berbeda jauh?</strong>
+      <p>Tegaskan kembali gaya visual yang diinginkan di kolom prompt, misalnya: <em>"Gunakan gaya 3D kartun ceria Pixar yang sama persis dengan adegan 1."</em></p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Di mana menemukan file video yang sudah diunduh?</strong>
+      <p>Buka aplikasi Galeri atau File Manager di ponsel, lalu periksa album 'Download' atau 'Unduhan'. File video berformat MP4.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Tombol generate video di Flow tidak merespons?</strong>
+      <p>Periksa koneksi internet atau muat ulang halaman Flow. Pastikan gambar referensi sudah terpasang di prompt sebelum menekan tombol generate.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Butuh bantuan mentor langsung?</strong>
+      <p>Hubungi mentor Asdos Digital melalui WhatsApp untuk tanya jawab praktik.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20aku%20sedang%20belajar%20Day%204%20dan%20ada%20pertanyaan%20teknis" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <span>Tanya Mentor via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+// Paywall Check Lynk.id Day 4
+if (window.checkDayAccess) {
+  window.checkDayAccess(4);
+}
+
+const totalCards = 7;
+let currentCard = 0;
+const cards = Array.from({ length: totalCards }, (_, i) => document.getElementById('card-' + i));
+
+const metaTitles = [
+  'Kenalan & Persiapan',
+  'Langkah 1 · Chat Baru ChatGPT',
+  'Langkah 2 · Buat 3 Adegan',
+  'Langkah 3 · Gambar 3 Adegan',
+  'Langkah 4 · Video 3 Adegan',
+  'Langkah 5 · Download Video',
+  'Perayaan & Evaluasi'
+];
+
+const nextLabels = [
+  'Mulai Langkah 1',
+  'Lanjut ke Langkah 2',
+  'Lanjut ke Langkah 3',
+  'Lanjut ke Langkah 4',
+  'Lanjut ke Langkah 5',
+  'Lihat Hasil & Evaluasi',
+  'Selesai & Lanjut ke Day 5'
+];
+
+function updateDeckView(direction = 0) {
+  cards.forEach((card, idx) => {
+    card.classList.remove('active', 'slide-in-right', 'slide-in-left');
+    if (idx === currentCard) {
+      card.classList.add('active');
+      if (direction === 1) card.classList.add('slide-in-right');
+      if (direction === -1) card.classList.add('slide-in-left');
+    }
+  });
+
+  const pct = ((currentCard + 1) / totalCards) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressTrack').setAttribute('aria-valuenow', String(currentCard + 1));
+  document.getElementById('deckStepTitle').textContent = metaTitles[currentCard];
+  document.getElementById('deckStepNum').textContent = 'Kartu ' + (currentCard + 1) + ' dari ' + totalCards;
+  document.getElementById('btnNextLabel').textContent = nextLabels[currentCard];
+  document.getElementById('btnDeckPrev').disabled = currentCard === 0;
+
+  if (currentCard === totalCards - 1) {
+    triggerConfetti();
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateDeck(dir) {
+  if (dir === 1 && currentCard === totalCards - 1) {
+    window.location.href = 'day5-v3.2.html';
+    return;
+  }
+  const target = currentCard + dir;
+  if (target >= 0 && target < totalCards) {
+    currentCard = target;
+    updateDeckView(dir);
+  }
+}
+
+function copyPrompt(id, message) {
+  const elem = document.getElementById(id);
+  if (!elem) return;
+  const text = elem.innerText || elem.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(message || 'Teks berhasil disalin!');
+  }).catch(() => {
+    showToast('Silakan pilih dan salin teks secara manual.');
+  });
+}
+
+function checkQuiz(btn, isCorrect, explanation) {
+  const parent = btn.closest('.quiz-options');
+  const allBtns = parent.querySelectorAll('.quiz-btn');
+  const feedback = document.getElementById('quizFeedback');
+
+  allBtns.forEach(b => {
+    b.classList.remove('quiz-correct', 'quiz-wrong');
+    b.disabled = true;
+  });
+
+  if (isCorrect) {
+    btn.classList.add('quiz-correct');
+    feedback.className = 'quiz-msg ok';
+    feedback.innerHTML = '<strong>Tepat sekali!</strong> ' + explanation;
+  } else {
+    btn.classList.add('quiz-wrong');
+    feedback.className = 'quiz-msg no';
+    feedback.innerHTML = '<strong>Kurang tepat.</strong> ' + explanation;
+  }
+  feedback.style.display = 'block';
+}
+
+function openHelpDrawer() {
+  document.getElementById('helpBackdrop').classList.add('show');
+}
+
+function closeHelpDrawer(e) {
+  if (e && e.target && e.target.id !== 'helpBackdrop' && !e.target.closest('.help-drawer-close')) return;
+  document.getElementById('helpBackdrop').classList.remove('show');
+}
+
+function showToast(text) {
+  const t = document.getElementById('toastPill');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 2500);
+}
+
+// Confetti
+function triggerConfetti() {
+  const canvas = document.getElementById('celebrationCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#2E7D4F', '#1F6B7A', '#F59E0B', '#E8893A', '#EF4444', '#10B981'];
+  const particles = Array.from({ length: 70 }, () => ({
+    x: canvas.width * 0.5,
+    y: canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: (Math.random() - 0.7) * 16,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.opacity -= 0.015;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillRect(p.x, p.y, p.size, p.size * 1.3);
+    });
+    frame++;
+    if (frame < 60) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// Touch swipe
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 65) {
+    if (diff > 0 && currentCard < totalCards - 1) navigateDeck(1);
+    else if (diff < 0 && currentCard > 0) navigateDeck(-1);
+  }
+}, { passive: true });
+
+// Init
+updateDeckView();
+</script>
+</body>
+</html>

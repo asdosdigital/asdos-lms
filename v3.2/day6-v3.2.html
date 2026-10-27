@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Day 6 · Edit Video di Canva - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* BAR ATAS */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 46px;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 520px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 10px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.4s ease;
+    }
+
+    /* AREA KARTU */
+    .deck-container {
+      max-width: 520px; margin: 0 auto;
+      padding: 14px 16px 140px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+    .mission-card.slide-in-right { animation: inRight 0.3s ease forwards; }
+    .mission-card.slide-in-left { animation: inLeft 0.3s ease forwards; }
+    @keyframes inRight { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+    @keyframes inLeft  { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 14px; font-weight: 800;
+      color: var(--brand-dark); background: var(--sun);
+      border: 1.5px solid #E8CF6A;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 26px; font-weight: 800; line-height: 1.25;
+      letter-spacing: -0.3px; margin: 0 0 8px; color: var(--brand-dark);
+    }
+    .card-desc { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+
+    .goal-line {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin: 0 0 18px;
+      font-size: 16.5px; font-weight: 600;
+    }
+    .goal-line b { color: var(--go-dark); }
+
+    /* JEMBATAN KEMARIN */
+    .bridging-box {
+      background: #FDFCF7; border: 2px solid #EDE8D5;
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .bridging-tag {
+      font-size: 12px; font-weight: 850; color: #856404;
+      letter-spacing: 0.8px; margin-bottom: 6px;
+    }
+    .bridging-box p { margin: 0; font-size: 16px; color: #554823; line-height: 1.5; }
+
+    /* VIDEO WRAP */
+    .video-wrap { margin-bottom: 18px; }
+    .step-video-frame {
+      position: relative; width: 100%; aspect-ratio: 9/16; max-width: 320px;
+      margin: 0 auto; border-radius: 18px; overflow: hidden;
+      background: #172b25; border: 2px solid var(--line);
+      box-shadow: 0 6px 18px rgba(80, 55, 30, 0.08);
+    }
+    .step-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .video-cap {
+      font-size: 14px; color: var(--muted); text-align: center; margin: 8px 0 0;
+    }
+
+    /* INFO & GLOSSARY */
+    .info-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 16px; margin-bottom: 18px;
+    }
+    .info-box h3 { margin: 0 0 10px; font-size: 18px; color: var(--brand-dark); }
+    .info-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 16px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-ico {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--peach);
+      color: var(--brand); display: grid; place-items: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .info-ico svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .glossary { margin: 0; padding: 0; }
+    .glossary dt { font-weight: 800; color: var(--brand-dark); margin-top: 8px; font-size: 16.5px; }
+    .glossary dt:first-child { margin-top: 0; }
+    .glossary dd { margin: 2px 0 0 0; font-size: 16px; color: var(--muted); }
+
+    /* STEPS LIST */
+    .steps-title { font-size: 18px; font-weight: 800; margin: 18px 0 10px; color: var(--brand-dark); }
+    .steps-list { margin: 0 0 18px; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .steps-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 14px; padding: 12px 14px; font-size: 16.5px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--brand); color: #fff;
+      font-weight: 800; font-size: 14.5px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+
+    /* OUTBOUND BUTTON */
+    .btn-outbound-tool {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 52px; border-radius: 14px;
+      background: var(--brand); color: #fff; font-size: 16.5px; font-weight: 800;
+      margin-bottom: 16px; box-shadow: 0 4px 0 var(--brand-dark); text-decoration: none;
+    }
+    .btn-outbound-tool:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brand-dark); }
+    .btn-outbound-tool svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* CALLOUT */
+    .callout {
+      background: #F1F6ED; border-left: 4px solid #83AA6D;
+      border-radius: 12px; padding: 12px 14px; font-size: 15.5px;
+      color: #354D3C; margin: 14px 0;
+    }
+
+    /* TIP & SUCCESS BOX */
+    .tip-box {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--sun); border: 2px solid #E8CF6A;
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .tip-ico-wrap {
+      flex-shrink: 0; width: 22px; height: 22px; color: #D97706; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tip-ico-wrap svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .success-box {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; font-size: 16px;
+    }
+    .success-box-title {
+      color: var(--go-dark); font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+    }
+    .success-box-title svg {
+      width: 18px; height: 18px; stroke: var(--go-dark); stroke-width: 2.5; fill: none; flex-shrink: 0;
+    }
+
+    .btn-help-inline {
+      width: 100%; padding: 10px 14px; border-radius: 12px;
+      background: transparent; border: 1.5px dashed var(--brand);
+      color: var(--brand); font-size: 15px; font-weight: 750;
+      text-align: center; margin-top: 6px;
+    }
+    .btn-help-inline:active { background: var(--peach); }
+
+    /* CEK MANDIRI RUBRIK */
+    .self-check-card {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 14px 16px; margin: 16px 0;
+    }
+    .self-check-card strong { display: block; font-size: 16.5px; color: var(--go-dark); margin-bottom: 8px; }
+    .self-check-card ul { margin: 0; padding-left: 18px; }
+    .self-check-card li { font-size: 15.5px; color: var(--ink); margin-bottom: 5px; }
+
+    /* TROPHY & CELEBRATION */
+    .achievement-showcase {
+      position: relative; width: 120px; height: 120px;
+      margin: 4px auto 18px; display: flex; align-items: center; justify-content: center;
+    }
+    .trophy-aura {
+      position: absolute; inset: -12px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0) 70%);
+      animation: pulseAura 2.2s infinite ease-in-out; pointer-events: none;
+    }
+    @keyframes pulseAura { 0%, 100% { transform: scale(0.9); opacity: 0.55; } 50% { transform: scale(1.18); opacity: 1; } }
+    .achievement-medal-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #FFF3BF 0%, #FDE68A 100%);
+      border: 3.5px solid #E8CF6A; box-shadow: 0 8px 24px rgba(232, 137, 58, 0.28);
+      display: grid; place-items: center; position: relative; z-index: 2;
+    }
+    .star-sparkle {
+      position: absolute; width: 18px; height: 18px; z-index: 3;
+      animation: starSparkle 2.2s infinite ease-in-out;
+    }
+    .star-1 { top: 6px; right: 8px; animation-delay: 0.2s; }
+    .star-2 { bottom: 10px; left: 8px; width: 14px; height: 14px; animation-delay: 1.1s; }
+    @keyframes starSparkle { 0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.4; } 50% { transform: scale(1.15) rotate(90deg); opacity: 1; } }
+
+    .completion-banner {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 20px; padding: 18px 16px; text-align: center; margin-bottom: 18px;
+    }
+    .completion-banner h3 { margin: 6px 0; font-size: 24px; color: var(--go-dark); }
+    .completion-banner p { margin: 0; font-size: 16.5px; }
+
+    .recap-box {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .recap-box h3 { margin: 0 0 6px; font-size: 18px; color: var(--brand-dark); }
+    .recap-box ul { margin: 0; padding-left: 20px; }
+    .recap-box li { margin: 4px 0; font-size: 16px; }
+
+    /* KUIS REFLEKSI */
+    .quiz-box {
+      background: #fff; border: 2px solid var(--brand);
+      border-radius: 20px; padding: 16px; margin-bottom: 18px;
+    }
+    .quiz-title { font-size: 14px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .quiz-q { font-size: 18px; font-weight: 800; margin: 0 0 12px; line-height: 1.4; color: var(--ink); }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-btn {
+      text-align: left; background: #fff; color: var(--ink);
+      border: 2px solid var(--line); padding: 14px; min-height: 56px;
+      border-radius: 14px; font-size: 16.5px;
+      display: flex; align-items: flex-start; gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+    .quiz-btn:active { background: var(--peach); }
+    .quiz-indicator {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--brand); display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px; font-weight: 800; font-size: 13px;
+    }
+    .quiz-btn.quiz-correct { border-color: var(--go); background: var(--leaf); font-weight: 700; }
+    .quiz-btn.quiz-correct .quiz-indicator { background: var(--go); border-color: var(--go); color: #fff; }
+    .quiz-btn.quiz-wrong { border-color: #C0492B; background: var(--danger-bg); }
+    .quiz-btn.quiz-wrong .quiz-indicator { background: #C0492B; border-color: #C0492B; color: #fff; }
+    .quiz-msg {
+      margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+      font-size: 16px; line-height: 1.5; display: none;
+    }
+    .quiz-msg.ok { background: var(--leaf); border: 2px solid var(--leaf-line); color: var(--go-dark); }
+    .quiz-msg.no { background: var(--danger-bg); border: 2px solid #E9B3A4; color: var(--danger-ink); }
+
+    .next-day-card {
+      border: 2px solid var(--peach-line); background: var(--peach);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 8px;
+    }
+    .next-day-card small { display: block; font-size: 13.5px; font-weight: 800; color: var(--brand-dark); }
+    .next-day-card strong { display: block; font-size: 17.5px; margin: 2px 0 4px; }
+    .next-day-card p { margin: 0; font-size: 15.5px; color: var(--muted); }
+
+    /* BAR BAWAH */
+    .deck-bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: rgba(255, 255, 255, 0.97);
+      border-top: 2px solid var(--line);
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+    .deck-bottom-inner {
+      max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+    }
+    .btn-deck-prev {
+      min-width: 76px; height: 58px; border-radius: 16px;
+      border: 2px solid var(--line); background: #fff; color: var(--ink);
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-deck-prev:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-deck-prev svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .btn-deck-next {
+      flex: 1; height: 58px; border-radius: 16px; border: 0;
+      background: var(--brand); color: #fff;
+      font-size: 18px; font-weight: 800;
+      box-shadow: 0 4px 0 var(--brand-dark);
+    }
+    .btn-deck-next:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark); }
+
+    /* PUSAT BANTUAN DRAWER */
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(42, 36, 32, 0.5);
+      z-index: 100; display: none;
+    }
+    .help-drawer-backdrop.show { display: block; }
+    .help-drawer-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-radius: 26px 26px 0 0;
+      max-width: 520px; margin: 0 auto;
+      padding: 18px 18px calc(24px + env(safe-area-inset-bottom));
+      max-height: 84vh; overflow-y: auto;
+    }
+    .help-drawer-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .help-drawer-header h3 { margin: 0; font-size: 20px; color: var(--brand-dark); }
+    .help-drawer-close {
+      min-width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line);
+      background: #fff; color: var(--ink); display: grid; place-items: center;
+    }
+    .help-drawer-close svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .faq-item {
+      border: 2px solid var(--line); border-radius: 14px;
+      padding: 12px 14px; margin-bottom: 10px; background: #FBF6EC;
+    }
+    .faq-item strong { display: block; font-size: 16.5px; color: var(--brand-dark); margin-bottom: 4px; }
+    .faq-item p { margin: 0; font-size: 15.5px; color: var(--ink); }
+    .btn-wa-sheet {
+      width: 100%; min-height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #1FA855; color: #fff; font-weight: 800; font-size: 17px;
+      border-radius: 16px; margin-top: 14px; text-decoration: none;
+    }
+
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 32px); max-width: 420px; text-align: center;
+      background: var(--ink); color: #fff; padding: 12px 18px;
+      border-radius: 16px; font-size: 15.5px; font-weight: 700;
+      z-index: 150; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    .toast-pill.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+<!-- BAR ATAS -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="../dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Bantuan</span>
+    </button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="deckStepTitle">Kenalan &amp; Persiapan</span>
+      <span id="deckStepNum">Kartu 1 dari 7</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<main class="deck-container" id="deckViewport">
+
+  <!-- ============ KARTU 0: KENALAN & PERSIAPAN ============ -->
+  <section class="mission-card active" id="card-0" aria-label="Kenalan dan persiapan Day 6">
+    <span class="card-badge">Day 6 &bull; sekitar 15 menit</span>
+    <h1 class="card-title">Susun Video &amp; Audio Jadi Karya Utuh</h1>
+    <p class="card-desc">Satukan ketiga klip video dari Day 4 dan suara Voice Over AI dari Day 5 menjadi satu file video utuh (MP4) di Canva.</p>
+
+    <div class="goal-line">
+      <b>Hasil akhir hari ini:</b> Video animasi utuh siap posting di ponsel (Format 9:16 Vertikal, Resolusi MP4 1080p).
+    </div>
+
+    <!-- JEMBATAN KEMARIN DAY 6 -->
+    <div class="bridging-box">
+      <div class="bridging-tag">[JEMBATAN KEMARIN]</div>
+      <p><strong>Dari Klip &amp; Audio Terpisah (Day 4 &amp; 5) ke Video Utuh di Canva (Day 6):</strong> Semua bahan mentahmu sudah lengkap! Hari ini kita susun seperti menyusun puzzle di Canva: klip 1, 2, 3 diselaraskan dengan suara narator AI menjadi video animasi utuh yang siap dibagikan ke dunia!</p>
+    </div>
+
+    <div class="info-box">
+      <h3>Yang perlu disiapkan</h3>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
+        <div>3 klip video fakta unik dari Day 4 di Galeri ponsel</div>
+      </div>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+        <div>1 file rekaman suara Voice Over AI dari Day 5 di ponsel</div>
+      </div>
+      <div class="info-row">
+        <span class="info-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4"/></svg></span>
+        <div>Aplikasi Canva di ponsel (atau situs canva.com)</div>
+      </div>
+    </div>
+
+    <!-- KAMUS SANTAI DAY 6 -->
+    <div class="info-box">
+      <h3>Kamus Santai Day 6</h3>
+      <dl class="glossary">
+        <dt>Timeline</dt>
+        <dd>Garis waktu horizontal tempat kita menjejerkan dan memotong urutan klip video serta lagu/suara narasi.</dd>
+        <dt>Export MP4</dt>
+        <dd>Proses menyimpan hasil akhir editan menjadi satu file video yang bisa langsung diputar di WhatsApp, Instagram, dan TikTok.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 1: LANGKAH 1 ============ -->
+  <section class="mission-card" id="card-1" aria-label="Langkah 1: Buka Canva dan buat desain video">
+    <span class="card-badge">Langkah 1 dari 5 &bull; &plusmn; 2 menit</span>
+    <h2 class="card-title">Buka Canva &amp; Buat Desain Video</h2>
+    <p class="goal-line"><b>Misi:</b> membuat kanvas baru berformat Video Seluler 9:16 yang pas di layar ponsel.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/bjjGI_4Cnsc?rel=0&amp;playsinline=1" title="Video tutorial Day 6, langkah 1" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Membuka Canva dan memilih ukuran Video Seluler</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Buka aplikasi Canva di ponsel (atau buka situs <strong>canva.com</strong> di browser).</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Login dengan akun Google atau email yang kamu gunakan.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Di halaman utama, pilih kategori <strong>Video</strong>, lalu pilih <strong>Video Seluler (Mobile Video)</strong> atau kanvas rasio <strong>9:16</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Pilih <strong>Desain Kosong (Blank)</strong>. Lembar kerja baru siap digunakan.</div>
+      </li>
+    </ol>
+
+    <div class="callout">
+      <strong>Tips format:</strong> Pastikan memilih ukuran 9:16 (tegak) agar videomu memenuhi seluruh layar HP tanpa terpotong.
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Desain kanvas video seluler kosong berasio 9:16 sudah terbuka di Canva.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 2: LANGKAH 2 ============ -->
+  <section class="mission-card" id="card-2" aria-label="Langkah 2: Masukkan dan susun tiga klip">
+    <span class="card-badge">Langkah 2 dari 5 &bull; &plusmn; 3 menit</span>
+    <h2 class="card-title">Masukkan &amp; Susun Tiga Klip</h2>
+    <p class="goal-line"><b>Misi:</b> mengunggah 3 klip video Day 4 ke Canva dan menatanya berurutan.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/u0YULZ9WCE4?rel=0&amp;playsinline=1" title="Video tutorial Day 6, langkah 2" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Mengunggah klip dan mengatur urutan slide</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Di lembar kerja Canva, ketuk tombol <strong>+</strong> di pojok kiri bawah.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Pilih tab <strong>Unggahan (Uploads)</strong>, lalu ketuk tombol <strong>Unggah file</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Pilih ketiga video klip yang sudah kamu unduh dari Flow di Day 4.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Setelah selesai terunggah, ketuk video Adegan 1 untuk memasukkannya ke slide pertama.</div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>Ketuk ikon <strong>+</strong> di samping slide untuk menambah halaman kedua, masukkan video Adegan 2, lalu ulangi untuk Adegan 3.</div>
+      </li>
+    </ol>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Tiga klip adegan sudah tersusun rapi secara berurutan di slide Canva.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 3: LANGKAH 3 ============ -->
+  <section class="mission-card" id="card-3" aria-label="Langkah 3: Masukkan audio Voice Over">
+    <span class="card-badge">Langkah 3 dari 5 &bull; &plusmn; 4 menit</span>
+    <h2 class="card-title">Masukkan Audio Voice Over</h2>
+    <p class="goal-line"><b>Misi:</b> menempatkan file audio Day 5 di timeline dan menyelaraskannya dengan adegan.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/2T5QAPIlyCI?rel=0&amp;playsinline=1" title="Video tutorial Day 6, langkah 3" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Menyelaraskan trek audio dengan durasi video</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Ketuk tombol <strong>+</strong>, pilih tab <strong>Unggahan</strong>, lalu pilih sub-tab <strong>Audio</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Ketuk <strong>Unggah file</strong> dan pilih file rekaman suara narasi Day 5 dari ponselmu.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Ketuk file audio yang sudah terunggah untuk memasukkannya ke timeline di bawah video.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Geser posisi awal audio agar suaranya pas mulai saat video mulai berputar.</div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>Sesuaikan panjang durasi tiap klip video dengan cara menarik ujung batas klip agar pas dengan kalimat narasinya.</div>
+      </li>
+    </ol>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Trek audio Voice Over telah terpasang dan pergantian adegan selaras dengan intonasi suara.</div>
+    </div>
+
+    <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">Audio dan klip belum sinkron? Buka Bantuan</button>
+  </section>
+
+  <!-- ============ KARTU 4: LANGKAH 4 ============ -->
+  <section class="mission-card" id="card-4" aria-label="Langkah 4: Tambahkan caption atau teks judul">
+    <span class="card-badge">Langkah 4 dari 5 &bull; &plusmn; 2 menit</span>
+    <h2 class="card-title">Tambahkan Teks Judul Video</h2>
+    <p class="goal-line"><b>Misi:</b> membuat tulisan judul yang kontras dan mudah dibaca penonton media sosial.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/iDgBRuc6yLw?rel=0&amp;playsinline=1" title="Video tutorial Day 6, langkah 4" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Menambahkan teks judul dengan efek bayangan</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Ketuk tombol <strong>+</strong>, lalu pilih menu <strong>Teks</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Pilih <strong>Tambahkan kotak judul</strong> atau gaya teks yang mudah dibaca.</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Ketik judul fakta unikmu di atas adegan pertama (contoh: <em>Kenapa Kucing Suka Kardus?</em>).</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Gunakan warna teks putih dengan efek bayangan hitam (menu <strong>Efek &gt; Bayangan</strong>) agar tulisan selalu kontras dan terbaca jelas di atas gambar latar apa pun.</div>
+      </li>
+    </ol>
+
+    <div class="callout">
+      <strong>Tips Tipografi:</strong> Pilih jenis huruf tebal dan bersih seperti <em>Montserrat</em>, <em>Anton</em>, atau <em>League Spartan</em> agar mudah dibaca di layar HP yang kecil.
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Teks judul fakta unik telah terpasang dengan efek bayangan yang jelas dan kontras.</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 5: LANGKAH 5 ============ -->
+  <section class="mission-card" id="card-5" aria-label="Langkah 5: Periksa dan unduh video MP4">
+    <span class="card-badge">Langkah 5 dari 5 &bull; &plusmn; 3 menit</span>
+    <h2 class="card-title">Periksa &amp; Unduh Video MP4</h2>
+    <p class="goal-line"><b>Misi:</b> mengecek hasil akhir secara menyeluruh dan mengunduh file video final ke galeri.</p>
+
+    <div class="video-wrap">
+      <div class="step-video-frame">
+        <iframe src="https://www.youtube-nocookie.com/embed/u047MfoRvl8?rel=0&amp;playsinline=1" title="Video tutorial Day 6, langkah 5" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <p class="video-cap">Tonton tutorial: Mengekspor karya menjadi file video MP4</p>
+    </div>
+
+    <h3 class="steps-title">Langkah di ponselmu:</h3>
+    <ol class="steps-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>Putar video dari awal sampai akhir. Pastikan urutan klip benar dan suara terdengar jernih.</div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>Ketuk ikon <strong>Bagikan (Share)</strong> di pojok kanan atas layar HP (ikon panah ke atas).</div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>Pilih menu <strong>Unduh (Download)</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>Pastikan jenis file adalah <strong>Video MP4</strong>, lalu ketuk tombol ungu <strong>Unduh</strong>.</div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>Tunggu beberapa saat sampai proses penyimpanan selesai. Video final akan otomatis tersimpan di Galeri ponsel!</div>
+      </li>
+    </ol>
+
+    <!-- CEK MANDIRI KUALITAS DAY 6 -->
+    <div class="self-check-card">
+      <strong>Cek Kesiapan Akhir Karya Day 6:</strong>
+      <ul>
+        <li>Apakah video MP4 sudah berhasil tersimpan di Galeri ponsel dan bisa diputar lancar?</li>
+        <li>Apakah gambar ketiga adegan dan suara narasi berpadu selaras tanpa tabrakan?</li>
+        <li>Apakah teks judul terbaca dengan jelas?</li>
+      </ul>
+    </div>
+
+    <div class="success-box">
+      <div class="success-box-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tandanya berhasil</span>
+      </div>
+      <div>Video animasi utuh MP4 tersimpan di Galeri ponsel dan siap dipertunjukkan ke dunia!</div>
+    </div>
+  </section>
+
+  <!-- ============ KARTU 6: PERAYAAN & EVALUASI ============ -->
+  <section class="mission-card" id="card-6" aria-label="Perayaan dan evaluasi Day 6">
+    <div class="achievement-showcase">
+      <div class="trophy-aura"></div>
+      <div class="achievement-medal-icon">
+        <svg viewBox="0 0 24 24" width="50" height="50" stroke="#B45309" stroke-width="2" fill="none">
+          <circle cx="12" cy="8" r="7"/>
+          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+        </svg>
+      </div>
+      <svg class="star-sparkle star-1" viewBox="0 0 24 24" fill="#F59E0B">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <svg class="star-sparkle star-2" viewBox="0 0 24 24" fill="#EAB308">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+
+    <div class="completion-banner">
+      <span class="card-badge">DAY 6 TUNTAS!</span>
+      <h3>Karya Video Animasi Utuh dari Nol!</h3>
+      <p>Luar biasa! Kamu sudah resmi memproduksi sebuah karya video animasi AI yang utuh dari ide cerita hingga editan final di Canva!</p>
+    </div>
+
+    <div class="recap-box">
+      <h3>Yang sudah kamu buktikan hari ini</h3>
+      <ul>
+        <li>Menyiapkan format kanvas Video Seluler 9:16 di Canva.</li>
+        <li>Mengunggah dan menyusun 3 klip video bergerak secara berurutan.</li>
+        <li>Menyelaraskan trek audio Voice Over AI dengan perpindahan visual adegan.</li>
+        <li>Menambahkan teks judul berkontras tinggi dengan efek bayangan.</li>
+        <li>Mengekspor karya final berformat MP4 kualitas tinggi langsung ke galeri ponsel.</li>
+      </ul>
+    </div>
+
+    <!-- KUIS REFLEKSI DAY 6 ASLI -->
+    <div class="quiz-box">
+      <div class="quiz-title">KUIS REFLEKSI DAY 6 &bull; tidak ada nilai</div>
+      <p class="quiz-q">Kenapa kita memilih format unduhan 'Video MP4' di Canva, bukan animasi GIF?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, true, 'Tepat sekali! Format MP4 menyimpan gambar bergerak sekaligus suara audio, serta diterima di semua platform seperti Instagram, TikTok, dan WhatsApp.')">
+          <span class="quiz-indicator">A</span>
+          <span>Format MP4 bisa memuat suara narasi audio dan diterima di semua media sosial</span>
+        </button>
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, false, 'Format GIF hanya untuk gambar bergerak tanpa suara audio.')">
+          <span class="quiz-indicator">B</span>
+          <span>Format GIF tidak bisa dibuka di HP</span>
+        </button>
+        <button type="button" class="quiz-btn" onclick="checkQuiz(this, false, 'Canva mendukung semua format gambar dan video.')">
+          <span class="quiz-indicator">C</span>
+          <span>Canva tidak bisa menyimpan selain file foto</span>
+        </button>
+      </div>
+      <div class="quiz-msg" id="quizFeedback" aria-live="polite"></div>
+    </div>
+
+    <div class="next-day-card">
+      <small>PUNCAK KELULUSAN</small>
+      <strong>Day 7 &bull; Panggung Karya &amp; Sertifikat Kelulusan</strong>
+      <p>Besok adalah hari wisuda kelulusan! Kita akan melihat panggung karya, mencetak Kartu Prestasi resmi (.PNG) dengan namamu, dan menyiapkan proyek animasi mandiri keduamu!</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- BAR BAWAH -->
+<footer class="deck-bottom-bar">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-deck-prev" id="btnDeckPrev" onclick="navigateDeck(-1)" disabled aria-label="Kembali ke langkah sebelumnya">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Balik</span>
+    </button>
+    <button type="button" class="btn-deck-next" id="btnDeckNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Mulai Langkah 1</span>
+    </button>
+  </div>
+</footer>
+
+<!-- PUSAT BANTUAN DRAWER -->
+<div class="help-drawer-backdrop" id="helpBackdrop" onclick="closeHelpDrawer(event)" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help-drawer-sheet">
+    <div class="help-drawer-header">
+      <h3 id="helpTitle">Pusat Bantuan Day 6</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Tutup bantuan">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="faq-item">
+      <strong>Audio dan pergantian adegan video tidak pas?</strong>
+      <p>Ketuk pada slide klip video di timeline Canva, lalu geser titik batas ujung klip ke kiri atau ke kanan untuk memperpendek atau memperpanjang durasi slide sampai pas dengan kalimat narasi.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Tulisan judul sulit terbaca di atas video yang bergerak?</strong>
+      <p>Pilih teks judul, ketuk menu <strong>Efek</strong> di toolbar bawah Canva, lalu pilih <strong>Bayangan (Shadow)</strong> berwarna hitam dengan transparansi 80-100%. Trik ini membuat teks selalu terbaca kontras di adegan apa pun.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Proses unduh (download) di Canva lama atau terhenti?</strong>
+      <p>Pastikan koneksi internet stabil dan jangan menutup aplikasi Canva saat indikator proses unduh masih berjalan. Jika gagal, coba kembali beberapa saat lagi.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Format apa yang harus dipilih saat menyimpan?</strong>
+      <p>Pilih format <strong>Video MP4</strong> agar hasil ekspor memuat gambar bergerak berkualitas tajam sekaligus suara narasi yang jernih.</p>
+    </div>
+
+    <div class="faq-item">
+      <strong>Butuh bantuan mentor langsung?</strong>
+      <p>Hubungi mentor Asdos Digital melalui WhatsApp untuk konsultasi editing.</p>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20aku%20sedang%20belajar%20Day%206%20dan%20ada%20kendala%20saat%20editing%20di%20Canva" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <span>Tanya Mentor via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
+
+<script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
+<script>
+// Paywall Check Lynk.id Day 6
+if (window.checkDayAccess) {
+  window.checkDayAccess(6);
+}
+
+const totalCards = 7;
+let currentCard = 0;
+const cards = Array.from({ length: totalCards }, (_, i) => document.getElementById('card-' + i));
+
+const metaTitles = [
+  'Kenalan & Persiapan',
+  'Langkah 1 · Desain Video Canva',
+  'Langkah 2 · Susun Tiga Klip',
+  'Langkah 3 · Audio Voice Over',
+  'Langkah 4 · Teks Judul & Caption',
+  'Langkah 5 · Unduh Video MP4',
+  'Perayaan & Evaluasi'
+];
+
+const nextLabels = [
+  'Mulai Langkah 1',
+  'Lanjut ke Langkah 2',
+  'Lanjut ke Langkah 3',
+  'Lanjut ke Langkah 4',
+  'Lanjut ke Langkah 5',
+  'Lihat Hasil & Evaluasi',
+  'Menuju Wisuda Kelulusan Day 7'
+];
+
+function updateDeckView(direction = 0) {
+  cards.forEach((card, idx) => {
+    card.classList.remove('active', 'slide-in-right', 'slide-in-left');
+    if (idx === currentCard) {
+      card.classList.add('active');
+      if (direction === 1) card.classList.add('slide-in-right');
+      if (direction === -1) card.classList.add('slide-in-left');
+    }
+  });
+
+  const pct = ((currentCard + 1) / totalCards) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressTrack').setAttribute('aria-valuenow', String(currentCard + 1));
+  document.getElementById('deckStepTitle').textContent = metaTitles[currentCard];
+  document.getElementById('deckStepNum').textContent = 'Kartu ' + (currentCard + 1) + ' dari ' + totalCards;
+  document.getElementById('btnNextLabel').textContent = nextLabels[currentCard];
+  document.getElementById('btnDeckPrev').disabled = currentCard === 0;
+
+  if (currentCard === totalCards - 1) {
+    triggerConfetti();
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateDeck(dir) {
+  if (dir === 1 && currentCard === totalCards - 1) {
+    window.location.href = 'day7-v3.2.html';
+    return;
+  }
+  const target = currentCard + dir;
+  if (target >= 0 && target < totalCards) {
+    currentCard = target;
+    updateDeckView(dir);
+  }
+}
+
+function checkQuiz(btn, isCorrect, explanation) {
+  const parent = btn.closest('.quiz-options');
+  const allBtns = parent.querySelectorAll('.quiz-btn');
+  const feedback = document.getElementById('quizFeedback');
+
+  allBtns.forEach(b => {
+    b.classList.remove('quiz-correct', 'quiz-wrong');
+    b.disabled = true;
+  });
+
+  if (isCorrect) {
+    btn.classList.add('quiz-correct');
+    feedback.className = 'quiz-msg ok';
+    feedback.innerHTML = '<strong>Tepat sekali!</strong> ' + explanation;
+  } else {
+    btn.classList.add('quiz-wrong');
+    feedback.className = 'quiz-msg no';
+    feedback.innerHTML = '<strong>Kurang tepat.</strong> ' + explanation;
+  }
+  feedback.style.display = 'block';
+}
+
+function openHelpDrawer() {
+  document.getElementById('helpBackdrop').classList.add('show');
+}
+
+function closeHelpDrawer(e) {
+  if (e && e.target && e.target.id !== 'helpBackdrop' && !e.target.closest('.help-drawer-close')) return;
+  document.getElementById('helpBackdrop').classList.remove('show');
+}
+
+function showToast(text) {
+  const t = document.getElementById('toastPill');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 2500);
+}
+
+// Confetti
+function triggerConfetti() {
+  const canvas = document.getElementById('celebrationCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#2E7D4F', '#1F6B7A', '#F59E0B', '#E8893A', '#EF4444', '#10B981'];
+  const particles = Array.from({ length: 70 }, () => ({
+    x: canvas.width * 0.5,
+    y: canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: (Math.random() - 0.7) * 16,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.opacity -= 0.015;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillRect(p.x, p.y, p.size, p.size * 1.3);
+    });
+    frame++;
+    if (frame < 60) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// Touch swipe
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 65) {
+    if (diff > 0 && currentCard < totalCards - 1) navigateDeck(1);
+    else if (diff < 0 && currentCard > 0) navigateDeck(-1);
+  }
+}, { passive: true });
+
+// Init
+updateDeckView();
+</script>
+</body>
+</html>
