@@ -882,18 +882,9 @@
   color: var(--brand-dark);
 }
 
-/* 3 Main Tabs: Belajar, Prompt, Informasi */
+/* 3 Main Tabs (Dihapus karena sudah ada di navigasi bawah) */
 .dash-tabs-nav {
-  display: flex;
-  background: #F4EDE2;
-  border: 2px solid var(--line);
-  padding: 6px;
-  border-radius: 16px;
-  gap: 6px;
-  margin: 20px 0 24px;
-  position: sticky;
-  top: 72px;
-  z-index: 50;
+  display: none !important;
 }
 .dash-tab-btn {
   flex: 1;
@@ -950,8 +941,29 @@
   padding: 0 2px;
 }
 
-/* Floating Bottom Navigation (Mobile Native Feel) */
+/* Floating Bottom Navigation (Universal Dock) */
 .mobile-bottom-nav {
+  display: flex !important;
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  max-width: 440px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(36, 107, 82, 0.16);
+  box-shadow: 0 10px 30px rgba(23, 61, 40, 0.14), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 999px;
+  padding: 5px 6px;
+  align-items: center;
+  justify-content: space-around;
+  gap: 4px;
+  box-sizing: border-box;
+}
+.mobile-bottom-nav.d-none {
   display: none !important;
 }
 

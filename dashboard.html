@@ -385,19 +385,9 @@
         box-sizing: border-box !important;
       }
 
-      /* Tab bar on mobile */
+      /* Tab bar atas dinonaktifkan karena sudah ada di navigasi bawah */
       .dash-tabs-nav {
-        margin: 14px 0 16px !important;
-        padding: 4px !important;
-      }
-      .dash-tab-btn {
-        padding: 10px 6px !important;
-        font-size: 13px !important;
-        gap: 5px !important;
-      }
-      .dash-tab-btn svg {
-        width: 16px !important;
-        height: 16px !important;
+        display: none !important;
       }
 
       .swipe-hint-pill {
@@ -446,7 +436,7 @@
   </div>
 </header>
 
-<main class="wrap" id="dashboardMainArea" style="padding-top: 18px; padding-bottom: 60px;">
+<main class="wrap" id="dashboardMainArea" style="padding-top: 18px; padding-bottom: 96px;">
   <!-- Konten Portal Dirender Dinamis di Sini -->
 </main>
 
@@ -683,22 +673,6 @@ function renderDashboard() {
         <div style="font-size:12px;color:var(--muted);margin-top:8px">${student.email}</div>
       </div>
     </section>
-
-    <!-- 2. NAVIGASI TAB DESKTOP / TABLET (TAMPIL DI LAYAR LEBAR) -->
-    <nav class="dash-tabs-nav" aria-label="Navigasi Menu Belajar">
-      <button type="button" class="dash-tab-btn active" data-tab-index="0" onclick="goToDashboardTab(0)">
-        <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
-        <span>Belajar</span>
-      </button>
-      <button type="button" class="dash-tab-btn" data-tab-index="1" onclick="goToDashboardTab(1)">
-        <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-        <span>Prompt</span>
-      </button>
-      <button type="button" class="dash-tab-btn" data-tab-index="2" onclick="goToDashboardTab(2)">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span>Informasi</span>
-      </button>
-    </nav>
 
     <!-- PETUNJUK GESER DENGAN JEMPOL (KHUSUS HP) -->
     <div class="swipe-hint-pill">
