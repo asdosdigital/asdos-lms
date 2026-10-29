@@ -595,9 +595,18 @@
           <input type="password" id="sbKeyInput" placeholder="eyJhbGci...">
         </div>
       </div>
-      <button type="button" class="btn-save" onclick="saveSbSettings()">
-        Simpan Pengaturan Cloud
-      </button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn-save" onclick="saveSbSettings()">
+          Simpan Pengaturan Cloud
+        </button>
+        <button type="button" class="btn-subtle" onclick="testSbConnection()">
+          Uji Koneksi Cloud
+        </button>
+        <button type="button" class="btn-subtle" onclick="uploadLocalWhitelistToSb()">
+          Unggah Whitelist ke Cloud
+        </button>
+      </div>
+      <div id="sbStatusNotice" style="margin-top:12px;font-size:13px;color:var(--muted);display:none;padding:10px 14px;border-radius:8px;background:var(--bg);border:1px solid var(--line);"></div>
       <div style="margin-top:16px">
         <button type="button" class="btn-subtle" onclick="copySchema()">
           Salin Skema SQL Supabase
@@ -860,6 +869,41 @@ function saveSbSettings() {
   const k = document.getElementById('sbKeyInput').value;
   window.LMS_DB.saveSupabaseConfig(u, k);
   window.showToast('Pengaturan Supabase tersimpan.');
+  testSbConnection();
+}
+
+async function testSbConnection() {
+  const notice = document.getElementById('sbStatusNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = 'Memeriksa koneksi ke Supabase...';
+    notice.style.borderColor = 'var(--line)';
+    notice.style.color = 'var(--muted)';
+  }
+  const res = await window.LMS_DB.testSupabaseConnection();
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = res.message;
+    if (res.success) {
+      notice.style.borderColor = 'var(--leaf-line)';
+      notice.style.color = 'var(--go-dark)';
+      notice.style.background = 'var(--leaf)';
+    } else {
+      notice.style.borderColor = 'var(--danger-ink)';
+      notice.style.color = 'var(--danger-ink)';
+      notice.style.background = 'var(--danger-bg)';
+    }
+  }
+  window.showToast(res.message);
+}
+
+async function uploadLocalWhitelistToSb() {
+  const res = await window.LMS_DB.syncAllLocalWhitelistToSupabase();
+  if (res.success) {
+    window.showToast(`Berhasil mengunggah ${res.count} email ke Supabase!`);
+  } else {
+    window.showToast('Gagal mengunggah ke Supabase. Periksa koneksi.');
+  }
 }
 
 // Init

@@ -593,14 +593,25 @@
   // SUPABASE CONFIG & BACKUP
   // ==========================================================================
   const DEFAULT_SUPABASE = {
-    url: '',
-    anonKey: ''
+    url: 'https://jxfvwrhwidtidasctiif.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4ZnZ3cmh3aWR0aWRhc2N0aWlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNDAzMjMsImV4cCI6MjEwODgxNjMyM30.hqFF5CJQpXC7YE0wYA5cxYSvUuJLZHjDMH7_hIqlAlE'
   };
+
+  function cleanSupabaseUrl(url) {
+    if (!url) return '';
+    return url.trim().replace(/\/+$/, '').replace(/\/rest\/v1\/?$/, '');
+  }
 
   function getSupabaseConfig() {
     try {
       const stored = JSON.parse(localStorage.getItem(KEY_SUPABASE) || '{}');
-      if (stored.url && stored.anonKey) return stored;
+      if (stored.url && stored.anonKey) {
+        return {
+          url: cleanSupabaseUrl(stored.url),
+          anonKey: stored.anonKey.trim(),
+          updatedAt: stored.updatedAt
+        };
+      }
       return DEFAULT_SUPABASE;
     } catch(e) {
       return DEFAULT_SUPABASE;
@@ -608,7 +619,11 @@
   }
 
   function saveSupabaseConfig(url, anonKey) {
-    const cfg = { url: (url || '').trim(), anonKey: (anonKey || '').trim(), updatedAt: new Date().toISOString() };
+    const cfg = {
+      url: cleanSupabaseUrl(url || DEFAULT_SUPABASE.url),
+      anonKey: (anonKey || DEFAULT_SUPABASE.anonKey).trim(),
+      updatedAt: new Date().toISOString()
+    };
     localStorage.setItem(KEY_SUPABASE, JSON.stringify(cfg));
     if (cfg.url && cfg.anonKey) {
       setTimeout(syncWhitelistFromSupabase, 100);
@@ -620,7 +635,7 @@
     const cfg = getSupabaseConfig();
     if (!cfg || !cfg.url || !cfg.anonKey) return false;
     try {
-      const cleanUrl = cfg.url.replace(/\/+$/, '');
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
       const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=email,note,created_at`, {
         headers: {
           'apikey': cfg.anonKey,
@@ -660,7 +675,7 @@
     const cfg = getSupabaseConfig();
     if (!cfg || !cfg.url || !cfg.anonKey) return false;
     try {
-      const cleanUrl = cfg.url.replace(/\/+$/, '');
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
       const payload = emailsArray.map(em => ({
         email: em.toLowerCase(),
         note: note
@@ -679,6 +694,38 @@
     } catch(e) {
       return false;
     }
+  }
+
+  async function testSupabaseConnection() {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return { success: false, message: 'URL atau Anon Key belum diisi.' };
+    }
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=count`, {
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`
+        }
+      });
+      if (resp.ok) {
+        return { success: true, message: 'Koneksi ke Supabase Berhasil! Tabel terhubung dengan aman.' };
+      } else {
+        const errText = await resp.text();
+        return { success: false, message: `Gagal (${resp.status}): ${errText}` };
+      }
+    } catch(e) {
+      return { success: false, message: `Gagal terhubung: ${e.message}` };
+    }
+  }
+
+  async function syncAllLocalWhitelistToSupabase() {
+    const list = getWhitelist();
+    if (!list || list.length === 0) return { success: true, count: 0 };
+    const emails = list.map(x => x.email);
+    const ok = await pushWhitelistToSupabase(emails, 'Sinkronisasi Awal');
+    return { success: ok, count: emails.length };
   }
 
   // Auto-sync whitelist on load
@@ -794,6 +841,8 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     saveSupabaseConfig,
     syncWhitelistFromSupabase,
     pushWhitelistToSupabase,
+    testSupabaseConnection,
+    syncAllLocalWhitelistToSupabase,
     SUPABASE_SQL_SCHEMA,
     exportAllData,
     importAllData
