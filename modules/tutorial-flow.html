@@ -696,6 +696,7 @@ const cardTitles = [
 ];
 
 function updateDeckView(direction = 0) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   for (let i = 0; i < totalCards; i++) {
     const card = document.getElementById('card-' + i);
     if (!card) continue;

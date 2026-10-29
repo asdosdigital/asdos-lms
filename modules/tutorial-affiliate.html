@@ -711,6 +711,7 @@ const totalCards = 8;
 const quizAnswers = { 1: false, 2: false, 3: false };
 
 function updateDeckView() {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   document.querySelectorAll('.mission-card').forEach((c, idx) => {
     c.classList.toggle('active', idx === currentCard);
   });

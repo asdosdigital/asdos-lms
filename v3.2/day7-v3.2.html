@@ -1202,6 +1202,7 @@ if (window.checkDayAccess) {
   } catch (e) {}
 
   function updateDeckUI(direction) {
+    if (window.stopAllDeckVideos) window.stopAllDeckVideos();
     dismissSwipeGuide();
     if (scrollPill) scrollPill.classList.add('hidden');
 

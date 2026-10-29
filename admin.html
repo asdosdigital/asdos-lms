@@ -705,6 +705,16 @@
           <input type="text" id="inCardVideo" placeholder="https://www.youtube.com/watch?v=... atau embed">
         </div>
 
+        <div class="form-group" style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px">
+          <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:750;cursor:pointer;margin:0">
+            <input type="checkbox" id="inCardIsHidden" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer">
+            <div>
+              <span style="color:var(--brand-dark)">Simpan sebagai Draft / Tersembunyi</span>
+              <div style="font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px">Modul baru tidak akan langsung tampil di dashboard siswa sampai Anda mengaktifkannya.</div>
+            </div>
+          </label>
+        </div>
+
         <button type="submit" class="btn-save">
           Simpan Kartu Materi Baru
         </button>
@@ -921,6 +931,16 @@
           <label for="editCardUrl">Tautan Target Modul (URL / Path):</label>
           <input type="text" id="editCardUrl" placeholder="modules/tutorial-flow.html atau #">
         </div>
+      </div>
+
+      <div class="form-group" style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:750;cursor:pointer;margin:0">
+          <input type="checkbox" id="editCardIsHidden" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer">
+          <div>
+            <span style="color:var(--brand-dark)">Sembunyikan Modul ini dari Dashboard Siswa (Draft / Arsip)</span>
+            <div style="font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px">Jika dicentang, kartu modul tidak akan tampil bagi siswa namun tetap dapat dikelola di admin sewaktu-waktu.</div>
+          </div>
+        </label>
       </div>
 
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
@@ -1235,10 +1255,12 @@ function renderPlacementManager() {
   container.innerHTML = categories.map((cat, catIdx) => {
     const isFirstCat = catIdx === 0;
     const isLastCat = catIdx === categories.length - 1;
+    const isCatHidden = !!cat.isHidden;
 
     const cardsHtml = (cat.cards || []).map((card, cardIdx) => {
       const isFirstCard = cardIdx === 0;
       const isLastCard = cardIdx === cat.cards.length - 1;
+      const isHidden = !!card.isHidden;
 
       let typeLabel = 'Materi Kustom';
       if (card.type === 'core_7day') typeLabel = 'Program Inti (7 Hari)';
@@ -1246,19 +1268,26 @@ function renderPlacementManager() {
       else if (card.videoUrl) typeLabel = 'Video YouTube';
 
       return `
-        <div class="placement-card-item">
+        <div class="placement-card-item" style="${isHidden ? 'opacity:0.82;background:#FAF8F5;border-left:3.5px solid #94A3B8;' : ''}">
           <div class="placement-card-left">
             <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="placement-card-thumb">
             <div>
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
                 <span style="font-size:11px;font-weight:800;background:var(--sun);color:#7A4B00;padding:2px 7px;border-radius:5px;border:1px solid #E8CF6A">${card.badge || 'Modul'}</span>
                 <span style="font-size:11px;color:var(--muted);background:#FFFFFF;border:1px solid var(--line);padding:2px 6px;border-radius:4px">${typeLabel}</span>
+                ${isHidden ?
+                  `<span style="font-size:11px;font-weight:800;background:#F1F5F9;color:#64748B;padding:2px 7px;border-radius:5px;border:1px solid #CBD5E1">Tersembunyi</span>` :
+                  `<span style="font-size:11px;font-weight:800;background:#ECFDF5;color:#065F46;padding:2px 7px;border-radius:5px;border:1px solid #A7F3D0">Tampil</span>`
+                }
               </div>
               <strong style="font-size:14.5px;color:var(--brand-dark);display:block;line-height:1.3">${card.title}</strong>
               <div style="font-size:12px;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${card.desc || ''}</div>
             </div>
           </div>
           <div class="placement-card-actions">
+            <button type="button" class="btn-action-mini" title="${isHidden ? 'Tampilkan modul ini di dashboard siswa' : 'Sembunyikan modul ini dari dashboard siswa'}" onclick="toggleCardVisibilityAdmin(${catIdx}, ${cardIdx})" style="${isHidden ? 'color:var(--go);font-weight:800;border-color:#86EFAC;' : 'color:var(--muted);'}">
+              ${isHidden ? 'Tampilkan' : 'Sembunyikan'}
+            </button>
             <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveCardAdmin(${catIdx}, ${cardIdx}, -1)" ${isFirstCard ? 'disabled' : ''}>
               &uarr; Naik
             </button>
@@ -1284,17 +1313,21 @@ function renderPlacementManager() {
     }).join('');
 
     return `
-      <div class="placement-cat-box">
+      <div class="placement-cat-box" style="${isCatHidden ? 'opacity:0.85;border:1.5px dashed #CBD5E1;background:#F8FAFC;' : ''}">
         <div class="placement-cat-head">
           <div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
               <span style="font-size:11px;font-weight:850;background:var(--brand);color:#fff;padding:2px 8px;border-radius:6px">KATEGORI ${catIdx + 1}</span>
               <h4 class="placement-cat-title">${cat.categoryTitle}</h4>
               <span style="font-size:12px;color:var(--muted);background:#F4EFE6;padding:2px 8px;border-radius:6px;border:1px solid #DFCFC0">${(cat.cards || []).length} Modul</span>
+              ${isCatHidden ? `<span style="font-size:11px;font-weight:800;background:#F1F5F9;color:#64748B;padding:2px 8px;border-radius:6px;border:1px solid #CBD5E1">Kategori Tersembunyi</span>` : ''}
             </div>
             ${cat.categorySubtitle ? `<p class="placement-cat-sub">${cat.categorySubtitle}</p>` : ''}
           </div>
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <button type="button" class="btn-action-mini" title="${isCatHidden ? 'Tampilkan seluruh kategori ini di dashboard siswa' : 'Sembunyikan seluruh kategori ini dari dashboard siswa'}" onclick="toggleCategoryVisibilityAdmin(${catIdx})" style="${isCatHidden ? 'color:var(--go);font-weight:800;border-color:#86EFAC;' : ''}">
+              ${isCatHidden ? 'Tampilkan Kategori' : 'Sembunyikan Kategori'}
+            </button>
             <button type="button" class="btn-action-mini" title="Geser Kategori Naik" onclick="moveCategoryAdmin(${catIdx}, -1)" ${isFirstCat ? 'disabled' : ''}>
               &uarr; Geser Kategori
             </button>
@@ -1329,6 +1362,24 @@ function moveCardAdmin(catIdx, cardIdx, direction) {
   const success = window.LMS_DB.moveCard(catIdx, cardIdx, direction);
   if (success) {
     window.showToast('Posisi kartu berhasil digeser!');
+    refreshCategorySelect();
+  }
+}
+
+function toggleCardVisibilityAdmin(catIdx, cardIdx) {
+  const res = window.LMS_DB.toggleCardVisibility(catIdx, cardIdx);
+  if (res.success) {
+    const statusTxt = res.isHidden ? 'disembunyikan dari dashboard siswa' : 'kembali ditampilkan di dashboard siswa';
+    window.showToast(`Modul "${res.card?.title || 'materi'}" berhasil ${statusTxt}!`);
+    refreshCategorySelect();
+  }
+}
+
+function toggleCategoryVisibilityAdmin(catIdx) {
+  const res = window.LMS_DB.toggleCategoryVisibility(catIdx);
+  if (res.success) {
+    const statusTxt = res.isHidden ? 'disembunyikan dari dashboard siswa' : 'kembali ditampilkan di dashboard siswa';
+    window.showToast(`Kategori "${res.category?.categoryTitle || ''}" berhasil ${statusTxt}!`);
     refreshCategorySelect();
   }
 }
@@ -1389,6 +1440,8 @@ function openQuickEditCardModal(catIdx, cardIdx) {
   document.getElementById('editCardVideo').value = card.videoUrl || '';
   document.getElementById('editCardUrl').value = card.url || '#';
   document.getElementById('editCardType').value = card.type || 'single_video';
+  const isHiddenInput = document.getElementById('editCardIsHidden');
+  if (isHiddenInput) isHiddenInput.checked = !!card.isHidden;
 
   const modal = document.getElementById('modalQuickEditCard');
   if (modal) modal.classList.add('open');
@@ -1418,7 +1471,8 @@ function saveQuickEditCard() {
     thumbnail: document.getElementById('editCardThumbnail').value.trim() || 'banner-2.jpg',
     videoUrl: video,
     url: document.getElementById('editCardUrl').value.trim() || '#',
-    type: document.getElementById('editCardType').value
+    type: document.getElementById('editCardType').value,
+    isHidden: document.getElementById('editCardIsHidden') ? document.getElementById('editCardIsHidden').checked : false
   };
 
   const success = window.LMS_DB.updateCardData(currentEditingCatIdx, currentEditingCardIdx, patch);
@@ -1521,6 +1575,8 @@ function handleAddCardSubmit() {
     video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
   }
 
+  const isHidden = document.getElementById('inCardIsHidden')?.checked || false;
+
   const success = window.LMS_DB.addCardToCategory(catIdx, {
     title: title,
     desc: desc,
@@ -1528,14 +1584,16 @@ function handleAddCardSubmit() {
     thumbnail: thumbnail,
     videoUrl: video,
     type: video ? 'single_video' : 'custom_link',
-    url: video ? '#' : '#'
+    url: video ? '#' : '#',
+    isHidden: isHidden
   });
 
   if (success) {
-    window.showToast(`Kartu "${title}" berhasil ditambahkan ke dashboard siswa!`);
+    window.showToast(isHidden ? `Kartu "${title}" berhasil disimpan sebagai draft (tersembunyi)!` : `Kartu "${title}" berhasil ditambahkan ke dashboard siswa!`);
     document.getElementById('inCardTitle').value = '';
     document.getElementById('inCardDesc').value = '';
     document.getElementById('inCardVideo').value = '';
+    if (document.getElementById('inCardIsHidden')) document.getElementById('inCardIsHidden').checked = false;
     if (document.getElementById('inCardThumbnail')) document.getElementById('inCardThumbnail').value = 'banner-2.jpg';
     if (document.getElementById('inCardThumbPreview')) document.getElementById('inCardThumbPreview').src = 'banner-2.jpg';
     refreshCategorySelect();

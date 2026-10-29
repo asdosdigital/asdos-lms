@@ -710,6 +710,7 @@ const nextLabels = [
 ];
 
 function updateDeckView(direction = 0) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   cards.forEach((card, idx) => {
     card.classList.remove('active', 'slide-in-right', 'slide-in-left');
     if (idx === currentCard) {

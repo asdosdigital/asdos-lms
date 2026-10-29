@@ -1062,7 +1062,11 @@ function getCardStatus(card, overall) {
 
 function renderCategoriesHtml(categories, overall) {
   return categories.map(cat => {
-    const cardsHtml = (cat.cards || []).map(card => {
+    if (cat.isHidden) return '';
+    const visibleCards = (cat.cards || []).filter(card => !card.isHidden);
+    if (visibleCards.length === 0) return '';
+
+    const cardsHtml = visibleCards.map(card => {
       let targetHref = '#';
       let clickAttr = '';
       let badgeLabel = card.badge || 'Modul';

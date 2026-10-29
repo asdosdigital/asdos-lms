@@ -813,6 +813,7 @@ if (window.checkDayAccess) {
 }
 
 function updateDeckView(direction = 0) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   for (let i = 0; i < totalCards; i++) {
     const el = document.getElementById('card-' + i);
     if (!el) continue;

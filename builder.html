@@ -1082,6 +1082,13 @@
         <label for="modDesc">Tujuan / Deskripsi Singkat:</label>
         <input type="text" id="modDesc" value="Praktik menyempurnakan klip animasi dengan sentuhan visual effects dan filter sinematik." oninput="updateCourseMeta()">
       </div>
+
+      <div class="form-group" style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:12px;margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:750;cursor:pointer;margin:0">
+          <input type="checkbox" id="modIsHidden" style="width:16px;height:16px;accent-color:var(--brand);cursor:pointer">
+          <span style="color:var(--brand-dark)">Sembunyikan dari Dashboard Siswa (Draft)</span>
+        </label>
+      </div>
     </div>
 
     <!-- Cards Manager -->
@@ -1234,6 +1241,7 @@
 <div id="studioToast" class="studio-toast" role="status"></div>
 
 <script src="lms-db.js"></script>
+<script src="lms-core.js"></script>
 <script>
 // ==========================================================================
 // COURSE BUILDER ENGINE - STATE & DATA MODEL
@@ -2280,6 +2288,7 @@ function saveHelpCenterSettings() {
 // CARD & BLOCK CONTROLLER ACTIONS
 // ==========================================================================
 function selectCard(idx) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   currentActiveCardIndex = idx;
   renderEditor();
 }
@@ -2698,6 +2707,9 @@ function loadModuleForEditing(cardId) {
 
   const catSel = document.getElementById('modCategory');
   if (catSel) catSel.value = catIdx;
+
+  const isHiddenInput = document.getElementById('modIsHidden');
+  if (isHiddenInput) isHiddenInput.checked = !!card.isHidden;
 
   showToast(`Modul "${card.title}" siap diedit!`);
 }
@@ -3357,6 +3369,7 @@ ${scriptOpen}
   const totalCards = ${total};
 
   function updateDeckView() {
+    if (window.stopAllDeckVideos) window.stopAllDeckVideos();
     for (let i = 0; i < totalCards; i++) {
       const el = document.getElementById('card_' + i);
       if (el) el.classList.toggle('active', i === activeCard);
@@ -3501,6 +3514,7 @@ function saveToLmsDatabase() {
   const desc = (courseModel.desc || '').trim();
   const thumbnail = (courseModel.thumbnail || 'banner-2.jpg').trim();
   const targetCategoryIdx = parseInt(document.getElementById('modCategory')?.value || '0', 10);
+  const isHidden = document.getElementById('modIsHidden')?.checked || false;
 
   const categories = window.LMS_DB.getModuleCategories();
 
@@ -3524,6 +3538,7 @@ function saveToLmsDatabase() {
       cardObj.badge = cleanDay;
       cardObj.desc = desc;
       cardObj.thumbnail = thumbnail;
+      cardObj.isHidden = isHidden;
 
       // Pindahkan kategori jika diubah oleh admin
       if (targetCategoryIdx !== foundCatIdx && categories[targetCategoryIdx]) {
@@ -3548,7 +3563,8 @@ function saveToLmsDatabase() {
     badge: cleanDay,
     thumbnail: thumbnail,
     type: 'interactive_module',
-    url: `v3.1/${cleanDay.toLowerCase().replace(/[^a-z0-9]/g, '')}-v3.1.html`
+    url: `v3.1/${cleanDay.toLowerCase().replace(/[^a-z0-9]/g, '')}-v3.1.html`,
+    isHidden: isHidden
   };
 
   let targetCat = categories[targetCategoryIdx] || categories[0];

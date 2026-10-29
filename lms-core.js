@@ -315,8 +315,67 @@ window.renderDrawerItems = function(currentDayNumber) {
 };
 
 // ==========================================================================
-// 5. LITE YOUTUBE FAÇADE (HEMAT RAM & KUOTA HP)
+// 5. UNIVERSAL VIDEO CONTROLLER & LITE YOUTUBE ENGINE
 // ==========================================================================
+window.ensureVideoApiEnabled = function(container = document) {
+  try {
+    const root = container || document;
+    const iframes = root.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      let src = iframe.src || '';
+      if (src && (src.includes('youtube') || src.includes('youtu.be'))) {
+        if (!src.includes('enablejsapi=1')) {
+          src += (src.includes('?') ? '&' : '?') + 'enablejsapi=1';
+          iframe.src = src;
+        }
+      }
+    });
+  } catch(e) {}
+};
+
+window.stopAllDeckVideos = function(container = document) {
+  try {
+    const root = container || document;
+    // 1. YouTube & iframe embeds
+    const iframes = root.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      try {
+        const src = iframe.src || '';
+        if (src && (src.includes('youtube') || src.includes('youtu.be') || src.includes('vimeo'))) {
+          // Kirim perintah pause dan stop via postMessage
+          try {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+          } catch(e) {}
+
+          // Reset src untuk mematikan audio seketika dan menghapus autoplay
+          let cleanSrc = src.replace(/([?&])autoplay=1(&|$)/g, '$1').replace(/[?&]$/, '');
+          if (!cleanSrc.includes('enablejsapi=1')) {
+            cleanSrc += (cleanSrc.includes('?') ? '&' : '?') + 'enablejsapi=1';
+          }
+          iframe.src = cleanSrc;
+        }
+      } catch(err) {}
+    });
+
+    // 2. Video HTML5 native
+    const videos = root.querySelectorAll('video');
+    videos.forEach(v => {
+      try {
+        v.pause();
+      } catch(e) {}
+    });
+
+    // 3. Audio HTML5 native
+    const audios = root.querySelectorAll('audio');
+    audios.forEach(a => {
+      try {
+        a.pause();
+      } catch(e) {}
+    });
+  } catch(e) {}
+};
+
 window.initLiteYouTubePlayers = function() {
   const iframes = document.querySelectorAll('.video-step iframe[src*="youtube"]');
   iframes.forEach(iframe => {
@@ -523,5 +582,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Inisialisasi drawer jika ada
     if (window.initCurriculumDrawer) window.initCurriculumDrawer(currentDay);
     if (window.initLiteYouTubePlayers) window.initLiteYouTubePlayers();
+    if (window.ensureVideoApiEnabled) window.ensureVideoApiEnabled();
+  } else {
+    if (window.ensureVideoApiEnabled) window.ensureVideoApiEnabled();
   }
 });

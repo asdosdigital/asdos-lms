@@ -936,6 +936,37 @@
     return false;
   }
 
+  function toggleCardVisibility(catIdx, cardIdx) {
+    const list = getModuleCategories();
+    if (list[catIdx] && list[catIdx].cards && list[catIdx].cards[cardIdx]) {
+      const card = list[catIdx].cards[cardIdx];
+      card.isHidden = !card.isHidden;
+      saveModuleCategories(list);
+      return { success: true, isHidden: card.isHidden, card };
+    }
+    return { success: false, message: 'Kartu tidak ditemukan.' };
+  }
+
+  function setCardVisibility(catIdx, cardIdx, isHidden) {
+    const list = getModuleCategories();
+    if (list[catIdx] && list[catIdx].cards && list[catIdx].cards[cardIdx]) {
+      list[catIdx].cards[cardIdx].isHidden = !!isHidden;
+      saveModuleCategories(list);
+      return { success: true, isHidden: list[catIdx].cards[cardIdx].isHidden };
+    }
+    return { success: false, message: 'Kartu tidak ditemukan.' };
+  }
+
+  function toggleCategoryVisibility(catIdx) {
+    const list = getModuleCategories();
+    if (list[catIdx]) {
+      list[catIdx].isHidden = !list[catIdx].isHidden;
+      saveModuleCategories(list);
+      return { success: true, isHidden: list[catIdx].isHidden, category: list[catIdx] };
+    }
+    return { success: false, message: 'Kategori tidak ditemukan.' };
+  }
+
   function findCardById(cardId) {
     const list = getModuleCategories();
     for (let catIdx = 0; catIdx < list.length; catIdx++) {
@@ -1545,6 +1576,9 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     transferCardCategory,
     deleteCard,
     updateCardData,
+    toggleCardVisibility,
+    setCardVisibility,
+    toggleCategoryVisibility,
     findCardById,
     compressAndReadImage,
     getInfoSettings,
