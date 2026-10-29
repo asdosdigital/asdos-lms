@@ -340,20 +340,25 @@ window.stopAllDeckVideos = function(container = document) {
     const iframes = root.querySelectorAll('iframe');
     iframes.forEach(iframe => {
       try {
-        const src = iframe.src || '';
+        const src = iframe.getAttribute('src') || iframe.src || '';
         if (src && (src.includes('youtube') || src.includes('youtu.be') || src.includes('vimeo'))) {
-          // Kirim perintah pause dan stop via postMessage
+          // A. Kirim perintah pause dan stop via postMessage
           try {
             iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
             iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
           } catch(e) {}
 
-          // Reset src untuk mematikan audio seketika dan menghapus autoplay
-          let cleanSrc = src.replace(/([?&])autoplay=1(&|$)/g, '$1').replace(/[?&]$/, '');
-          if (!cleanSrc.includes('enablejsapi=1')) {
-            cleanSrc += (cleanSrc.includes('?') ? '&' : '?') + 'enablejsapi=1';
+          // B. Ganti node iframe di DOM agar browser seketika mematikan audio track & proses rendering video
+          const parent = iframe.parentNode;
+          if (parent) {
+            const clone = iframe.cloneNode(true);
+            let cleanSrc = src.replace(/([?&])autoplay=1(&|$)/g, '$1').replace(/[?&]$/, '');
+            if (!cleanSrc.includes('enablejsapi=1')) {
+              cleanSrc += (cleanSrc.includes('?') ? '&' : '?') + 'enablejsapi=1';
+            }
+            clone.src = cleanSrc;
+            parent.replaceChild(clone, iframe);
           }
-          iframe.src = cleanSrc;
         }
       } catch(err) {}
     });
@@ -363,6 +368,7 @@ window.stopAllDeckVideos = function(container = document) {
     videos.forEach(v => {
       try {
         v.pause();
+        v.currentTime = 0;
       } catch(e) {}
     });
 
@@ -371,6 +377,7 @@ window.stopAllDeckVideos = function(container = document) {
     audios.forEach(a => {
       try {
         a.pause();
+        a.currentTime = 0;
       } catch(e) {}
     });
   } catch(e) {}

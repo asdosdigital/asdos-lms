@@ -885,7 +885,7 @@ const nextLabels = [
 ];
 
 function updateDeckView(direction = 0) {
-  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
+  if (direction !== 0 && window.stopAllDeckVideos) window.stopAllDeckVideos();
   cards.forEach((card, idx) => {
     card.classList.remove('active', 'slide-in-right', 'slide-in-left');
     if (idx === currentCard) {
@@ -911,6 +911,7 @@ function updateDeckView(direction = 0) {
 }
 
 function navigateDeck(dir) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   if (dir === 1 && currentCard === totalCards - 1) {
     window.location.href = 'day5-v3.2.html';
     return;

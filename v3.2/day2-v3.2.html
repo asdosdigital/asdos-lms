@@ -813,7 +813,7 @@ if (window.checkDayAccess) {
 }
 
 function updateDeckView(direction = 0) {
-  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
+  if (direction !== 0 && window.stopAllDeckVideos) window.stopAllDeckVideos();
   for (let i = 0; i < totalCards; i++) {
     const el = document.getElementById('card-' + i);
     if (!el) continue;
@@ -850,6 +850,7 @@ function updateDeckView(direction = 0) {
 }
 
 function navigateDeck(dir) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
   const target = currentCard + dir;
   if (target >= 0 && target < totalCards) {
     currentCard = target;

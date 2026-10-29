@@ -1247,6 +1247,7 @@ if (window.checkDayAccess) {
   }
 
   function navigateDeck(direction) {
+    if (window.stopAllDeckVideos) window.stopAllDeckVideos();
     getAudioContext();
     if (direction === 1 && currentCardIndex === totalCards - 1) {
       window.location.href = '../dashboard.html';

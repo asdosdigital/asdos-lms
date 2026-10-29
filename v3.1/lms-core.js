@@ -315,8 +315,74 @@ window.renderDrawerItems = function(currentDayNumber) {
 };
 
 // ==========================================================================
-// 5. LITE YOUTUBE FAÇADE (HEMAT RAM & KUOTA HP)
+// 5. UNIVERSAL VIDEO CONTROLLER & LITE YOUTUBE ENGINE
 // ==========================================================================
+window.ensureVideoApiEnabled = function(container = document) {
+  try {
+    const root = container || document;
+    const iframes = root.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      let src = iframe.src || '';
+      if (src && (src.includes('youtube') || src.includes('youtu.be'))) {
+        if (!src.includes('enablejsapi=1')) {
+          src += (src.includes('?') ? '&' : '?') + 'enablejsapi=1';
+          iframe.src = src;
+        }
+      }
+    });
+  } catch(e) {}
+};
+
+window.stopAllDeckVideos = function(container = document) {
+  try {
+    const root = container || document;
+    // 1. YouTube & iframe embeds
+    const iframes = root.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      try {
+        const src = iframe.getAttribute('src') || iframe.src || '';
+        if (src && (src.includes('youtube') || src.includes('youtu.be') || src.includes('vimeo'))) {
+          // A. Kirim perintah pause dan stop via postMessage
+          try {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+          } catch(e) {}
+
+          // B. Ganti node iframe di DOM agar browser seketika mematikan audio track & proses rendering video
+          const parent = iframe.parentNode;
+          if (parent) {
+            const clone = iframe.cloneNode(true);
+            let cleanSrc = src.replace(/([?&])autoplay=1(&|$)/g, '$1').replace(/[?&]$/, '');
+            if (!cleanSrc.includes('enablejsapi=1')) {
+              cleanSrc += (cleanSrc.includes('?') ? '&' : '?') + 'enablejsapi=1';
+            }
+            clone.src = cleanSrc;
+            parent.replaceChild(clone, iframe);
+          }
+        }
+      } catch(err) {}
+    });
+
+    // 2. Video HTML5 native
+    const videos = root.querySelectorAll('video');
+    videos.forEach(v => {
+      try {
+        v.pause();
+        v.currentTime = 0;
+      } catch(e) {}
+    });
+
+    // 3. Audio HTML5 native
+    const audios = root.querySelectorAll('audio');
+    audios.forEach(a => {
+      try {
+        a.pause();
+        a.currentTime = 0;
+      } catch(e) {}
+    });
+  } catch(e) {}
+};
+
 window.initLiteYouTubePlayers = function() {
   const iframes = document.querySelectorAll('.video-step iframe[src*="youtube"]');
   iframes.forEach(iframe => {
@@ -506,7 +572,12 @@ window.checkDayAccess = function(currentDayNumber) {
 };
 
 // Auto-run pada halaman materi
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // 0. Cek silent restore trusted device session
+  if (window.LMS_DB && window.LMS_DB.checkTrustedDeviceSession && !window.LMS_DB.getCurrentStudent()) {
+    await window.LMS_DB.checkTrustedDeviceSession();
+  }
+
   // Deteksi hari aktif dari title atau filename (mendukung Day 2 v3.1, day2-v3.1, day2-preview)
   const match = location.pathname.match(/day\s*(\d+)/i) || document.title.match(/day\s*(\d+)/i);
   const currentDay = match ? parseInt(match[1], 10) : 0;
@@ -518,5 +589,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Inisialisasi drawer jika ada
     if (window.initCurriculumDrawer) window.initCurriculumDrawer(currentDay);
     if (window.initLiteYouTubePlayers) window.initLiteYouTubePlayers();
+    if (window.ensureVideoApiEnabled) window.ensureVideoApiEnabled();
+  } else {
+    if (window.ensureVideoApiEnabled) window.ensureVideoApiEnabled();
   }
 });
