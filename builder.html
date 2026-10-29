@@ -988,16 +988,9 @@
 
   <div style="display:flex;align-items:center;gap:12px">
     <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--muted)">
-      <span>Template / Modul:</span>
-      <select id="selPresetTemplate" onchange="loadPresetTemplate(this.value)" style="width:auto;padding:6px 10px;font-size:12.5px">
+      <span>Pilih Modul / Template:</span>
+      <select id="selPresetTemplate" onchange="handleSelectModuleOrPreset(this.value)" style="width:auto;max-width:320px;padding:6px 10px;font-size:12.5px">
         <option value="custom">Modul Baru (Kustom)</option>
-        <option value="day1">Day 1 (Setup &amp; Prompt Perdana)</option>
-        <option value="day2">Day 2 (Character Sheet &amp; Konsistensi Wajah)</option>
-        <option value="day3">Day 3 (Konsistensi Gambar &amp; Sudut Kamera)</option>
-        <option value="day4">Day 4 (Latar Adegan Sinematik)</option>
-        <option value="day5">Day 5 (Audio &amp; Voiceover AI)</option>
-        <option value="day6">Day 6 (Video Assembly Final Cut)</option>
-        <option value="day7">Day 7 (Proyek Kelulusan &amp; Sertifikat)</option>
       </select>
     </div>
   </div>
@@ -1016,9 +1009,9 @@
       <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       <span>Simpan Draft</span>
     </button>
-    <button type="button" class="btn-secondary" onclick="saveToLmsDatabase()">
-      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <span>Simpan ke Database</span>
+    <button type="button" class="btn-save" onclick="saveToLmsDatabase()" style="box-shadow:0 3px 10px rgba(31,107,122,0.2)">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span>Simpan ke Database LMS</span>
     </button>
     <button type="button" class="btn-secondary" onclick="previewInNewTab()" title="Buka pratinjau materi layar penuh di tab baru">
       <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -1041,19 +1034,39 @@
   <main class="editor-pane">
     <!-- Day Metadata -->
     <div class="panel-box">
-      <h3>Informasi Modul Pembelajaran</h3>
-      <p class="panel-desc">Tentukan nomor modul dan judul yang akan ditampilkan di kurikulum siswa.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">Informasi Modul Pembelajaran</h3>
+        <span id="editingModuleBadge" style="font-size:11px;font-weight:850;background:var(--brand);color:#fff;padding:3px 10px;border-radius:99px;display:none">MODUL TERPASANG</span>
+      </div>
+      <p class="panel-desc">Ubah thumbnail, judul, label badge, dan ringkasan materi. Semua perubahan langsung tersimpan ke dashboard.</p>
       
-      <div style="display:grid;grid-template-columns:120px 1fr;gap:14px">
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:14px">
         <div class="form-group">
-          <label for="modDayNumber">Nomor Modul:</label>
-          <input type="text" id="modDayNumber" value="Day 8" oninput="updateCourseMeta()">
+          <label for="modDayNumber">Label / Badge Modul:</label>
+          <input type="text" id="modDayNumber" value="Day 8" oninput="updateCourseMeta()" placeholder="misal: Day 8, Modul Interaktif">
         </div>
         <div class="form-group">
           <label for="modTitle">Judul Utama Modul:</label>
-          <input type="text" id="modTitle" value="Eksplorasi Efek Animasi Lanjutan" oninput="updateCourseMeta()">
+          <input type="text" id="modTitle" value="Eksplorasi Efek Animasi Lanjutan" oninput="updateCourseMeta()" placeholder="Judul Modul Pembelajaran">
         </div>
       </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label for="modThumbnail">Gambar Thumbnail (File / URL):</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="modThumbnail" value="banner-2.jpg" oninput="updateCourseMeta()" placeholder="banner-2.jpg, asdos-square.png, atau URL">
+            <img id="modThumbPreview" src="banner-2.jpg" alt="Preview" style="width:48px;height:32px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#E8DCCB;flex-shrink:0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modCategory">Kategori Penempatan di Dashboard:</label>
+          <select id="modCategory" onchange="updateCourseCategory(this.value)">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
       <div class="form-group" style="margin-bottom:0">
         <label for="modDesc">Tujuan / Deskripsi Singkat:</label>
         <input type="text" id="modDesc" value="Praktik menyempurnakan klip animasi dengan sentuhan visual effects dan filter sinematik." oninput="updateCourseMeta()">
@@ -1319,9 +1332,15 @@ const ACCENT_MAP = {
 // RENDER EDITOR PANE
 // ==========================================================================
 function renderEditor() {
-  document.getElementById('modDayNumber').value = courseModel.dayNumber;
-  document.getElementById('modTitle').value = courseModel.title;
-  document.getElementById('modDesc').value = courseModel.desc;
+  document.getElementById('modDayNumber').value = courseModel.dayNumber || 'Day 8';
+  document.getElementById('modTitle').value = courseModel.title || '';
+  document.getElementById('modDesc').value = courseModel.desc || '';
+  const thumbInput = document.getElementById('modThumbnail');
+  if (thumbInput) {
+    thumbInput.value = courseModel.thumbnail || 'banner-2.jpg';
+    const previewImg = document.getElementById('modThumbPreview');
+    if (previewImg) previewImg.src = thumbInput.value;
+  }
 
   // 1. Render Card Deck Bar with Drag and Drop
   renderCardDeckNav();
@@ -2312,7 +2331,17 @@ function updateCourseMeta() {
   courseModel.dayNumber = document.getElementById('modDayNumber').value;
   courseModel.title = document.getElementById('modTitle').value;
   courseModel.desc = document.getElementById('modDesc').value;
+  const thumbInput = document.getElementById('modThumbnail');
+  if (thumbInput) {
+    courseModel.thumbnail = thumbInput.value.trim() || 'banner-2.jpg';
+    const previewImg = document.getElementById('modThumbPreview');
+    if (previewImg) previewImg.src = courseModel.thumbnail;
+  }
   renderLivePreview();
+}
+
+function updateCourseCategory(val) {
+  courseModel.targetCategoryIdx = parseInt(val, 10);
 }
 
 function updateActiveCardProp(prop, val) {
@@ -2532,14 +2561,285 @@ const PRESETS = {
   }
 };
 
-function loadPresetTemplate(type) {
-  if (type === 'custom') return;
-  if (PRESETS[type]) {
-    courseModel = JSON.parse(JSON.stringify(PRESETS[type]));
+let currentEditingCardId = null;
+
+function initStudioModuleSelector() {
+  const sel = document.getElementById('selPresetTemplate');
+  const catSel = document.getElementById('modCategory');
+  if (!sel || !window.LMS_DB) return;
+
+  const categories = window.LMS_DB.getModuleCategories();
+
+  // Populasi opsi kategori
+  if (catSel) {
+    catSel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+  }
+
+  let html = '';
+  // 1. Modul terpasang di dashboard
+  html += '<optgroup label="Modul Terpasang di Dashboard (Edit Materi)">';
+  categories.forEach((cat, catIdx) => {
+    (cat.cards || []).forEach(card => {
+      html += `<option value="mod_${card.id}">${card.title} (${card.badge || 'Modul'})</option>`;
+    });
+  });
+  html += '</optgroup>';
+
+  // 2. Template fondasi Day 1 - 7
+  html += '<optgroup label="Template Fondasi Day 1 - 7">';
+  html += '<option value="custom">Modul Baru (Kosong)</option>';
+  html += '<option value="day1">Day 1 (Setup &amp; Prompt Perdana)</option>';
+  html += '<option value="day2">Day 2 (Character Sheet &amp; Konsistensi Wajah)</option>';
+  html += '<option value="day3">Day 3 (Konsistensi Gambar &amp; Sudut Kamera)</option>';
+  html += '<option value="day4">Day 4 (Latar Adegan Sinematik)</option>';
+  html += '<option value="day5">Day 5 (Audio &amp; Voiceover AI)</option>';
+  html += '<option value="day6">Day 6 (Video Assembly Final Cut)</option>';
+  html += '<option value="day7">Day 7 (Proyek Kelulusan &amp; Sertifikat)</option>';
+  html += '</optgroup>';
+
+  sel.innerHTML = html;
+}
+
+function handleSelectModuleOrPreset(val) {
+  if (val.startsWith('mod_')) {
+    const cardId = val.replace('mod_', '');
+    loadModuleForEditing(cardId);
+  } else if (val.startsWith('day')) {
+    currentEditingCardId = null;
+    const badgeEl = document.getElementById('editingModuleBadge');
+    if (badgeEl) badgeEl.style.display = 'none';
+    if (PRESETS[val]) {
+      courseModel = JSON.parse(JSON.stringify(PRESETS[val]));
+      courseModel.thumbnail = 'banner-2.jpg';
+      currentActiveCardIndex = 0;
+      renderEditor();
+      showToast(`Template ${PRESETS[val].dayNumber} berhasil dimuat.`);
+    }
+  } else if (val === 'custom') {
+    currentEditingCardId = null;
+    const badgeEl = document.getElementById('editingModuleBadge');
+    if (badgeEl) badgeEl.style.display = 'none';
+    courseModel = {
+      dayNumber: 'Modul Baru',
+      title: 'Judul Modul Pembelajaran',
+      desc: 'Tuliskan deskripsi ringkas materi ini.',
+      thumbnail: 'banner-2.jpg',
+      helpCenter: { waNumber: '6281289795589', waText: 'Halo Mentor, saya butuh bantuan', faqs: [] },
+      cards: [
+        {
+          stepBadge: 'LANGKAH 1',
+          accent: 'teal',
+          title: 'Pengantar Materi',
+          desc: 'Deskripsi langkah pertama.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b_' + Date.now(), type: 'text', heading: 'Langkah Pertama', body: 'Tuliskan instruksi materi di sini.' }
+          ]
+        }
+      ]
+    };
     currentActiveCardIndex = 0;
     renderEditor();
-    showToast(`Template ${PRESETS[type].dayNumber} berhasil dimuat.`);
+    showToast('Kanvas modul baru siap diisi.');
   }
+}
+
+function loadModuleForEditing(cardId) {
+  if (!window.LMS_DB) return;
+  const found = window.LMS_DB.findCardById(cardId);
+  if (!found) {
+    showToast('Modul tidak ditemukan di database.');
+    return;
+  }
+
+  const { card, catIdx } = found;
+  currentEditingCardId = card.id;
+
+  const savedContent = localStorage.getItem('asdos_builder_card_' + card.id);
+  if (savedContent) {
+    try {
+      courseModel = JSON.parse(savedContent);
+    } catch(e) {
+      courseModel = generateStarterCourseModel(card);
+    }
+  } else {
+    courseModel = generateStarterCourseModel(card);
+  }
+
+  // Sinkronkan metadata dari card
+  courseModel.title = card.title || courseModel.title;
+  courseModel.dayNumber = card.badge || courseModel.dayNumber;
+  courseModel.desc = card.desc || courseModel.desc;
+  courseModel.thumbnail = card.thumbnail || 'banner-2.jpg';
+  courseModel.targetCategoryIdx = catIdx;
+
+  currentActiveCardIndex = 0;
+  renderEditor();
+
+  const badgeEl = document.getElementById('editingModuleBadge');
+  if (badgeEl) {
+    badgeEl.textContent = `SEDANG MENGEDIT: ${card.title}`;
+    badgeEl.style.display = 'inline-block';
+  }
+
+  const sel = document.getElementById('selPresetTemplate');
+  if (sel) sel.value = 'mod_' + card.id;
+
+  const catSel = document.getElementById('modCategory');
+  if (catSel) catSel.value = catIdx;
+
+  showToast(`Modul "${card.title}" siap diedit!`);
+}
+
+function generateStarterCourseModel(card) {
+  if (card.id === 'card-flow-generate') {
+    return {
+      dayNumber: card.badge || 'Modul Interaktif',
+      title: card.title,
+      desc: card.desc,
+      thumbnail: card.thumbnail || 'banner-2.jpg',
+      helpCenter: {
+        waNumber: '6281289795589',
+        waText: 'Halo Mentor, saya sedang praktik Google Flow dan butuh panduan',
+        faqs: [
+          { q: 'Token Flow saya habis?', a: 'Google Flow mereset kuota harian atau gunakan akun Google cadangan.' },
+          { q: 'Hasil video patah-patah?', a: 'Pastikan koneksi internet stabil saat proses rendering selesai.' }
+        ]
+      },
+      cards: [
+        {
+          stepBadge: 'MISI 1',
+          accent: 'teal',
+          title: 'Antarmuka & Token Google Flow',
+          desc: 'Memahami navigasi dasar dan sistem kredit 100 token harian.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b1', type: 'text', heading: 'Mengenal Panel Kerja Flow', body: 'Perhatikan panel prompt di sisi kiri bawah dan tombol rasio aspek 9:16 di sisi kanan.' },
+            { id: 'b2', type: 'video', videoUrl: card.videoUrl || 'https://www.youtube.com/watch?v=eOZVJUmjjwA' },
+            { id: 'b3', type: 'trouble', title: 'Perhatikan 2 hal penting ini:', tips: ['1 prompt render menghabiskan rata-rata 5-10 token.', 'Jangan refresh halaman sebelum render selesai.'] }
+          ]
+        },
+        {
+          stepBadge: 'MISI 2',
+          accent: 'go',
+          title: 'Formula Prompt Gerak Sinematik',
+          desc: 'Gunakan perintah bahasa Inggris ringkas untuk gerakan kamera dinamis.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b4', type: 'prompt', tool: 'Google Flow', formula: 'Smooth cinematic camera push in, character smiles warmly looking into camera, morning sunlight bokeh --ar 9:16', note: 'Salin dan tempel ke kolom text-to-video di Google Flow.' },
+            { id: 'b5', type: 'quiz', question: 'Apa format aspek rasio terbaik untuk konten vertikal HP?', options: ['16:9', '9:16 (Vertikal Layar Penuh)', '1:1'], correctIndex: 1, feedbackCorrect: 'Tepat! Format 9:16 mengisi layar ponsel secara maksimal.', feedbackWrong: 'Gunakan rasio 9:16 untuk video ponsel.' }
+          ]
+        }
+      ]
+    };
+  }
+
+  if (card.id === 'card-affiliate-ugc') {
+    return {
+      dayNumber: card.badge || 'Video Affiliate',
+      title: card.title,
+      desc: card.desc,
+      thumbnail: card.thumbnail || 'banner-2.jpg',
+      helpCenter: {
+        waNumber: '6281289795589',
+        waText: 'Halo Mentor, saya sedang praktik Modul Affiliate UGC',
+        faqs: [
+          { q: 'Bagaimana riset produk affiliate?', a: 'Cari produk di TikTok Shop dengan komisi di atas 10% dan ulasan positif.' },
+          { q: 'Video kena pelanggaran TikTok?', a: 'Gunakan suara sendiri atau suara AI yang natural dan jangan reupload video orang lain.' }
+        ]
+      },
+      cards: [
+        {
+          stepBadge: 'LANGKAH 1',
+          accent: 'peach',
+          title: 'Riset Produk & Formula Script UGC',
+          desc: 'Membuat alur naskah video promosi produk yang memicu konversi pembelian.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b1', type: 'text', heading: 'Formula Hook 3 Detik Pertama', body: 'Buka video dengan masalah sehari-hari yang dialami calon pembeli sebelum memperkenalkan produk.' },
+            { id: 'b2', type: 'video', videoUrl: card.videoUrl || 'https://www.youtube.com/watch?v=ozI7-rC2gVI' },
+            { id: 'b3', type: 'prompt', tool: 'Asdos Affiliate GPT', formula: 'Buat script video review jujur 30 detik produk [Nama Produk] dengan hook dramatis dan CTA keranjang kuning.', note: 'Ganti [Nama Produk] dengan produk pilihanmu.' }
+          ]
+        },
+        {
+          stepBadge: 'LANGKAH 2',
+          accent: 'go',
+          title: 'Produksi Klip & Keranjang Kuning',
+          desc: 'Menghubungkan storyboard dengan audio voice over AI dan checkout produk.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b4', type: 'steps', title: 'Alur Eksekusi Final:', items: ['Render adegan produk di Flow.', 'Tambahkan suara voice over AI naratif.', 'Tautkan link affiliate saat upload di TikTok.'] },
+            { id: 'b5', type: 'quiz', question: 'Kapan waktu terbaik menyisipkan ajakan checkout (Call To Action)?', options: ['Di 3 detik awal', 'Di detik-detik akhir setelah manfaat produk dijelaskan', 'Tidak perlu disisipkan'], correctIndex: 1, feedbackCorrect: 'Bagus! Penonton butuh tahu manfaat produk dulu sebelum terdorong membeli.', feedbackWrong: 'Letakkan ajakan belanja di bagian akhir video setelah manfaat terbukti.' }
+          ]
+        }
+      ]
+    };
+  }
+
+  if (card.videoUrl) {
+    return {
+      dayNumber: card.badge || 'Video Tutorial',
+      title: card.title,
+      desc: card.desc,
+      thumbnail: card.thumbnail || 'banner-2.jpg',
+      helpCenter: {
+        waNumber: '6281289795589',
+        waText: 'Halo Mentor, saya butuh panduan untuk materi: ' + card.title,
+        faqs: [
+          { q: 'Video tidak bisa diputar?', a: 'Periksa koneksi internet atau buka langsung via aplikasi YouTube.' }
+        ]
+      },
+      cards: [
+        {
+          stepBadge: 'MATERI VIDEO',
+          accent: 'teal',
+          title: card.title,
+          desc: card.desc,
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b1', type: 'video', videoUrl: card.videoUrl },
+            { id: 'b2', type: 'text', heading: 'Ringkasan Inti Video', body: card.desc || 'Tonton video di atas secara seksama lalu praktikkan langkahnya di perangkatmu.' },
+            { id: 'b3', type: 'callout', title: 'Catatan Pengajar:', body: 'Eksperimen langsung setelah menonton agar pemahaman menempel lebih kuat.' }
+          ]
+        },
+        {
+          stepBadge: 'LATIHAN MANDIRI',
+          accent: 'go',
+          title: 'Checklist & Pemahaman',
+          desc: 'Uji pemahamanmu sebelum melanjutkan ke modul berikutnya.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'b4', type: 'steps', title: 'Tugas Praktik:', items: ['Tonton video sampai tuntas.', 'Buka aplikasi pendukung di HP atau komputer.', 'Simpan draf hasil praktik pertamamu.'] },
+            { id: 'b5', type: 'quiz', question: 'Apakah kamu sudah mempraktikkan alur yang dijelaskan dalam video?', options: ['Sudah dan berhasil', 'Sedang dalam proses praktik', 'Belum mulai'], correctIndex: 0, feedbackCorrect: 'Mantap! Konsistensi praktik adalah kunci keberhasilan animasi AI.', feedbackWrong: 'Yuk selesaikan praktiknya sekarang!' }
+          ]
+        }
+      ]
+    };
+  }
+
+  return {
+    dayNumber: card.badge || 'Modul Pembelajaran',
+    title: card.title,
+    desc: card.desc,
+    thumbnail: card.thumbnail || 'banner-2.jpg',
+    helpCenter: {
+      waNumber: '6281289795589',
+      waText: 'Halo Mentor, saya butuh bantuan praktik modul ' + card.title,
+      faqs: [{ q: 'Ada kendala teknis?', a: 'Hubungi pengajar lewat tombol WhatsApp bantuan di bawah.' }]
+    },
+    cards: [
+      {
+        stepBadge: 'LANGKAH 1',
+        accent: 'teal',
+        title: card.title,
+        desc: card.desc,
+        showHelpBtn: true,
+        blocks: [
+          { id: 'b1', type: 'text', heading: 'Fokus Pembelajaran', body: card.desc || 'Pelajari materi ini langkah demi langkah.' }
+        ]
+      }
+    ]
+  };
 }
 
 // ==========================================================================
@@ -3185,34 +3485,70 @@ function saveToLmsDatabase() {
     return;
   }
 
-  const cleanDay = (courseModel.dayNumber || 'Day 8').trim();
+  const cleanDay = (courseModel.dayNumber || 'Modul').trim();
   const title = (courseModel.title || 'Materi Tambahan').trim();
   const desc = (courseModel.desc || '').trim();
-  const targetUrl = `v3.1/${cleanDay.toLowerCase().replace(/\s+/g, '')}-v3.1.html`;
+  const thumbnail = (courseModel.thumbnail || 'banner-2.jpg').trim();
+  const targetCategoryIdx = parseInt(document.getElementById('modCategory')?.value || '0', 10);
 
   const categories = window.LMS_DB.getModuleCategories();
-  let cat = categories.find(c => c.id === 'cat_additional' || c.title.includes('Lanjutan'));
-  if (!cat) {
-    cat = categories[0] || { cards: [] };
+
+  if (currentEditingCardId) {
+    // 1. Perbarui kartu materi yang sudah ada
+    let foundCatIdx = -1;
+    let foundCardIdx = -1;
+
+    for (let cI = 0; cI < categories.length; cI++) {
+      const idx = (categories[cI].cards || []).findIndex(c => c.id === currentEditingCardId);
+      if (idx >= 0) {
+        foundCatIdx = cI;
+        foundCardIdx = idx;
+        break;
+      }
+    }
+
+    if (foundCatIdx >= 0 && foundCardIdx >= 0) {
+      const cardObj = categories[foundCatIdx].cards[foundCardIdx];
+      cardObj.title = title;
+      cardObj.badge = cleanDay;
+      cardObj.desc = desc;
+      cardObj.thumbnail = thumbnail;
+
+      // Pindahkan kategori jika diubah oleh admin
+      if (targetCategoryIdx !== foundCatIdx && categories[targetCategoryIdx]) {
+        categories[foundCatIdx].cards.splice(foundCardIdx, 1);
+        categories[targetCategoryIdx].cards.push(cardObj);
+      }
+
+      localStorage.setItem('asdos_builder_card_' + currentEditingCardId, JSON.stringify(courseModel));
+      window.LMS_DB.saveModuleCategories(categories);
+      showToast(`Modul "${title}" berhasil diperbarui di kurikulum LMS!`);
+      return;
+    }
   }
 
-  const existingIdx = cat.cards.findIndex(c => c.title === title || c.badge === cleanDay);
+  // 2. Buat kartu materi baru jika belum pernah ada
+  const newCardId = 'mod_' + Date.now();
+  currentEditingCardId = newCardId;
   const newCardObj = {
-    id: 'mod_' + Date.now(),
+    id: newCardId,
     title: title,
     desc: desc,
     badge: cleanDay,
-    url: targetUrl
+    thumbnail: thumbnail,
+    type: 'interactive_module',
+    url: `v3.1/${cleanDay.toLowerCase().replace(/[^a-z0-9]/g, '')}-v3.1.html`
   };
 
-  if (existingIdx >= 0) {
-    cat.cards[existingIdx] = newCardObj;
-  } else {
-    cat.cards.push(newCardObj);
-  }
+  let targetCat = categories[targetCategoryIdx] || categories[0];
+  if (!targetCat.cards) targetCat.cards = [];
+  targetCat.cards.push(newCardObj);
 
+  localStorage.setItem('asdos_builder_card_' + newCardId, JSON.stringify(courseModel));
   window.LMS_DB.saveModuleCategories(categories);
-  showToast(`Modul "${title}" berhasil disimpan ke database LMS!`);
+
+  initStudioModuleSelector();
+  showToast(`Modul baru "${title}" berhasil ditambahkan ke kurikulum LMS!`);
 }
 
 // Helpers
@@ -3235,7 +3571,16 @@ function showToast(msg) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderEditor();
+  initStudioModuleSelector();
+
+  // Periksa apakah ada editCardId dari URL param (misal: builder.html?editCardId=card-affiliate-ugc)
+  const urlParams = new URLSearchParams(window.location.search);
+  const editCardId = urlParams.get('editCardId');
+  if (editCardId) {
+    loadModuleForEditing(editCardId);
+  } else {
+    renderEditor();
+  }
 });
 </script>
 </body>

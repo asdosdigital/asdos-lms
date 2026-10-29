@@ -1134,8 +1134,40 @@
   border: 1px solid #E8CF6A;
   padding: 3px 8px;
   border-radius: 6px;
-  margin-bottom: 8px;
   width: fit-content;
+}
+.card-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.card-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 850;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.2px;
+}
+.card-status-badge.status-completed {
+  background: var(--leaf);
+  color: var(--go-dark);
+  border: 1px solid var(--leaf-line);
+}
+.card-status-badge.status-progress {
+  background: var(--peach);
+  color: #8C4300;
+  border: 1px solid var(--peach-line);
+}
+.card-status-badge.status-unstarted {
+  background: #F4EFE6;
+  color: var(--muted);
+  border: 1px solid #DFCFC0;
 }
 .gallery-card h4 {
   margin: 0 0 6px;

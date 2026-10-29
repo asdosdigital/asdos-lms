@@ -689,6 +689,12 @@
       </button>
     </div>
     <iframe id="modalVideoIframe" class="video-modal-frame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-top:1px solid var(--line);background:#FAF6EE;flex-wrap:wrap;gap:10px">
+      <div id="videoModalStatusNotice" style="font-size:13px;font-weight:700;color:var(--muted)">Status: Belum Selesai</div>
+      <button type="button" id="btnToggleVideoComplete" class="btn-save" style="padding:8px 16px;font-size:13px" onclick="toggleCurrentVideoComplete()">
+        Tandai Selesai
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1018,30 +1024,81 @@ function renderDashboard() {
 }
 
 // ==========================================================================
-// RENDER KARTU GALERI MATERI
+// RENDER KARTU GALERI MATERI & STATUS PENYELESAIAN
 // ==========================================================================
+function getCardStatus(card, overall) {
+  // 1. Program Inti 7 Hari
+  if (card.type === 'core_7day') {
+    if (overall && overall.completedDays >= 7) {
+      return { status: 'completed', label: 'Selesai', cssClass: 'status-completed' };
+    }
+    if (overall && overall.completedDays > 0) {
+      return { status: 'progress', label: `${overall.completedDays}/7 Selesai`, cssClass: 'status-progress' };
+    }
+    return { status: 'unstarted', label: 'Belum Selesai', cssClass: 'status-unstarted' };
+  }
+
+  // 2. Modul Interaktif & Modul Mandiri
+  const isCompleted = localStorage.getItem('asdos_module_completed_' + card.id) === 'true'
+    || (card.id === 'card-flow-generate' && localStorage.getItem('asdos_module_flow_completed') === '1')
+    || (card.id === 'card-affiliate-ugc' && localStorage.getItem('asdos_module_affiliate_completed') === '1')
+    || localStorage.getItem('asdos_video_' + card.id + '_watched') === '1';
+
+  if (isCompleted) {
+    return { status: 'completed', label: 'Selesai', cssClass: 'status-completed' };
+  }
+
+  // Cek progres berjalan
+  const inProgress = (card.id === 'card-flow-generate' && localStorage.getItem('asdos_flow_active_step'))
+    || (card.id === 'card-affiliate-ugc' && localStorage.getItem('asdos_affiliate_current_card'))
+    || localStorage.getItem('asdos_module_progress_' + card.id);
+
+  if (inProgress) {
+    return { status: 'progress', label: 'Sedang Belajar', cssClass: 'status-progress' };
+  }
+
+  return { status: 'unstarted', label: 'Belum Selesai', cssClass: 'status-unstarted' };
+}
+
 function renderCategoriesHtml(categories, overall) {
   return categories.map(cat => {
-    const cardsHtml = cat.cards.map(card => {
+    const cardsHtml = (cat.cards || []).map(card => {
       let targetHref = '#';
       let clickAttr = '';
       let badgeLabel = card.badge || 'Modul';
+      const statusInfo = getCardStatus(card, overall);
       let footStatus = '';
 
       if (card.type === 'core_7day') {
         targetHref = '#';
         clickAttr = `onclick="openModal7Day(); return false;"`;
-        badgeLabel = `Program 7 Hari &bull; Selesai ${overall.completedDays}/7`;
-        footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--brand);font-weight:850">Lihat Bab &rarr;</span>`;
+        badgeLabel = `Program 7 Hari &bull; ${overall.completedDays}/7 Selesai`;
+        if (statusInfo.status === 'completed') {
+          footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--go);font-weight:850">Lihat Bab &rarr;</span>`;
+        } else if (statusInfo.status === 'progress') {
+          footStatus = `<span>${overall.percent}% Selesai</span> <span style="color:var(--brand);font-weight:850">Lanjutkan &rarr;</span>`;
+        } else {
+          footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--brand);font-weight:850">Mulai Belajar &rarr;</span>`;
+        }
       } else if (card.type === 'interactive_module' || (card.url && card.url !== '#' && !card.url.startsWith('javascript:'))) {
         targetHref = card.url;
         clickAttr = '';
         badgeLabel = card.badge || 'Modul Interaktif';
-        footStatus = `<span style="color:var(--brand);font-weight:850">Buka Modul Belajar &rarr;</span>`;
+        if (statusInfo.status === 'completed') {
+          footStatus = `<span style="color:var(--go);font-weight:850">Tuntas Dipelajari &bull; Buka Kembali &rarr;</span>`;
+        } else if (statusInfo.status === 'progress') {
+          footStatus = `<span style="color:#D97706;font-weight:850">Lanjutkan Belajar &rarr;</span>`;
+        } else {
+          footStatus = `<span style="color:var(--brand);font-weight:850">Buka Modul Belajar &rarr;</span>`;
+        }
       } else if (card.videoUrl) {
         targetHref = '#';
-        clickAttr = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}'); return false;"`;
-        footStatus = `<span style="color:var(--go);font-weight:800">Tonton Video Tutorial</span>`;
+        clickAttr = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}', '${card.id}'); return false;"`;
+        if (statusInfo.status === 'completed') {
+          footStatus = `<span style="color:var(--go);font-weight:850">Tuntas Ditonton &bull; Tonton Ulang &rarr;</span>`;
+        } else {
+          footStatus = `<span style="color:var(--brand);font-weight:800">Tonton Video Tutorial &rarr;</span>`;
+        }
       } else {
         targetHref = '#';
         clickAttr = `onclick="alert('Materi ini sedang disiapkan.'); return false;"`;
@@ -1053,7 +1110,10 @@ function renderCategoriesHtml(categories, overall) {
           <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="gallery-card-thumb">
           <div class="gallery-card-body">
             <div>
-              <span class="gallery-badge">${badgeLabel}</span>
+              <div class="card-badge-row">
+                <span class="gallery-badge">${badgeLabel}</span>
+                <span class="card-status-badge ${statusInfo.cssClass}">${statusInfo.label}</span>
+              </div>
               <h4>${card.title}</h4>
               <p>${card.desc || ''}</p>
             </div>
@@ -1151,12 +1211,73 @@ function closeModal7Day() {
 // ==========================================================================
 // MODAL PEMUTAR VIDEO
 // ==========================================================================
-function openVideoModal(titleEncoded, videoUrl) {
+let currentPlayingVideoCardId = null;
+
+function openVideoModal(titleEncoded, videoUrl, cardId) {
+  currentPlayingVideoCardId = cardId || null;
   const modal = document.getElementById('modalVideoPlayer');
   document.getElementById('modalVideoTitle').textContent = decodeURIComponent(titleEncoded);
   document.getElementById('modalVideoIframe').src = videoUrl;
+  
+  if (cardId) {
+    updateVideoModalBtnState(cardId);
+  }
+
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function updateVideoModalBtnState(cardId) {
+  const btn = document.getElementById('btnToggleVideoComplete');
+  const notice = document.getElementById('videoModalStatusNotice');
+  if (!btn) return;
+
+  if (!cardId) {
+    btn.style.display = 'none';
+    if (notice) notice.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'inline-block';
+  if (notice) notice.style.display = 'block';
+
+  const isComplete = localStorage.getItem('asdos_video_' + cardId + '_watched') === '1'
+    || localStorage.getItem('asdos_module_completed_' + cardId) === 'true';
+
+  if (isComplete) {
+    if (notice) notice.innerHTML = '<span style="color:var(--go);font-weight:750">Status: Selesai</span>';
+    btn.textContent = 'Batalkan Status Selesai';
+    btn.style.background = '#F4EFE6';
+    btn.style.color = 'var(--ink)';
+    btn.style.border = '1px solid #DFCFC0';
+  } else {
+    if (notice) notice.innerHTML = '<span style="color:var(--muted)">Status: Belum Selesai</span>';
+    btn.textContent = 'Tandai Selesai';
+    btn.style.background = 'var(--go)';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+  }
+}
+
+function toggleCurrentVideoComplete() {
+  if (!currentPlayingVideoCardId) return;
+  const isComplete = localStorage.getItem('asdos_video_' + currentPlayingVideoCardId + '_watched') === '1'
+    || localStorage.getItem('asdos_module_completed_' + currentPlayingVideoCardId) === 'true';
+
+  if (isComplete) {
+    localStorage.removeItem('asdos_video_' + currentPlayingVideoCardId + '_watched');
+    localStorage.removeItem('asdos_module_completed_' + currentPlayingVideoCardId);
+    window.showToast('Status materi diubah menjadi Belum Selesai.');
+  } else {
+    localStorage.setItem('asdos_video_' + currentPlayingVideoCardId + '_watched', '1');
+    localStorage.setItem('asdos_module_completed_' + currentPlayingVideoCardId, 'true');
+    playSuccessTone();
+    window.showToast('Hebat! Modul ini telah ditandai Selesai.');
+  }
+
+  updateVideoModalBtnState(currentPlayingVideoCardId);
+  if (typeof renderDashboard === 'function') {
+    renderDashboard();
+  }
 }
 
 function closeVideoModal() {
@@ -1164,6 +1285,9 @@ function closeVideoModal() {
   document.getElementById('modalVideoIframe').src = '';
   modal.classList.remove('open');
   document.body.style.overflow = '';
+  if (typeof renderDashboard === 'function') {
+    renderDashboard();
+  }
 }
 
 // ==========================================================================

@@ -788,8 +788,8 @@ function checkFlowQuiz(btn, isCorrect, feedback) {
 function finishModuleAndReturn() {
   // Simpan status progres modul ke lms-db jika tersedia
   try {
-    const completedKey = 'asdos_module_completed_card-flow-generate';
-    localStorage.setItem(completedKey, 'true');
+    localStorage.setItem('asdos_module_completed_card-flow-generate', 'true');
+    localStorage.setItem('asdos_module_flow_completed', '1');
   } catch(e) {}
   triggerConfetti();
   setTimeout(() => {

@@ -791,39 +791,38 @@
         return DEFAULT_MODULE_CATEGORIES;
       }
       let data = JSON.parse(raw);
-      let changed = false;
-
-      // Pastikan data selalu sinkron dengan kurikulum terbaru (4 kategori dari DEFAULT_MODULE_CATEGORIES)
-      if (!Array.isArray(data) || data.length < DEFAULT_MODULE_CATEGORIES.length) {
+      if (!Array.isArray(data) || data.length === 0) {
         data = DEFAULT_MODULE_CATEGORIES;
-        changed = true;
-      } else {
-        DEFAULT_MODULE_CATEGORIES.forEach((defCat, catIdx) => {
-          if (!data[catIdx]) {
-            data[catIdx] = defCat;
-            changed = true;
-          } else {
-            defCat.cards.forEach(defCard => {
-              const existingCard = data[catIdx].cards.find(c => c.id === defCard.id);
-              if (!existingCard) {
-                data[catIdx].cards.push(defCard);
-                changed = true;
-              } else {
-                // Selalu perbarui URL, tipe, dan videoUrl dari default resmi
-                if (existingCard.url !== defCard.url || existingCard.type !== defCard.type || existingCard.videoUrl !== defCard.videoUrl) {
-                  existingCard.url = defCard.url;
-                  existingCard.type = defCard.type;
-                  existingCard.videoUrl = defCard.videoUrl;
-                  existingCard.title = defCard.title;
-                  existingCard.badge = defCard.badge;
-                  existingCard.desc = defCard.desc;
-                  changed = true;
-                }
-              }
-            });
+        localStorage.setItem(KEY_COURSES, JSON.stringify(data));
+        return data;
+      }
+
+      // Pastikan semua default cards yang penting ada (jika belum ada sama sekali di kategori mana pun)
+      const allExistingCardIds = new Set();
+      data.forEach(cat => {
+        if (Array.isArray(cat.cards)) {
+          cat.cards.forEach(c => {
+            if (c && c.id) allExistingCardIds.add(c.id);
+          });
+        } else {
+          cat.cards = [];
+        }
+      });
+
+      let changed = false;
+      DEFAULT_MODULE_CATEGORIES.forEach(defCat => {
+        defCat.cards.forEach(defCard => {
+          if (!allExistingCardIds.has(defCard.id)) {
+            let targetCat = data.find(c => c.categoryTitle === defCat.categoryTitle);
+            if (!targetCat) targetCat = data[0];
+            if (targetCat) {
+              targetCat.cards.push(JSON.parse(JSON.stringify(defCard)));
+              allExistingCardIds.add(defCard.id);
+              changed = true;
+            }
           }
         });
-      }
+      });
 
       if (changed) {
         localStorage.setItem(KEY_COURSES, JSON.stringify(data));
@@ -859,6 +858,95 @@
     });
     saveModuleCategories(list);
     return list;
+  }
+
+  function updateCategory(catIdx, title, subtitle = '') {
+    const list = getModuleCategories();
+    if (catIdx >= 0 && catIdx < list.length) {
+      list[catIdx].categoryTitle = title;
+      list[catIdx].categorySubtitle = subtitle;
+      saveModuleCategories(list);
+      return true;
+    }
+    return false;
+  }
+
+  function deleteCategory(catIdx) {
+    const list = getModuleCategories();
+    if (catIdx >= 0 && catIdx < list.length) {
+      list.splice(catIdx, 1);
+      saveModuleCategories(list);
+      return true;
+    }
+    return false;
+  }
+
+  function moveCategory(catIdx, direction) {
+    const list = getModuleCategories();
+    const targetIdx = catIdx + direction;
+    if (targetIdx < 0 || targetIdx >= list.length) return false;
+    const item = list.splice(catIdx, 1)[0];
+    list.splice(targetIdx, 0, item);
+    saveModuleCategories(list);
+    return true;
+  }
+
+  function moveCard(catIdx, cardIdx, direction) {
+    const list = getModuleCategories();
+    if (!list[catIdx] || !list[catIdx].cards) return false;
+    const cards = list[catIdx].cards;
+    const targetIdx = cardIdx + direction;
+    if (targetIdx < 0 || targetIdx >= cards.length) return false;
+    const item = cards.splice(cardIdx, 1)[0];
+    cards.splice(targetIdx, 0, item);
+    saveModuleCategories(list);
+    return true;
+  }
+
+  function transferCardCategory(fromCatIdx, cardIdx, toCatIdx) {
+    const list = getModuleCategories();
+    toCatIdx = parseInt(toCatIdx, 10);
+    if (!list[fromCatIdx] || !list[toCatIdx]) return false;
+    const item = list[fromCatIdx].cards.splice(cardIdx, 1)[0];
+    if (item) {
+      list[toCatIdx].cards.push(item);
+      saveModuleCategories(list);
+      return true;
+    }
+    return false;
+  }
+
+  function deleteCard(catIdx, cardIdx) {
+    const list = getModuleCategories();
+    if (list[catIdx] && list[catIdx].cards && list[catIdx].cards[cardIdx]) {
+      list[catIdx].cards.splice(cardIdx, 1);
+      saveModuleCategories(list);
+      return true;
+    }
+    return false;
+  }
+
+  function updateCardData(catIdx, cardIdx, patchData) {
+    const list = getModuleCategories();
+    if (list[catIdx] && list[catIdx].cards && list[catIdx].cards[cardIdx]) {
+      Object.assign(list[catIdx].cards[cardIdx], patchData);
+      saveModuleCategories(list);
+      return true;
+    }
+    return false;
+  }
+
+  function findCardById(cardId) {
+    const list = getModuleCategories();
+    for (let catIdx = 0; catIdx < list.length; catIdx++) {
+      const cards = list[catIdx].cards || [];
+      for (let cardIdx = 0; cardIdx < cards.length; cardIdx++) {
+        if (cards[cardIdx].id === cardId) {
+          return { card: cards[cardIdx], catIdx, cardIdx, category: list[catIdx] };
+        }
+      }
+    }
+    return null;
   }
 
   // ==========================================================================
@@ -1314,6 +1402,14 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     saveModuleCategories,
     addCardToCategory,
     createNewCategory,
+    updateCategory,
+    deleteCategory,
+    moveCategory,
+    moveCard,
+    transferCardCategory,
+    deleteCard,
+    updateCardData,
+    findCardById,
     getInfoSettings,
     saveInfoSettings,
     getPrompts,

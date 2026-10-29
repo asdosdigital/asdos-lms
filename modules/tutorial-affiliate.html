@@ -757,6 +757,10 @@ function navigateDeck(dir) {
     currentCard = target;
     updateDeckView();
     if (currentCard === totalCards - 1) {
+      try {
+        localStorage.setItem('asdos_module_completed_card-affiliate-ugc', 'true');
+        localStorage.setItem('asdos_module_affiliate_completed', '1');
+      } catch(e) {}
       triggerConfetti();
       playCompletionTone();
     }

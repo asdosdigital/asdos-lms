@@ -321,6 +321,168 @@
       .panel-box { padding: 18px 14px; }
       .form-row { grid-template-columns: 1fr; }
       .btn-save { width: 100%; justify-content: center; min-height: 44px; }
+      .placement-card-actions { width: 100%; justify-content: flex-start; }
+    }
+
+    /* Placement Manager Styles */
+    .placement-cat-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .placement-cat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .placement-cat-title {
+      font-size: 16px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      margin: 0;
+    }
+    .placement-cat-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 2px 0 0;
+    }
+    .placement-card-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .placement-card-item:hover {
+      border-color: var(--brand);
+      background: #FFFDF9;
+    }
+    .placement-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 260px;
+      flex: 1;
+    }
+    .placement-card-thumb {
+      width: 68px;
+      height: 46px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #E8DCCB;
+      flex-shrink: 0;
+    }
+    .placement-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-action-mini {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      color: var(--ink);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s ease;
+    }
+    .btn-action-mini:hover:not(:disabled) {
+      background: #F4EFE6;
+      border-color: var(--muted);
+    }
+    .btn-action-mini:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .btn-action-mini.builder-btn {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand-dark);
+    }
+    .btn-action-mini.builder-btn:hover {
+      background: var(--brand-dark);
+    }
+    .btn-action-mini.del-btn {
+      color: var(--danger-ink);
+      border-color: #F8D7DA;
+    }
+    .btn-action-mini.del-btn:hover {
+      background: var(--danger-bg);
+    }
+
+    /* Admin Modals */
+    .admin-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 36, 32, 0.68);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .admin-modal-overlay.open {
+      display: flex;
+    }
+    .admin-modal-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 26px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 48px rgba(42, 36, 32, 0.22);
+    }
+    .admin-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .admin-modal-head h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .admin-modal-close {
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
     }
   </style>
 </head>
@@ -477,6 +639,22 @@
     </div>
 
     <div class="panel-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Tata Letak &amp; Urutan Modul di Dashboard</h3>
+          <p class="pdesc" style="margin:4px 0 0">Atur posisi urutan kategori dan modul yang tampil di dashboard siswa. Modul bisa digeser naik/turun, dipindahkan antarkategori, atau diedit via Studio Builder.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn-action-mini" onclick="openCreateCategoryPrompt()" style="background:var(--brand);color:#fff;border-color:var(--brand-dark);padding:8px 14px;font-size:13px">
+            + Tambah Kategori Baru
+          </button>
+        </div>
+      </div>
+
+      <div id="catalogPlacementManager"></div>
+    </div>
+
+    <div class="panel-box">
       <h3>Tambah Kartu Materi Baru ke Galeri</h3>
       <p class="pdesc">Tambahkan video tutorial atau panduan baru ke dashboard siswa tanpa perlu mengedit file HTML.</p>
 
@@ -511,11 +689,6 @@
           Simpan Kartu Materi Baru
         </button>
       </form>
-    </div>
-
-    <div class="panel-box">
-      <h3>Pratinjau Kategori &amp; Kartu Galeri</h3>
-      <div id="catalogListPreview" style="margin-top:14px"></div>
     </div>
   </section>
 
@@ -633,6 +806,92 @@
     </div>
   </section>
 
+</div>
+
+<!-- MODAL QUICK EDIT CARD -->
+<div id="modalQuickEditCard" class="admin-modal-overlay">
+  <div class="admin-modal-box">
+    <div class="admin-modal-head">
+      <h3>Edit Informasi Kartu Materi</h3>
+      <button type="button" class="admin-modal-close" onclick="closeQuickEditCardModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveQuickEditCard();">
+      <div class="form-row">
+        <div>
+          <label for="editCardBadge">Label Badge:</label>
+          <input type="text" id="editCardBadge" placeholder="misal: Modul Interaktif, Video Tutorial" required>
+        </div>
+        <div>
+          <label for="editCardType">Tipe Materi:</label>
+          <select id="editCardType">
+            <option value="single_video">Video Tutorial YouTube</option>
+            <option value="interactive_module">Modul Interaktif (HTML)</option>
+            <option value="core_7day">Program Inti (7 Hari)</option>
+            <option value="custom_link">Tautan Eksternal / Kustom</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardTitle">Judul Materi:</label>
+        <input type="text" id="editCardTitle" placeholder="Judul Modul" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardDesc">Deskripsi Ringkas:</label>
+        <textarea id="editCardDesc" rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;resize:vertical" placeholder="Deskripsi materi..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="editCardThumbnail">Thumbnail Gambar (URL / Path):</label>
+          <input type="text" id="editCardThumbnail" placeholder="banner-2.jpg atau URL gambar" required>
+        </div>
+        <div>
+          <label for="editCardVideo">Link Video YouTube (Opsional):</label>
+          <input type="text" id="editCardVideo" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardUrl">Tautan Target Modul (URL / Path):</label>
+        <input type="text" id="editCardUrl" placeholder="modules/tutorial-flow.html atau #">
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeQuickEditCardModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT CATEGORY -->
+<div id="modalEditCategory" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:460px">
+    <div class="admin-modal-head">
+      <h3>Ubah Judul Kategori</h3>
+      <button type="button" class="admin-modal-close" onclick="closeEditCategoryModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveEditCategory();">
+      <div class="form-group">
+        <label for="editCatTitle">Judul Kategori:</label>
+        <input type="text" id="editCatTitle" placeholder="misal: Fundamental Animasi AI" required>
+      </div>
+      <div class="form-group">
+        <label for="editCatSubtitle">Subtitle / Penjelasan Kategori:</label>
+        <input type="text" id="editCatSubtitle" placeholder="misal: Ikuti langkah demi langkah...">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeEditCategoryModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Kategori</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -829,22 +1088,258 @@ function downloadWhitelistCsv() {
 }
 
 // ==========================================================================
-// 4. MODULES & CATEGORIES LOGIC
+// 4. MODULES & CATEGORIES LOGIC (PLACEMENT MANAGER & QUICK EDIT)
 // ==========================================================================
-function refreshCategorySelect() {
-  const sel = document.getElementById('selCategory');
-  const categories = window.LMS_DB.getModuleCategories();
-  sel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+let currentEditingCatIdx = null;
+let currentEditingCardIdx = null;
 
-  const preview = document.getElementById('catalogListPreview');
-  preview.innerHTML = categories.map(cat => `
-    <div style="background:#f8faf8;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">
-      <strong>${cat.categoryTitle} (${cat.cards.length} Kartu)</strong>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">
-        ${cat.cards.map(k => `• ${k.title}`).join(' | ')}
+function refreshCategorySelect() {
+  const categories = window.LMS_DB.getModuleCategories();
+  const sel = document.getElementById('selCategory');
+  if (sel) {
+    sel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+  }
+  renderPlacementManager();
+}
+
+function renderPlacementManager() {
+  const container = document.getElementById('catalogPlacementManager');
+  if (!container) return;
+  const categories = window.LMS_DB.getModuleCategories();
+
+  container.innerHTML = categories.map((cat, catIdx) => {
+    const isFirstCat = catIdx === 0;
+    const isLastCat = catIdx === categories.length - 1;
+
+    const cardsHtml = (cat.cards || []).map((card, cardIdx) => {
+      const isFirstCard = cardIdx === 0;
+      const isLastCard = cardIdx === cat.cards.length - 1;
+
+      let typeLabel = 'Materi Kustom';
+      if (card.type === 'core_7day') typeLabel = 'Program Inti (7 Hari)';
+      else if (card.type === 'interactive_module') typeLabel = 'Modul Interaktif';
+      else if (card.videoUrl) typeLabel = 'Video YouTube';
+
+      return `
+        <div class="placement-card-item">
+          <div class="placement-card-left">
+            <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="placement-card-thumb">
+            <div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
+                <span style="font-size:11px;font-weight:800;background:var(--sun);color:#7A4B00;padding:2px 7px;border-radius:5px;border:1px solid #E8CF6A">${card.badge || 'Modul'}</span>
+                <span style="font-size:11px;color:var(--muted);background:#FFFFFF;border:1px solid var(--line);padding:2px 6px;border-radius:4px">${typeLabel}</span>
+              </div>
+              <strong style="font-size:14.5px;color:var(--brand-dark);display:block;line-height:1.3">${card.title}</strong>
+              <div style="font-size:12px;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${card.desc || ''}</div>
+            </div>
+          </div>
+          <div class="placement-card-actions">
+            <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveCardAdmin(${catIdx}, ${cardIdx}, -1)" ${isFirstCard ? 'disabled' : ''}>
+              &uarr; Naik
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveCardAdmin(${catIdx}, ${cardIdx}, 1)" ${isLastCard ? 'disabled' : ''}>
+              &darr; Turun
+            </button>
+            <select class="btn-action-mini" onchange="transferCardAdmin(${catIdx}, ${cardIdx}, this.value)" style="padding:5px 8px" title="Pindah ke Kategori Lain">
+              <option value="" disabled selected>Pindah Kategori...</option>
+              ${categories.map((c, i) => i !== catIdx ? `<option value="${i}">${c.categoryTitle}</option>` : '').join('')}
+            </select>
+            <button type="button" class="btn-action-mini" onclick="openQuickEditCardModal(${catIdx}, ${cardIdx})" title="Edit ringkas thumbnail, judul, dan deskripsi">
+              Edit Cepat
+            </button>
+            <a href="builder.html?editCardId=${card.id}" class="btn-action-mini builder-btn" title="Buka di Visual Studio Builder untuk edit seluruh isi blok kartu">
+              <span>Studio Builder &rarr;</span>
+            </a>
+            <button type="button" class="btn-action-mini del-btn" title="Hapus Kartu" onclick="deleteCardAdmin(${catIdx}, ${cardIdx})">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="placement-cat-box">
+        <div class="placement-cat-head">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:850;background:var(--brand);color:#fff;padding:2px 8px;border-radius:6px">KATEGORI ${catIdx + 1}</span>
+              <h4 class="placement-cat-title">${cat.categoryTitle}</h4>
+              <span style="font-size:12px;color:var(--muted);background:#F4EFE6;padding:2px 8px;border-radius:6px;border:1px solid #DFCFC0">${(cat.cards || []).length} Modul</span>
+            </div>
+            ${cat.categorySubtitle ? `<p class="placement-cat-sub">${cat.categorySubtitle}</p>` : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <button type="button" class="btn-action-mini" title="Geser Kategori Naik" onclick="moveCategoryAdmin(${catIdx}, -1)" ${isFirstCat ? 'disabled' : ''}>
+              &uarr; Geser Kategori
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Kategori Turun" onclick="moveCategoryAdmin(${catIdx}, 1)" ${isLastCat ? 'disabled' : ''}>
+              &darr; Geser Kategori
+            </button>
+            <button type="button" class="btn-action-mini" onclick="openEditCategoryModal(${catIdx})">
+              Ubah Judul Kategori
+            </button>
+            <button type="button" class="btn-action-mini del-btn" onclick="deleteCategoryAdmin(${catIdx})" title="Hapus Kategori">
+              Hapus Kategori
+            </button>
+          </div>
+        </div>
+        <div class="placement-cat-cards">
+          ${cardsHtml.length > 0 ? cardsHtml : '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada modul di kategori ini. Tambahkan kartu materi di bawah atau pindahkan dari kategori lain.</div>'}
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+}
+
+function moveCategoryAdmin(catIdx, direction) {
+  const success = window.LMS_DB.moveCategory(catIdx, direction);
+  if (success) {
+    window.showToast('Urutan kategori di dashboard berhasil diperbarui!');
+    refreshCategorySelect();
+  }
+}
+
+function moveCardAdmin(catIdx, cardIdx, direction) {
+  const success = window.LMS_DB.moveCard(catIdx, cardIdx, direction);
+  if (success) {
+    window.showToast('Posisi kartu berhasil digeser!');
+    refreshCategorySelect();
+  }
+}
+
+function transferCardAdmin(fromCatIdx, cardIdx, toCatIdx) {
+  if (toCatIdx === '' || toCatIdx === null || toCatIdx === undefined) return;
+  const targetIdx = parseInt(toCatIdx, 10);
+  const success = window.LMS_DB.transferCardCategory(fromCatIdx, cardIdx, targetIdx);
+  if (success) {
+    window.showToast('Kartu materi berhasil dipindahkan ke kategori baru!');
+    refreshCategorySelect();
+  }
+}
+
+function deleteCardAdmin(catIdx, cardIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const card = categories[catIdx]?.cards[cardIdx];
+  if (!card) return;
+  if (!confirm(`Hapus kartu "${card.title}" dari kurikulum?`)) return;
+  const success = window.LMS_DB.deleteCard(catIdx, cardIdx);
+  if (success) {
+    window.showToast(`Kartu "${card.title}" telah dihapus.`);
+    refreshCategorySelect();
+  }
+}
+
+function deleteCategoryAdmin(catIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const cat = categories[catIdx];
+  if (!cat) return;
+  if (cat.cards && cat.cards.length > 0) {
+    if (!confirm(`Kategori "${cat.categoryTitle}" memiliki ${cat.cards.length} kartu. Seluruh kartu di dalamnya juga akan terhapus. Lanjutkan?`)) return;
+  } else {
+    if (!confirm(`Hapus kategori "${cat.categoryTitle}"?`)) return;
+  }
+  const success = window.LMS_DB.deleteCategory(catIdx);
+  if (success) {
+    window.showToast(`Kategori "${cat.categoryTitle}" telah dihapus.`);
+    refreshCategorySelect();
+  }
+}
+
+function openQuickEditCardModal(catIdx, cardIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const card = categories[catIdx]?.cards[cardIdx];
+  if (!card) return;
+
+  currentEditingCatIdx = catIdx;
+  currentEditingCardIdx = cardIdx;
+
+  document.getElementById('editCardTitle').value = card.title || '';
+  document.getElementById('editCardBadge').value = card.badge || '';
+  document.getElementById('editCardDesc').value = card.desc || '';
+  document.getElementById('editCardThumbnail').value = card.thumbnail || 'banner-2.jpg';
+  document.getElementById('editCardVideo').value = card.videoUrl || '';
+  document.getElementById('editCardUrl').value = card.url || '#';
+  document.getElementById('editCardType').value = card.type || 'single_video';
+
+  const modal = document.getElementById('modalQuickEditCard');
+  if (modal) modal.classList.add('open');
+}
+
+function closeQuickEditCardModal() {
+  const modal = document.getElementById('modalQuickEditCard');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveQuickEditCard() {
+  if (currentEditingCatIdx === null || currentEditingCardIdx === null) return;
+  
+  let video = document.getElementById('editCardVideo').value.trim();
+  if (video && video.includes('watch?v=')) {
+    const vId = video.split('watch?v=')[1].split('&')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  } else if (video && video.includes('youtu.be/')) {
+    const vId = video.split('youtu.be/')[1].split('?')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  }
+
+  const patch = {
+    title: document.getElementById('editCardTitle').value.trim(),
+    badge: document.getElementById('editCardBadge').value.trim(),
+    desc: document.getElementById('editCardDesc').value.trim(),
+    thumbnail: document.getElementById('editCardThumbnail').value.trim() || 'banner-2.jpg',
+    videoUrl: video,
+    url: document.getElementById('editCardUrl').value.trim() || '#',
+    type: document.getElementById('editCardType').value
+  };
+
+  const success = window.LMS_DB.updateCardData(currentEditingCatIdx, currentEditingCardIdx, patch);
+  if (success) {
+    window.showToast(`Kartu "${patch.title}" berhasil diperbarui!`);
+    closeQuickEditCardModal();
+    refreshCategorySelect();
+  }
+}
+
+function openEditCategoryModal(catIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const cat = categories[catIdx];
+  if (!cat) return;
+
+  currentEditingCatIdx = catIdx;
+  document.getElementById('editCatTitle').value = cat.categoryTitle || '';
+  document.getElementById('editCatSubtitle').value = cat.categorySubtitle || '';
+
+  const modal = document.getElementById('modalEditCategory');
+  if (modal) modal.classList.add('open');
+}
+
+function closeEditCategoryModal() {
+  const modal = document.getElementById('modalEditCategory');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveEditCategory() {
+  if (currentEditingCatIdx === null) return;
+  const title = document.getElementById('editCatTitle').value.trim();
+  const subtitle = document.getElementById('editCatSubtitle').value.trim();
+  if (!title) return;
+
+  const success = window.LMS_DB.updateCategory(currentEditingCatIdx, title, subtitle);
+  if (success) {
+    window.showToast(`Kategori "${title}" berhasil diperbarui!`);
+    closeEditCategoryModal();
+    refreshCategorySelect();
+  }
+}
+
+function openCreateCategoryPrompt() {
+  const title = prompt('Masukkan Judul Kategori Baru:');
+  if (!title || !title.trim()) return;
+  const subtitle = prompt('Masukkan Subtitle Kategori (opsional):') || '';
+  window.LMS_DB.createNewCategory(title.trim(), subtitle.trim());
+  window.showToast(`Kategori "${title.trim()}" berhasil dibuat!`);
+  refreshCategorySelect();
 }
 
 function handleAddCardSubmit() {
