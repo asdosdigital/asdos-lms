@@ -1000,7 +1000,24 @@
         localStorage.setItem(KEY_INFO, JSON.stringify(DEFAULT_INFO));
         return DEFAULT_INFO;
       }
-      return JSON.parse(raw);
+      const data = JSON.parse(raw);
+      let changed = false;
+      if (!Array.isArray(data.announcements)) {
+        data.announcements = DEFAULT_INFO.announcements;
+        changed = true;
+      }
+      if (!Array.isArray(data.importantLinks)) {
+        data.importantLinks = DEFAULT_INFO.importantLinks;
+        changed = true;
+      }
+      if (!Array.isArray(data.toolsAsdos)) {
+        data.toolsAsdos = DEFAULT_INFO.toolsAsdos;
+        changed = true;
+      }
+      if (changed) {
+        localStorage.setItem(KEY_INFO, JSON.stringify(data));
+      }
+      return data;
     } catch(e) {
       return DEFAULT_INFO;
     }
@@ -1009,6 +1026,84 @@
   function saveInfoSettings(data) {
     localStorage.setItem(KEY_INFO, JSON.stringify(data));
     return data;
+  }
+
+  function addImportantLink(linkObj) {
+    const info = getInfoSettings();
+    if (!info.importantLinks) info.importantLinks = [];
+    info.importantLinks.push(linkObj);
+    saveInfoSettings(info);
+    return info.importantLinks;
+  }
+
+  function updateImportantLink(idx, linkObj) {
+    const info = getInfoSettings();
+    if (info.importantLinks && info.importantLinks[idx]) {
+      info.importantLinks[idx] = linkObj;
+      saveInfoSettings(info);
+      return true;
+    }
+    return false;
+  }
+
+  function deleteImportantLink(idx) {
+    const info = getInfoSettings();
+    if (info.importantLinks && info.importantLinks[idx]) {
+      info.importantLinks.splice(idx, 1);
+      saveInfoSettings(info);
+      return true;
+    }
+    return false;
+  }
+
+  function moveImportantLink(idx, direction) {
+    const info = getInfoSettings();
+    const list = info.importantLinks || [];
+    const target = idx + direction;
+    if (target < 0 || target >= list.length) return false;
+    const item = list.splice(idx, 1)[0];
+    list.splice(target, 0, item);
+    saveInfoSettings(info);
+    return true;
+  }
+
+  function addToolAsdos(toolObj) {
+    const info = getInfoSettings();
+    if (!info.toolsAsdos) info.toolsAsdos = [];
+    info.toolsAsdos.push(toolObj);
+    saveInfoSettings(info);
+    return info.toolsAsdos;
+  }
+
+  function updateToolAsdos(idx, toolObj) {
+    const info = getInfoSettings();
+    if (info.toolsAsdos && info.toolsAsdos[idx]) {
+      info.toolsAsdos[idx] = toolObj;
+      saveInfoSettings(info);
+      return true;
+    }
+    return false;
+  }
+
+  function deleteToolAsdos(idx) {
+    const info = getInfoSettings();
+    if (info.toolsAsdos && info.toolsAsdos[idx]) {
+      info.toolsAsdos.splice(idx, 1);
+      saveInfoSettings(info);
+      return true;
+    }
+    return false;
+  }
+
+  function moveToolAsdos(idx, direction) {
+    const info = getInfoSettings();
+    const list = info.toolsAsdos || [];
+    const target = idx + direction;
+    if (target < 0 || target >= list.length) return false;
+    const item = list.splice(idx, 1)[0];
+    list.splice(target, 0, item);
+    saveInfoSettings(info);
+    return true;
   }
 
   // ==========================================================================
@@ -1454,6 +1549,14 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     compressAndReadImage,
     getInfoSettings,
     saveInfoSettings,
+    addImportantLink,
+    updateImportantLink,
+    deleteImportantLink,
+    moveImportantLink,
+    addToolAsdos,
+    updateToolAsdos,
+    deleteToolAsdos,
+    moveToolAsdos,
     getPrompts,
     savePrompts,
     addPrompt,

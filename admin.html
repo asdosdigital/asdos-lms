@@ -737,6 +737,34 @@
         Simpan Informasi Pengajar
       </button>
     </div>
+
+    <!-- 2. Link Penting Praktik -->
+    <div class="panel-box" style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Kelola Link Penting Praktik</h3>
+          <p class="pdesc" style="margin:4px 0 0">Tautan platform dan referensi web yang tampil di Tab Informasi siswa (misal: Google Flow, AI Studio, Leonardo, dsb).</p>
+        </div>
+        <button type="button" class="btn-save" onclick="openAddImportantLinkModal()" style="font-size:13px;padding:8px 16px">
+          + Tambah Link Praktik Baru
+        </button>
+      </div>
+      <div id="adminImportantLinksList"></div>
+    </div>
+
+    <!-- 3. Tools Asdos -->
+    <div class="panel-box" style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Kelola Tools Asdos</h3>
+          <p class="pdesc" style="margin:4px 0 0">Aplikasi bantu khusus Asdos (Gemini Gems, Custom GPTs, tools asisten animasi) di Tab Informasi siswa.</p>
+        </div>
+        <button type="button" class="btn-save" onclick="openAddToolAsdosModal()" style="font-size:13px;padding:8px 16px">
+          + Tambah Tool Asdos Baru
+        </button>
+      </div>
+      <div id="adminToolsAsdosList"></div>
+    </div>
   </section>
 
   <!-- =================================================================== -->
@@ -924,6 +952,68 @@
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
         <button type="button" class="btn-subtle" onclick="closeEditCategoryModal()">Batal</button>
         <button type="submit" class="btn-save">Simpan Kategori</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT IMPORTANT LINK -->
+<div id="modalEditImportantLink" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:480px">
+    <div class="admin-modal-head">
+      <h3 id="modalImportantLinkHeading">Tambah / Edit Link Praktik</h3>
+      <button type="button" class="admin-modal-close" onclick="closeImportantLinkModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveImportantLinkModal();">
+      <input type="hidden" id="inLinkIndex" value="-1">
+      <div class="form-group">
+        <label for="inLinkTitle">Judul / Nama Platform:</label>
+        <input type="text" id="inLinkTitle" placeholder="misal: Google Flow (Generator Gambar &amp; Video)" required>
+      </div>
+      <div class="form-group">
+        <label for="inLinkDesc">Deskripsi Ringkas:</label>
+        <input type="text" id="inLinkDesc" placeholder="misal: labs.google/fx/tools/flow" required>
+      </div>
+      <div class="form-group">
+        <label for="inLinkUrl">URL / Tautan Lengkap:</label>
+        <input type="text" id="inLinkUrl" placeholder="https://..." required>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeImportantLinkModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Link Praktik</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT TOOL ASDOS -->
+<div id="modalEditToolAsdos" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:480px">
+    <div class="admin-modal-head">
+      <h3 id="modalToolAsdosHeading">Tambah / Edit Tool Asdos</h3>
+      <button type="button" class="admin-modal-close" onclick="closeToolAsdosModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveToolAsdosModal();">
+      <input type="hidden" id="inToolIndex" value="-1">
+      <div class="form-group">
+        <label for="inToolName">Nama Aplikasi / Custom GPT:</label>
+        <input type="text" id="inToolName" placeholder="misal: Asdos Fakta Unik (Gemini)" required>
+      </div>
+      <div class="form-group">
+        <label for="inToolDesc">Deskripsi Fungsi Tool:</label>
+        <input type="text" id="inToolDesc" placeholder="misal: Gemini Gem generator topik fakta unik otomatis" required>
+      </div>
+      <div class="form-group">
+        <label for="inToolUrl">URL / Link Akses Tool:</label>
+        <input type="text" id="inToolUrl" placeholder="https://..." required>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeToolAsdosModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Tool Asdos</button>
       </div>
     </form>
   </div>
@@ -1453,13 +1543,16 @@ function handleAddCardSubmit() {
 }
 
 // ==========================================================================
-// 5. INFORMASI & TOOLS LOGIC
+// 5. INFORMASI & TOOLS LOGIC (PENGUMUMAN, LINK PRAKTIK & TOOLS ASDOS)
 // ==========================================================================
 function loadInfoData() {
   const info = window.LMS_DB.getInfoSettings();
-  if (info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
-  if (info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
+  if (info.announcements && info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
+  if (info.announcements && info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
   if (info.memberHubUrl) document.getElementById('editMemberHub').value = info.memberHubUrl;
+
+  renderAdminImportantLinks();
+  renderAdminToolsAsdos();
 }
 
 function saveInfoEdits() {
@@ -1469,6 +1562,232 @@ function saveInfoEdits() {
   info.memberHubUrl = document.getElementById('editMemberHub').value.trim();
   window.LMS_DB.saveInfoSettings(info);
   window.showToast('Informasi penting pengajar berhasil diperbarui!');
+}
+
+// LINK PENTING PRAKTIK
+function renderAdminImportantLinks() {
+  const container = document.getElementById('adminImportantLinksList');
+  if (!container) return;
+  const info = window.LMS_DB.getInfoSettings();
+  const list = info.importantLinks || [];
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada tautan penting praktik. Klik tombol di atas untuk menambahkan.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((item, idx) => {
+    const isFirst = idx === 0;
+    const isLast = idx === list.length - 1;
+
+    return `
+      <div class="placement-card-item">
+        <div style="flex:1;min-width:240px">
+          <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${item.title}</strong>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
+        </div>
+        <div class="placement-card-actions">
+          <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveImportantLinkAdmin(${idx}, -1)" ${isFirst ? 'disabled' : ''}>
+            &uarr; Naik
+          </button>
+          <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveImportantLinkAdmin(${idx}, 1)" ${isLast ? 'disabled' : ''}>
+            &darr; Turun
+          </button>
+          <button type="button" class="btn-action-mini" onclick="openEditImportantLinkModal(${idx})" title="Edit tautan ini">
+            Edit
+          </button>
+          <button type="button" class="btn-action-mini del-btn" onclick="deleteImportantLinkAdmin(${idx})" title="Hapus tautan ini">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddImportantLinkModal() {
+  document.getElementById('inLinkIndex').value = '-1';
+  document.getElementById('inLinkTitle').value = '';
+  document.getElementById('inLinkDesc').value = '';
+  document.getElementById('inLinkUrl').value = 'https://';
+  document.getElementById('modalImportantLinkHeading').textContent = 'Tambah Link Praktik Baru';
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.add('open');
+}
+
+function openEditImportantLinkModal(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.importantLinks || [])[idx];
+  if (!item) return;
+
+  document.getElementById('inLinkIndex').value = idx;
+  document.getElementById('inLinkTitle').value = item.title || '';
+  document.getElementById('inLinkDesc').value = item.desc || '';
+  document.getElementById('inLinkUrl').value = item.url || '';
+  document.getElementById('modalImportantLinkHeading').textContent = 'Edit Link Praktik';
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.add('open');
+}
+
+function closeImportantLinkModal() {
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveImportantLinkModal() {
+  const idx = parseInt(document.getElementById('inLinkIndex').value, 10);
+  const title = document.getElementById('inLinkTitle').value.trim();
+  const desc = document.getElementById('inLinkDesc').value.trim();
+  const url = document.getElementById('inLinkUrl').value.trim();
+
+  if (!title || !url) return;
+
+  const linkObj = { title, desc, url };
+
+  if (idx >= 0) {
+    window.LMS_DB.updateImportantLink(idx, linkObj);
+    window.showToast(`Link "${title}" berhasil diperbarui!`);
+  } else {
+    window.LMS_DB.addImportantLink(linkObj);
+    window.showToast(`Link baru "${title}" berhasil ditambahkan!`);
+  }
+
+  closeImportantLinkModal();
+  renderAdminImportantLinks();
+}
+
+function deleteImportantLinkAdmin(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.importantLinks || [])[idx];
+  if (!item) return;
+  if (!confirm(`Hapus link "${item.title}" dari Tab Informasi?`)) return;
+
+  window.LMS_DB.deleteImportantLink(idx);
+  window.showToast(`Link "${item.title}" telah dihapus.`);
+  renderAdminImportantLinks();
+}
+
+function moveImportantLinkAdmin(idx, dir) {
+  const success = window.LMS_DB.moveImportantLink(idx, dir);
+  if (success) {
+    window.showToast('Urutan link praktik berhasil digeser!');
+    renderAdminImportantLinks();
+  }
+}
+
+// TOOLS ASDOS
+function renderAdminToolsAsdos() {
+  const container = document.getElementById('adminToolsAsdosList');
+  if (!container) return;
+  const info = window.LMS_DB.getInfoSettings();
+  const list = info.toolsAsdos || [];
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada Tool Asdos. Klik tombol di atas untuk menambahkan.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((item, idx) => {
+    const isFirst = idx === 0;
+    const isLast = idx === list.length - 1;
+    const toolName = item.name || item.title || 'Tool Asdos';
+
+    return `
+      <div class="placement-card-item">
+        <div style="flex:1;min-width:240px">
+          <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${toolName}</strong>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
+        </div>
+        <div class="placement-card-actions">
+          <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveToolAsdosAdmin(${idx}, -1)" ${isFirst ? 'disabled' : ''}>
+            &uarr; Naik
+          </button>
+          <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveToolAsdosAdmin(${idx}, 1)" ${isLast ? 'disabled' : ''}>
+            &darr; Turun
+          </button>
+          <button type="button" class="btn-action-mini" onclick="openEditToolAsdosModal(${idx})" title="Edit tool ini">
+            Edit
+          </button>
+          <button type="button" class="btn-action-mini del-btn" onclick="deleteToolAsdosAdmin(${idx})" title="Hapus tool ini">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddToolAsdosModal() {
+  document.getElementById('inToolIndex').value = '-1';
+  document.getElementById('inToolName').value = '';
+  document.getElementById('inToolDesc').value = '';
+  document.getElementById('inToolUrl').value = 'https://';
+  document.getElementById('modalToolAsdosHeading').textContent = 'Tambah Tool Asdos Baru';
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.add('open');
+}
+
+function openEditToolAsdosModal(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.toolsAsdos || [])[idx];
+  if (!item) return;
+
+  document.getElementById('inToolIndex').value = idx;
+  document.getElementById('inToolName').value = item.name || item.title || '';
+  document.getElementById('inToolDesc').value = item.desc || '';
+  document.getElementById('inToolUrl').value = item.url || '';
+  document.getElementById('modalToolAsdosHeading').textContent = 'Edit Tool Asdos';
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.add('open');
+}
+
+function closeToolAsdosModal() {
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveToolAsdosModal() {
+  const idx = parseInt(document.getElementById('inToolIndex').value, 10);
+  const name = document.getElementById('inToolName').value.trim();
+  const desc = document.getElementById('inToolDesc').value.trim();
+  const url = document.getElementById('inToolUrl').value.trim();
+
+  if (!name || !url) return;
+
+  const toolObj = { name, desc, url };
+
+  if (idx >= 0) {
+    window.LMS_DB.updateToolAsdos(idx, toolObj);
+    window.showToast(`Tool "${name}" berhasil diperbarui!`);
+  } else {
+    window.LMS_DB.addToolAsdos(toolObj);
+    window.showToast(`Tool baru "${name}" berhasil ditambahkan!`);
+  }
+
+  closeToolAsdosModal();
+  renderAdminToolsAsdos();
+}
+
+function deleteToolAsdosAdmin(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.toolsAsdos || [])[idx];
+  if (!item) return;
+  const toolName = item.name || item.title;
+  if (!confirm(`Hapus tool "${toolName}" dari Tab Informasi?`)) return;
+
+  window.LMS_DB.deleteToolAsdos(idx);
+  window.showToast(`Tool "${toolName}" telah dihapus.`);
+  renderAdminToolsAsdos();
+}
+
+function moveToolAsdosAdmin(idx, dir) {
+  const success = window.LMS_DB.moveToolAsdos(idx, dir);
+  if (success) {
+    window.showToast('Urutan tool asdos berhasil digeser!');
+    renderAdminToolsAsdos();
+  }
 }
 
 // ==========================================================================

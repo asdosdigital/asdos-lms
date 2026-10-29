@@ -1004,9 +1004,9 @@ function renderDashboard() {
             <h3>Tools Asdos</h3>
             <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">Aplikasi bantu yang dirancang khusus untuk mempercepat produksi video animasi Anda.</p>
             <div class="tools-grid">
-              ${infoSettings.toolsAsdos.map(tool => `
+              ${(infoSettings.toolsAsdos || []).map(tool => `
                 <a href="${tool.url}" target="_blank" rel="noopener" class="tool-card-item">
-                  <strong>${tool.name}</strong>
+                  <strong>${tool.name || tool.title}</strong>
                   <small>${tool.desc}</small>
                 </a>
               `).join('')}
