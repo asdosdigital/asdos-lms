@@ -12,13 +12,13 @@
 // 1. DATA KURIKULUM RESMI (TERINTEGRASI DENGAN DECK KARTU V3.1)
 // ==========================================================================
 window.ASDOS_CURRICULUM = [
-  { day: 1, title: 'Kenalan dengan Flow', desc: 'Gambar & edit kucing pertama', url: 'v3.1/day1-v3.1.html', key: 'asdos_day1_preview_steps_v2', posKey: 'asdos_day1_v3_position', steps: 4 },
-  { day: 2, title: 'Bikin Character Sheet', desc: 'Karakter konsisten multi-view', url: 'v3.1/day2-v3.1.html', key: 'asdos_day2_steps_v3', posKey: 'asdos_day2_v3_position', steps: 4 },
-  { day: 3, title: 'Gabungkan Dua Referensi', desc: 'Gambar + karakter jadi video', url: 'v3.1/day3-v3.1.html', key: 'asdos_day3_steps_v3', posKey: 'asdos_day3_v3_position', steps: 4 },
-  { day: 4, title: 'Video Fakta Unik', desc: 'Skrip ChatGPT & 3 adegan Flow', url: 'v3.1/day4-v3.1.html', key: 'asdos_day4_steps_v3', posKey: 'asdos_day4_v3_position', steps: 5 },
-  { day: 5, title: 'Voice Over & Dialog AI', desc: 'Audio narasi natural AI Studio', url: 'v3.1/day5-v3.1.html', key: 'asdos_day5_steps_v3', posKey: 'asdos_day5_v3_position', steps: 3 },
-  { day: 6, title: 'Edit Video di Canva', desc: 'Susun klip, audio & export MP4', url: 'v3.1/day6-v3.1.html', key: 'asdos_day6_steps_v3', posKey: 'asdos_day6_v3_position', steps: 5 },
-  { day: 7, title: 'Panggung Karya & Kelulusan', desc: 'Kartu prestasi IG & langkah baru', url: 'v3.1/day7-v3.1.html', key: 'asdos_day7_steps_v3', posKey: 'asdos_day7_v3_position', steps: 4 }
+  { day: 1, title: 'Kenalan dengan Flow', desc: 'Gambar & edit kucing pertama', url: 'v3.2/day1-v3.2.html', key: 'asdos_day1_preview_steps_v2', posKey: 'asdos_day1_v3_position', steps: 4 },
+  { day: 2, title: 'Bikin Character Sheet', desc: 'Karakter konsisten multi-view', url: 'v3.2/day2-v3.2.html', key: 'asdos_day2_steps_v3', posKey: 'asdos_day2_v3_position', steps: 4 },
+  { day: 3, title: 'Gabungkan Dua Referensi', desc: 'Gambar + karakter jadi video', url: 'v3.2/day3-v3.2.html', key: 'asdos_day3_steps_v3', posKey: 'asdos_day3_v3_position', steps: 4 },
+  { day: 4, title: 'Video Fakta Unik', desc: 'Skrip ChatGPT & 3 adegan Flow', url: 'v3.2/day4-v3.2.html', key: 'asdos_day4_steps_v3', posKey: 'asdos_day4_v3_position', steps: 5 },
+  { day: 5, title: 'Voice Over & Dialog AI', desc: 'Audio narasi natural AI Studio', url: 'v3.2/day5-v3.2.html', key: 'asdos_day5_steps_v3', posKey: 'asdos_day5_v3_position', steps: 3 },
+  { day: 6, title: 'Edit Video di Canva', desc: 'Susun klip, audio & export MP4', url: 'v3.2/day6-v3.2.html', key: 'asdos_day6_steps_v3', posKey: 'asdos_day6_v3_position', steps: 5 },
+  { day: 7, title: 'Panggung Karya & Kelulusan', desc: 'Kartu prestasi IG & langkah baru', url: 'v3.2/day7-v3.2.html', key: 'asdos_day7_steps_v3', posKey: 'asdos_day7_v3_position', steps: 4 }
 ];
 
 // ==========================================================================

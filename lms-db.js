@@ -14,8 +14,8 @@
   // Storage Keys
   const KEY_WHITELIST = 'asdos_lms_whitelist_v1';
   const KEY_SESSION = 'asdos_lms_student_session_v1';
-  const KEY_COURSES = 'asdos_lms_courses_v2';
-  const KEY_INFO = 'asdos_lms_info_settings_v1';
+  const KEY_COURSES = 'asdos_lms_courses_v3';
+  const KEY_INFO = 'asdos_lms_info_settings_v2';
   const KEY_PROMPTS = 'asdos_lms_prompts_v1';
   const KEY_SUPABASE = 'asdos_lms_supabase_config_v1';
 
@@ -26,24 +26,31 @@
     { email: 'demo@lynk.id', dateAdded: '2026-10-22T14:15:00.000Z', note: 'Akun Demo Review' }
   ];
 
-  // Default Seed Info & Tools Asdos (Sesuai Screenshot Notion)
+  // Default Seed Info & Tools Asdos (Sesuai Database Notion Akademi Animasi Asdos)
   const DEFAULT_INFO = {
     announcements: [
-      'Untuk membeli 1000 Flow Credit/Bulan silahkan japri Haniyo',
-      'Untuk Program Affiliate Akademi Animasi Asdos silahkan japri Haniyo'
+      'Untuk membeli 1000 Flow Credit/Bulan silahkan hubungi Admin Haniyo',
+      'Untuk Program Affiliate Akademi Animasi Asdos silahkan hubungi Admin Haniyo'
     ],
-    memberHubUrl: 'https://wa.me/6281289795589?text=Halo%20Kak%20Haniyo%2C%20saya%20ingin%20gabung%20Asdos%20Member%20Hub',
+    memberHubUrl: 'http://s.id/AsdosMemberHub',
     importantLinks: [
-      { title: 'WhatsApp Admin Haniyo', desc: 'Konsultasi & Bantuan Kendala Praktik', url: 'https://wa.me/6281289795589?text=Halo%20Admin%20Haniyo%2C%20saya%20butuh%20bantuan%20belajar' },
-      { title: 'Google Flow (Tools Gambar & Video)', desc: 'labs.google/fx/tools/flow', url: 'https://labs.google/fx/tools/flow' },
-      { title: 'Google AI Studio (Voice Over)', desc: 'aistudio.google.com/generate-speech', url: 'https://aistudio.google.com/generate-speech' }
+      { title: 'Asdos Member Hub', desc: 'Komunitas & Hub Anggota Asdos', url: 'http://s.id/AsdosMemberHub' },
+      { title: 'Google Flow (Generator Gambar & Video)', desc: 'labs.google/fx/tools/flow', url: 'https://labs.google/fx/tools/flow' },
+      { title: 'Google AI Studio (Voice Over)', desc: 'aistudio.google.com/generate-speech', url: 'https://aistudio.google.com/generate-speech' },
+      { title: 'Leonardo.AI', desc: 'Platform generator alternatif', url: 'https://leonardo.ai/' },
+      { title: 'Figma AI Weave', desc: 'Alat bantu visual layout', url: 'https://weave.figma.com/' },
+      { title: 'Firefox Relay', desc: 'Pembuat email sementara untuk testing akun', url: 'https://relay.firefox.com/' }
     ],
     toolsAsdos: [
-      { name: 'Asdos Fakta Unik', desc: 'Generator topik fakta menarik otomatis', url: 'https://wa.me/6281289795589?text=Buka%20Asdos%20Fakta%20Unik' },
-      { name: 'Asdos Fakta Unik GPT', desc: 'Custom GPT pembuat skrip 3 adegan', url: 'https://chatgpt.com/' },
-      { name: 'Asdos Design', desc: 'Panduan visual & pemilihan warna', url: 'https://canva.com' },
-      { name: 'Asdos Object Talk', desc: 'Generator karakter benda hidup', url: 'https://labs.google/fx/tools/flow' },
-      { name: 'Asdos Cerita', desc: 'Penyusun narasi dongeng & edukasi', url: 'https://chatgpt.com/' }
+      { name: 'Asdos Fakta Unik (Gemini)', desc: 'Gemini Gem generator topik fakta unik otomatis', url: 'https://gemini.google.com/gem/12VPsc6TiZUe32hk7rYj4bVVtRLjAhTfw?usp=sharing' },
+      { name: 'Asdos Fakta Unik GPT (ChatGPT)', desc: 'Custom GPT pembuat skrip 3 adegan terstruktur', url: 'https://chatgpt.com/g/g-6a2018b9bbf8819197fc5ecc837a99d6-asdos-fakta-unik' },
+      { name: 'Asdos Design', desc: 'Panduan visual, palet warna, dan aset desain', url: 'https://gemini.google.com/gem/1boLNPNZyXk_QMPV_MVNSzQ5ECg6uf5KM?usp=sharing' },
+      { name: 'Asdos Object Talk', desc: 'Generator animasi benda mati berbicara', url: 'https://chatgpt.com/g/g-6a2014888bc88191961fbe2e19ba5544-asdos-object-talk' },
+      { name: 'Asdos Cerita', desc: 'Penyusun narasi dongeng & dialog karakter', url: 'https://chatgpt.com/g/g-6a1f84d222d881918f218e22f5984311-asdos-cerita' },
+      { name: 'Asdos Affiliate GPT', desc: 'Generator storyboard video promosi & UGC', url: 'https://chatgpt.com/g/g-6a20679037848191a01befec4b0e6e8d-asdos-affiliate-ugc' },
+      { name: 'Asdos Video Edukasi', desc: 'Formula skrip konten pengetahuan & edukasi', url: 'https://chatgpt.com/g/g-6a35126955948191ab28a9f7283eedd4-asdos-video-edukasi' },
+      { name: 'Asdos Podcast', desc: 'Generator konsep percakapan & podcast 2 arah', url: 'https://chatgpt.com/g/g-6a23d5cef6948191a91a7ce570e58e5b-asdos-podcast' },
+      { name: 'Asdos Iklan 1.5 (Gemini)', desc: 'Penyusun panel storyboard iklan komersial', url: 'https://gemini.google.com/gem/1BGY1PuBHfHl80Uy_lRZ9vAzidZ3hLtbi?usp=sharing' }
     ]
   };
 
@@ -79,7 +86,7 @@
     }
   ];
 
-  // Default Categories & Modules (Sesuai Screenshot Notion)
+  // Default Categories & Modules (Sesuai Kurikulum Akademi Animasi Asdos)
   const DEFAULT_MODULE_CATEGORIES = [
     {
       categoryTitle: 'Fundamental Animasi AI',
@@ -89,56 +96,45 @@
           id: 'card-7hari',
           title: '7 Hari Belajar Animasi AI',
           badge: 'Program Inti (7 Hari)',
-          desc: 'Program fundamental lengkap dari membuat gambar, karakter konsisten, klip adegan, voice over AI, hingga panggung kelulusan.',
+          desc: 'Program fundamental terstruktur dari membuat gambar karakter, video gerak di Flow, voice over AI, hingga panggung kelulusan.',
           thumbnail: 'banner-2.jpg',
           type: 'core_7day',
-          url: 'v3.1/day1-v3.1.html',
+          url: 'v3.2/day1-v3.2.html',
           isFree: false
         },
         {
           id: 'card-perkenalan',
-          title: 'Video Perkenalan',
+          title: 'Video Perkenalan & Orientasi',
           badge: 'Video Orientasi',
-          desc: 'Selamat datang di Akademi Animasi Asdos. Pahami alur belajar santai tanpa terburu-buru.',
+          desc: 'Selamat datang di Akademi Animasi Asdos. Pahami alur belajar santai, fokus buat karakter kucing dulu sebelum proyek kompleks.',
           thumbnail: 'asdos-square.png',
           type: 'single_video',
-          videoUrl: 'https://www.youtube-nocookie.com/embed/tgp7gr5Qf8s?rel=0&playsinline=1',
-          url: 'v3.1/day1-v3.1.html',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/y7uuQRH_aCw?rel=0&playsinline=1',
+          url: '#',
           isFree: true
         },
         {
           id: 'card-alur',
-          title: 'Alur Membuat Animasi AI (Berlaku di Semua Tools)',
+          title: 'Alur Membuat Animasi AI (Berlaku Universal)',
           badge: 'Konsep Mindset',
-          desc: 'Mindset alur produksi: dari satu ide, menjadi gambar acuan, diubah jadi klip gerak, hingga disatukan bersama suara.',
+          desc: 'Mindset alur produksi standar: dari ide cerita, karakter acuan, render klip gerak, hingga editing audio akhir.',
           thumbnail: 'banner-2.jpg',
           type: 'single_video',
-          videoUrl: 'https://www.youtube-nocookie.com/embed/8JPgKps5s10?rel=0&playsinline=1',
-          url: 'v3.1/day1-v3.1.html',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/EU0-LG3zQXE?rel=0&playsinline=1',
+          url: '#',
           isFree: true
         }
       ]
     },
     {
       categoryTitle: 'Materi 2: Mengenali Berbagai Aplikasi & Web Animasi AI',
-      categorySubtitle: 'Eksplorasi alat bantu tambahan setelah menguasai modul fundamental',
+      categorySubtitle: 'Panduan teknis Google Flow, YouTube Create, dan platform pendukung',
       cards: [
         {
-          id: 'card-yt-create',
-          title: 'Cara Pakai YouTube Create',
-          badge: 'Video Tutorial',
-          desc: 'Aplikasi resmi YouTube di HP untuk mengedit video dan memberi efek suara gratis tanpa watermark.',
-          thumbnail: 'banner-2.jpg',
-          type: 'single_video',
-          videoUrl: 'https://www.youtube-nocookie.com/embed/tgp7gr5Qf8s?rel=0&playsinline=1',
-          url: '#',
-          isFree: false
-        },
-        {
           id: 'card-flow-generate',
-          title: 'Cara Generate Pakai Flow & Aturan Token',
+          title: 'Tutorial Google Flow & Manajemen Token',
           badge: 'Modul Interaktif',
-          desc: 'Panduan lengkap antarmuka Google Flow, manajemen kredit/token harian, dan trik render video tanpa boros kuota.',
+          desc: 'Panduan lengkap antarmuka Google Flow, manajemen kredit 0-100 token, dan trik render video tanpa boros kuota.',
           thumbnail: 'banner-2.jpg',
           type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/eOZVJUmjjwA?rel=0&playsinline=1',
@@ -146,13 +142,135 @@
           isFree: false
         },
         {
+          id: 'card-yt-create',
+          title: 'Cara Pakai YouTube Create di HP',
+          badge: 'Video Tutorial',
+          desc: 'Aplikasi resmi YouTube di HP untuk mengedit video, dubbing suara, dan formula prompt max 900 karakter.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/SdeMH0knyac?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
           id: 'card-leonardo',
           title: 'Cara Bikin Animasi AI Pakai Leonardo',
           badge: 'Alternatif Web',
-          desc: 'Mencoba platform alternatif Leonardo AI untuk variasi karakter dan gaya gambar sinematik.',
+          desc: 'Mencoba platform alternatif Leonardo AI untuk variasi karakter dan gaya visual sinematik (Modul opsional).',
           thumbnail: 'banner-2.jpg',
           type: 'single_video',
-          videoUrl: 'https://www.youtube-nocookie.com/embed/gUmTEnx0hOg?rel=0&playsinline=1',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/5-dRbxvYlec?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        }
+      ]
+    },
+    {
+      categoryTitle: 'Materi 3: Membuat Berbagai Tipe Video Animasi',
+      categorySubtitle: 'Praktik produksi video iklan produk, video affiliate UGC, video edukasi, dan dialog bercerita',
+      cards: [
+        {
+          id: 'card-iklan-seedance',
+          title: 'Cara Bikin Iklan (Gemini + Seedance 2.0)',
+          badge: 'Video Iklan',
+          desc: 'Membuat panel storyboard iklan produk di Gemini Gem Asdos Iklan 1.5 lalu render video di Leonardo Seedance.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/Ai9ddkB-bCY?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-affiliate-ugc',
+          title: 'Cara Bikin Video Affiliate TikTok / UGC',
+          badge: 'Video Affiliate',
+          desc: 'Alur 6 langkah dari Asdos Affiliate GPT, generate storyboard di Flow (Nano Banana), hingga render video vertikal 9:16.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/ozI7-rC2gVI?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-video-edukasi',
+          title: 'Tutorial Video Edukasi & Pengetahuan',
+          badge: 'Video Edukasi',
+          desc: 'Membuat konten edukasi fakta menarik dengan struktur 3 adegan menggunakan bantuan Asdos Video Edukasi GPT.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/djFDIvJG08g?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-narasi-cerita',
+          title: 'Video Narasi Bercerita dan Dialog',
+          badge: 'Storytelling',
+          desc: 'Menyusun animasi kisah fiksi dan dongeng dengan dialog antartokoh memanfaatkan Asdos Cerita GPT.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/FwCu0RuVmvE?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        }
+      ]
+    },
+    {
+      categoryTitle: 'Materi 4: Tutorial Tambahan & Optimasi Medsos',
+      categorySubtitle: 'Strategi tembus algoritma TikTok, penambahan followers, character sheet, dan voice over',
+      cards: [
+        {
+          id: 'card-algoritma-tiktok',
+          title: 'Penghancur Algoritma TikTok',
+          badge: 'Strategi Medsos',
+          desc: 'Solusi akun terkena shadowban, views mentok di bawah 200, dan trik memancing algoritma rekomendasi FYP.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/BqsBpcJ68Hk?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-1000-followers',
+          title: 'Cara Tembus 1000 Followers Pertama',
+          badge: 'Growth Akun',
+          desc: 'Langkah taktis bagi kreator baru untuk mencapai 1000 followers pertama agar fitur keranjang kuning dan live terbuka.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/cm8bxLwLnVA?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-prompting-segala',
+          title: 'Formula Prompting Segala Jenis Video',
+          badge: 'Mastery Prompt',
+          desc: 'Rumus universal menyusun prompt visual karakter, pencahayaan, dan kamera untuk berbagai tema video animasi.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/dLb719vkG6k?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-voice-over',
+          title: 'Cara Membuat Voice Over (Google AI Studio)',
+          badge: 'Audio & Dubbing',
+          desc: 'Panduan membuat rekaman suara narasi berbahasa Indonesia yang jernih dan natural secara gratis.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/iZ7lQFOsQwk?rel=0&playsinline=1',
+          url: '#',
+          isFree: false
+        },
+        {
+          id: 'card-gabung-edit',
+          title: 'Cara Menggabungkan & Edit Video',
+          badge: 'Editing Final',
+          desc: 'Menyatukan klip animasi hasil generate dari Flow dengan audio narasi dan musik latar menjadi video utuh.',
+          thumbnail: 'banner-2.jpg',
+          type: 'single_video',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/4_tAKLSC9Ws?rel=0&playsinline=1',
           url: '#',
           isFree: false
         }
@@ -343,21 +461,41 @@
         localStorage.setItem(KEY_COURSES, JSON.stringify(DEFAULT_MODULE_CATEGORIES));
         return DEFAULT_MODULE_CATEGORIES;
       }
-      const data = JSON.parse(raw);
-      // Auto-migrate legacy preview links to v3.1
+      let data = JSON.parse(raw);
       let changed = false;
-      if (Array.isArray(data)) {
-        data.forEach(cat => {
-          if (Array.isArray(cat.cards)) {
-            cat.cards.forEach(card => {
-              if (card.url && card.url.includes('day1-preview.html')) {
-                card.url = 'v3.1/day1-v3.1.html';
+
+      // Pastikan data selalu sinkron dengan kurikulum terbaru (4 kategori dari DEFAULT_MODULE_CATEGORIES)
+      if (!Array.isArray(data) || data.length < DEFAULT_MODULE_CATEGORIES.length) {
+        data = DEFAULT_MODULE_CATEGORIES;
+        changed = true;
+      } else {
+        DEFAULT_MODULE_CATEGORIES.forEach((defCat, catIdx) => {
+          if (!data[catIdx]) {
+            data[catIdx] = defCat;
+            changed = true;
+          } else {
+            defCat.cards.forEach(defCard => {
+              const existingCard = data[catIdx].cards.find(c => c.id === defCard.id);
+              if (!existingCard) {
+                data[catIdx].cards.push(defCard);
                 changed = true;
+              } else {
+                // Selalu perbarui URL, tipe, dan videoUrl dari default resmi
+                if (existingCard.url !== defCard.url || existingCard.type !== defCard.type || existingCard.videoUrl !== defCard.videoUrl) {
+                  existingCard.url = defCard.url;
+                  existingCard.type = defCard.type;
+                  existingCard.videoUrl = defCard.videoUrl;
+                  existingCard.title = defCard.title;
+                  existingCard.badge = defCard.badge;
+                  existingCard.desc = defCard.desc;
+                  changed = true;
+                }
               }
             });
           }
         });
       }
+
       if (changed) {
         localStorage.setItem(KEY_COURSES, JSON.stringify(data));
       }

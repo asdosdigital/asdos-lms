@@ -858,27 +858,33 @@ function renderDashboard() {
 function renderCategoriesHtml(categories, overall) {
   return categories.map(cat => {
     const cardsHtml = cat.cards.map(card => {
-      let clickAction = '';
+      let targetHref = '#';
+      let clickAttr = '';
       let badgeLabel = card.badge || 'Modul';
       let footStatus = '';
 
       if (card.type === 'core_7day') {
-        clickAction = `onclick="openModal7Day(); return false;"`;
+        targetHref = '#';
+        clickAttr = `onclick="openModal7Day(); return false;"`;
         badgeLabel = `Program 7 Hari &bull; Selesai ${overall.completedDays}/7`;
         footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--brand);font-weight:850">Lihat Bab &rarr;</span>`;
-      } else if (card.type === 'interactive_module' && card.url && card.url !== '#') {
-        clickAction = `href="${card.url}"`;
-        footStatus = `<span style="color:var(--brand);font-weight:850">Buka Modul Interaktif &rarr;</span>`;
+      } else if (card.type === 'interactive_module' || (card.url && card.url !== '#' && !card.url.startsWith('javascript:'))) {
+        targetHref = card.url;
+        clickAttr = '';
+        badgeLabel = card.badge || 'Modul Interaktif';
+        footStatus = `<span style="color:var(--brand);font-weight:850">Buka Modul Belajar &rarr;</span>`;
       } else if (card.videoUrl) {
-        clickAction = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}'); return false;"`;
+        targetHref = '#';
+        clickAttr = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}'); return false;"`;
         footStatus = `<span style="color:var(--go);font-weight:800">Tonton Video Tutorial</span>`;
       } else {
-        clickAction = `href="${card.url || '#'}"`;
+        targetHref = '#';
+        clickAttr = `onclick="alert('Materi ini sedang disiapkan.'); return false;"`;
         footStatus = `<span style="color:var(--muted)">Materi Tambahan</span>`;
       }
 
       return `
-        <a href="${card.url || '#'}" class="gallery-card" ${clickAction}>
+        <a href="${targetHref}" class="gallery-card" ${clickAttr}>
           <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="gallery-card-thumb">
           <div class="gallery-card-body">
             <div>
