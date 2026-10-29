@@ -950,6 +950,47 @@
   }
 
   // ==========================================================================
+  // IMAGE COMPRESSION & UPLOAD UTILITY (OFFLINE-FIRST CANVAS BASE64)
+  // ==========================================================================
+  function compressAndReadImage(file, maxWidth = 800, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type || !file.type.startsWith('image/')) {
+        return reject(new Error('Berkas yang dipilih harus berupa file foto gambar (JPG, PNG, atau WebP).'));
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          // Latar belakang putih agar PNG transparan tetap jernih
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        };
+        img.onerror = function() {
+          reject(new Error('Gagal memuat gambar dari file yang dipilih.'));
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = function() {
+        reject(new Error('Gagal membaca berkas dari perangkat.'));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ==========================================================================
   // INFORMASI & TOOLS SETTINGS
   // ==========================================================================
   function getInfoSettings() {
@@ -1410,6 +1451,7 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     deleteCard,
     updateCardData,
     findCardById,
+    compressAndReadImage,
     getInfoSettings,
     saveInfoSettings,
     getPrompts,

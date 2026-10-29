@@ -1053,10 +1053,21 @@
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div class="form-group">
-          <label for="modThumbnail">Gambar Thumbnail (File / URL):</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input type="text" id="modThumbnail" value="banner-2.jpg" oninput="updateCourseMeta()" placeholder="banner-2.jpg, asdos-square.png, atau URL">
-            <img id="modThumbPreview" src="banner-2.jpg" alt="Preview" style="width:48px;height:32px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#E8DCCB;flex-shrink:0">
+          <label for="modThumbnail">Gambar Thumbnail:</label>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <img id="modThumbPreview" src="banner-2.jpg" alt="Pratinjau" style="width:72px;height:48px;object-fit:cover;border-radius:8px;border:1.5px solid var(--line);background:#E8DCCB;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+            <div style="flex:1">
+              <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+                <input type="file" id="modThumbFileInput" accept="image/*" style="display:none" onchange="handleThumbnailUpload(event, 'modThumbnail', 'modThumbPreview')">
+                <button type="button" class="btn-action-mini" onclick="document.getElementById('modThumbFileInput').click()" style="padding:6px 12px;background:var(--brand);color:#fff;border-color:var(--brand-dark);font-size:12px;font-weight:800;cursor:pointer">
+                  Pilih Foto / Upload
+                </button>
+                <button type="button" class="btn-action-mini" onclick="resetThumbnailDefault('modThumbnail', 'modThumbPreview')" style="padding:6px 10px;font-size:12px;cursor:pointer">
+                  Gunakan Default
+                </button>
+              </div>
+              <input type="text" id="modThumbnail" value="banner-2.jpg" oninput="updateCourseMeta()" placeholder="banner-2.jpg atau URL gambar" style="font-size:12.5px;padding:6px 10px;width:100%">
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -3560,6 +3571,42 @@ function extractYouTubeId(url) {
 
 function escapeHtml(str) {
   return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function handleThumbnailUpload(event, inputId, previewId) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  try {
+    const dataUrl = await window.LMS_DB.compressAndReadImage(file, 800, 0.82);
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (input) {
+      input.value = dataUrl;
+    }
+    if (preview) {
+      preview.src = dataUrl;
+    }
+    updateCourseMeta();
+    showToast('Foto berhasil diunggah dan dioptimalkan!');
+  } catch (err) {
+    alert(err.message || 'Gagal memproses berkas foto.');
+  } finally {
+    event.target.value = '';
+  }
+}
+
+function resetThumbnailDefault(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) {
+    input.value = 'banner-2.jpg';
+  }
+  if (preview) {
+    preview.src = 'banner-2.jpg';
+  }
+  updateCourseMeta();
+  showToast('Thumbnail dikembalikan ke gambar default.');
 }
 
 function showToast(msg) {
