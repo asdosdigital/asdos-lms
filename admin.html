@@ -326,21 +326,37 @@
 </head>
 <body>
 
-<!-- PIN GATE PENGAMAN ADMIN -->
+<!-- ADMIN AUTH GATE (EMAIL & PASSWORD KHUSUS 2 ADMIN) -->
 <div id="adminPinGate" class="pin-overlay">
-  <div class="pin-box">
-    <div style="font-size:12px;font-weight:850;color:var(--brand);letter-spacing:.8px;margin-bottom:6px">[ KEAMANAN ADMIN ]</div>
+  <div class="pin-box" style="max-width:440px;text-align:center">
+    <div style="font-size:12px;font-weight:850;color:var(--brand);letter-spacing:.8px;margin-bottom:6px">[ KEAMANAN ADMIN ASDOS ]</div>
     <h2>Area Pengajar Asdos</h2>
-    <p>Masukkan sandi pengajar untuk mengakses manajemen siswa dan modul kelas.</p>
-    <input type="password" id="adminPinField" class="pin-input" placeholder="Sandi (admin123)" autofocus>
-    <button type="button" class="btn-save" style="width:100%;justify-content:center" onclick="checkPin()">
-      Buka Dashboard Admin &rarr;
-    </button>
-    <div id="pinErr" style="display:none;color:var(--danger-ink);font-size:12px;margin-top:10px;font-weight:750">
-      Sandi salah. Silakan coba lagi.
-    </div>
-    <div style="margin-top:16px;font-size:12px">
-      <a href="index.html" style="color:var(--brand);text-decoration:underline">&larr; Kembali ke Halaman Depan</a>
+    <p style="margin-bottom:20px;font-size:14px;color:var(--muted)">Khusus untuk Administrator resmi terdaftar (<strong style="color:var(--brand-dark)">Haniyo & Hami</strong>).</p>
+    
+    <form onsubmit="event.preventDefault(); doAdminLogin();">
+      <div style="text-align:left;margin-bottom:12px">
+        <label for="adminEmailInput" style="font-size:12px;font-weight:750;color:var(--muted);display:block;margin-bottom:4px">Email Admin:</label>
+        <input type="email" id="adminEmailInput" class="pin-input" style="text-align:left;font-size:15px;letter-spacing:normal;margin-bottom:0" placeholder="nama@gmail.com" required autofocus>
+      </div>
+
+      <div style="text-align:left;margin-bottom:16px">
+        <label for="adminPassInput" style="font-size:12px;font-weight:750;color:var(--muted);display:block;margin-bottom:4px">Password Akun:</label>
+        <input type="password" id="adminPassInput" class="pin-input" style="text-align:left;font-size:15px;letter-spacing:normal;margin-bottom:0" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" id="btnAdminLogin" class="btn-save" style="width:100%;justify-content:center;padding:12px;font-size:15px">
+        Masuk Dashboard Admin &rarr;
+      </button>
+
+      <div id="adminAuthErr" style="display:none;color:var(--danger-ink);font-size:12px;margin-top:12px;font-weight:750;text-align:left;background:var(--danger-bg);padding:8px 12px;border-radius:8px;line-height:1.4"></div>
+      <div id="adminAuthSuccess" style="display:none;color:var(--go-dark);font-size:12px;margin-top:12px;font-weight:750;text-align:left;background:var(--leaf);padding:8px 12px;border-radius:8px;line-height:1.4"></div>
+    </form>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;align-items:center">
+      <button type="button" onclick="requestAdminResetLink()" style="background:none;border:none;color:var(--brand);font-weight:750;cursor:pointer;padding:0;text-decoration:underline">
+        Lupa / Buat Sandi Baru?
+      </button>
+      <a href="index.html" style="color:var(--muted);text-decoration:underline">&larr; Halaman Depan</a>
     </div>
   </div>
 </div>
@@ -353,6 +369,8 @@
       <span class="admin-badge-role">AREA PENGAJAR</span>
     </div>
     <div style="display:flex;gap:12px;align-items:center;font-size:13px;font-weight:750">
+      <span id="currentAdminBadge" style="background:var(--peach);color:#7A3500;padding:5px 10px;border-radius:8px;font-size:12px;border:1px solid var(--peach-line);display:none"></span>
+      <button type="button" id="btnAdminLogout" onclick="doAdminLogout()" style="background:none;border:1px solid var(--line);padding:5px 10px;border-radius:8px;font-size:12px;color:var(--danger-ink);cursor:pointer;font-weight:750;display:none">Keluar</button>
       <a href="builder.html" style="background:var(--brand);color:#ffffff;padding:7px 14px;border-radius:10px;display:flex;align-items:center;gap:6px;font-weight:850">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         <span>Visual Studio Builder</span>
@@ -623,24 +641,108 @@
 <script src="lms-core.js"></script>
 <script>
 // ==========================================================================
-// 1. PIN CHECK
+// 1. ADMIN AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
 // ==========================================================================
-const PIN_PASS = 'admin123';
-function checkPin() {
-  const val = document.getElementById('adminPinField').value;
-  if (val === PIN_PASS || sessionStorage.getItem('asdos_admin_pass') === 'true') {
-    sessionStorage.setItem('asdos_admin_pass', 'true');
-    document.getElementById('adminPinGate').style.display = 'none';
+function checkAdminAuth() {
+  const current = window.LMS_DB ? window.LMS_DB.getCurrentAdmin() : null;
+  const gate = document.getElementById('adminPinGate');
+  const badge = document.getElementById('currentAdminBadge');
+  const logoutBtn = document.getElementById('btnAdminLogout');
+
+  if (current && window.LMS_DB.isAdminEmail(current.email)) {
+    if (gate) gate.style.display = 'none';
+    if (badge) {
+      badge.textContent = 'Admin: ' + current.email.split('@')[0];
+      badge.style.display = 'inline-block';
+      badge.title = current.email;
+    }
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    return true;
   } else {
-    document.getElementById('pinErr').style.display = 'block';
+    if (gate) gate.style.display = 'flex';
+    if (badge) badge.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    return false;
   }
 }
-document.getElementById('adminPinField').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkPin();
-});
-if (sessionStorage.getItem('asdos_admin_pass') === 'true') {
-  document.getElementById('adminPinGate').style.display = 'none';
+
+async function doAdminLogin() {
+  const emailInput = document.getElementById('adminEmailInput');
+  const passInput = document.getElementById('adminPassInput');
+  const errBox = document.getElementById('adminAuthErr');
+  const successBox = document.getElementById('adminAuthSuccess');
+  const btn = document.getElementById('btnAdminLogin');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const pass = (passInput ? passInput.value : '').trim();
+
+  if (!email || !pass) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = 'Memverifikasi...';
+  }
+  if (errBox) errBox.style.display = 'none';
+  if (successBox) successBox.style.display = 'none';
+
+  const res = await window.LMS_DB.loginAdminWithPassword(email, pass);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = 'Masuk Dashboard Admin &rarr;';
+  }
+
+  if (res.success) {
+    window.showToast('Selamat datang, Admin ' + res.admin.name + '!');
+    checkAdminAuth();
+  } else {
+    if (errBox) {
+      errBox.textContent = res.message;
+      errBox.style.display = 'block';
+    }
+  }
 }
+
+async function requestAdminResetLink() {
+  const emailInput = document.getElementById('adminEmailInput');
+  const errBox = document.getElementById('adminAuthErr');
+  const successBox = document.getElementById('adminAuthSuccess');
+  const email = (emailInput ? emailInput.value : '').trim();
+
+  if (!email) {
+    alert('Ketikkan alamat email admin Anda terlebih dahulu pada kolom Email.');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  if (errBox) errBox.style.display = 'none';
+  if (successBox) successBox.style.display = 'none';
+
+  window.showToast('Mengirim link reset sandi...');
+  const res = await window.LMS_DB.sendAdminPasswordReset(email);
+
+  if (res.success) {
+    if (successBox) {
+      successBox.textContent = res.message;
+      successBox.style.display = 'block';
+    }
+    window.showToast('Link berhasil dikirim ke Gmail.');
+  } else {
+    if (errBox) {
+      errBox.textContent = res.message;
+      errBox.style.display = 'block';
+    }
+  }
+}
+
+function doAdminLogout() {
+  if (confirm('Keluar dari sesi Administrator?')) {
+    window.LMS_DB.logoutAdmin();
+    window.showToast('Anda telah keluar dari akun Admin.');
+    checkAdminAuth();
+  }
+}
+
+checkAdminAuth();
 
 // ==========================================================================
 // 2. TABS CONTROLLER
@@ -929,6 +1031,7 @@ async function uploadLocalWhitelistToSb() {
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
+  checkAdminAuth();
   renderWhitelistTable();
   refreshCategorySelect();
   loadInfoData();

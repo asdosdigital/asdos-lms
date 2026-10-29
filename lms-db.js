@@ -1135,6 +1135,138 @@ CREATE POLICY "Akses publik untuk kategori kursus" ON public.course_categories F
 CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELECT USING (true);
 `;
 
+  // ==========================================================================
+  // ADMINISTRATOR AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
+  // ==========================================================================
+  const ALLOWED_ADMIN_EMAILS = [
+    'haniyo.sakyamuni@gmail.com',
+    'hamisesashanu@gmail.com'
+  ];
+  const KEY_ADMIN_SESSION = 'asdos_admin_session_v1';
+
+  function isAdminEmail(email) {
+    if (!email) return false;
+    const clean = email.trim().toLowerCase();
+    return ALLOWED_ADMIN_EMAILS.includes(clean);
+  }
+
+  async function loginAdminWithPassword(email, password) {
+    const clean = (email || '').trim().toLowerCase();
+    if (!isAdminEmail(clean)) {
+      return {
+        success: false,
+        message: 'Akses ditolak: Email ini tidak terdaftar sebagai Administrator Asdos.'
+      };
+    }
+    if (!password) {
+      return { success: false, message: 'Password wajib diisi.' };
+    }
+
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      // Fallback lokal sementara
+      if (password === 'admin123') {
+        const adminSession = { email: clean, name: clean.split('@')[0], loggedInAt: new Date().toISOString() };
+        sessionStorage.setItem(KEY_ADMIN_SESSION, JSON.stringify(adminSession));
+        return { success: true, admin: adminSession };
+      }
+      return { success: false, message: 'Koneksi Supabase belum terkonfigurasi.' };
+    }
+
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: clean,
+          password: password
+        })
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        const adminSession = {
+          email: clean,
+          name: clean.split('@')[0],
+          accessToken: data.access_token,
+          loggedInAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(KEY_ADMIN_SESSION, JSON.stringify(adminSession));
+        return { success: true, admin: adminSession };
+      } else {
+        const errJson = await resp.json().catch(() => ({}));
+        let errMsg = errJson.error_description || errJson.msg || '';
+        if (errMsg.includes('Invalid login credentials')) {
+          errMsg = 'Password salah atau akun admin belum dibuat di Supabase.';
+        }
+        return {
+          success: false,
+          message: errMsg || 'Password salah. Periksa kembali atau gunakan link buat sandi baru.'
+        };
+      }
+    } catch(e) {
+      return { success: false, message: 'Gagal menghubungi server: ' + e.message };
+    }
+  }
+
+  async function sendAdminPasswordReset(email) {
+    const clean = (email || '').trim().toLowerCase();
+    if (!isAdminEmail(clean)) {
+      return {
+        success: false,
+        message: 'Akses ditolak: Hanya email Administrator resmi yang dapat meminta reset password.'
+      };
+    }
+
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return { success: false, message: 'Koneksi database Supabase belum terhubung.' };
+    }
+
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/auth/v1/recover`, {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: clean })
+      });
+
+      if (resp.ok) {
+        return {
+          success: true,
+          message: 'Tautan pengaturan password baru telah dikirim ke ' + clean + '. Silakan periksa inbox Gmail Anda.'
+        };
+      } else {
+        const errJson = await resp.json().catch(() => ({}));
+        return { success: false, message: errJson.msg || 'Gagal mengirim email reset password.' };
+      }
+    } catch(e) {
+      return { success: false, message: 'Terjadi kesalahan: ' + e.message };
+    }
+  }
+
+  function getCurrentAdmin() {
+    try {
+      const raw = sessionStorage.getItem(KEY_ADMIN_SESSION);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function logoutAdmin() {
+    sessionStorage.removeItem(KEY_ADMIN_SESSION);
+    return true;
+  }
+
   function exportAllData() {
     return JSON.stringify({
       version: '2.0',
@@ -1195,6 +1327,12 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     testSupabaseConnection,
     syncAllLocalWhitelistToSupabase,
     SUPABASE_SQL_SCHEMA,
+    ALLOWED_ADMIN_EMAILS,
+    isAdminEmail,
+    loginAdminWithPassword,
+    sendAdminPasswordReset,
+    getCurrentAdmin,
+    logoutAdmin,
     exportAllData,
     importAllData
   };
