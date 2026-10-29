@@ -680,7 +680,7 @@
         email: em.toLowerCase(),
         note: note
       }));
-      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students`, {
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?on_conflict=email`, {
         method: 'POST',
         headers: {
           'apikey': cfg.anonKey,
@@ -690,7 +690,7 @@
         },
         body: JSON.stringify(payload)
       });
-      return resp.ok;
+      return resp.ok || resp.status === 200 || resp.status === 201 || resp.status === 204;
     } catch(e) {
       return false;
     }

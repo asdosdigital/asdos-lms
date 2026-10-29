@@ -867,7 +867,8 @@ function copySchema() {
 function saveSbSettings() {
   const u = document.getElementById('sbUrlInput').value;
   const k = document.getElementById('sbKeyInput').value;
-  window.LMS_DB.saveSupabaseConfig(u, k);
+  const cfg = window.LMS_DB.saveSupabaseConfig(u, k);
+  if (cfg.url) document.getElementById('sbUrlInput').value = cfg.url;
   window.showToast('Pengaturan Supabase tersimpan.');
   testSbConnection();
 }
@@ -898,10 +899,30 @@ async function testSbConnection() {
 }
 
 async function uploadLocalWhitelistToSb() {
+  const notice = document.getElementById('sbStatusNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = 'Mengunggah daftar whitelist ke Supabase...';
+    notice.style.borderColor = 'var(--line)';
+    notice.style.color = 'var(--muted)';
+    notice.style.background = 'var(--bg)';
+  }
   const res = await window.LMS_DB.syncAllLocalWhitelistToSupabase();
   if (res.success) {
+    if (notice) {
+      notice.textContent = `Berhasil mengunggah ${res.count} email ke database Supabase!`;
+      notice.style.borderColor = 'var(--leaf-line)';
+      notice.style.color = 'var(--go-dark)';
+      notice.style.background = 'var(--leaf)';
+    }
     window.showToast(`Berhasil mengunggah ${res.count} email ke Supabase!`);
   } else {
+    if (notice) {
+      notice.textContent = 'Gagal mengunggah ke Supabase. Silakan klik Uji Koneksi Cloud untuk memeriksa.';
+      notice.style.borderColor = 'var(--danger-ink)';
+      notice.style.color = 'var(--danger-ink)';
+      notice.style.background = 'var(--danger-bg)';
+    }
     window.showToast('Gagal mengunggah ke Supabase. Periksa koneksi.');
   }
 }
