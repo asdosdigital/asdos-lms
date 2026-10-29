@@ -673,13 +673,24 @@
 
   async function pushWhitelistToSupabase(emailsArray, note = 'Input Admin Lynk.id') {
     const cfg = getSupabaseConfig();
-    if (!cfg || !cfg.url || !cfg.anonKey) return false;
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return { success: false, reason: 'URL atau Anon Key Supabase belum diisi.' };
+    }
     try {
       const cleanUrl = cleanSupabaseUrl(cfg.url);
-      const payload = emailsArray.map(em => ({
-        email: em.toLowerCase(),
+      const validEmails = (emailsArray || [])
+        .map(em => (typeof em === 'string' ? em.trim().toLowerCase() : (em && em.email ? em.email.trim().toLowerCase() : '')))
+        .filter(em => em && em.includes('@'));
+
+      if (validEmails.length === 0) {
+        return { success: true, count: 0, message: 'Tidak ada email valid untuk diunggah.' };
+      }
+
+      const payload = validEmails.map(em => ({
+        email: em,
         note: note
       }));
+
       const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?on_conflict=email`, {
         method: 'POST',
         headers: {
@@ -690,9 +701,17 @@
         },
         body: JSON.stringify(payload)
       });
-      return resp.ok || resp.status === 200 || resp.status === 201 || resp.status === 204;
+
+      if (resp.ok || resp.status === 200 || resp.status === 201 || resp.status === 204) {
+        return { success: true, count: validEmails.length };
+      } else {
+        const errText = await resp.text();
+        console.error('Supabase push error:', resp.status, errText);
+        return { success: false, status: resp.status, reason: errText };
+      }
     } catch(e) {
-      return false;
+      console.error('Supabase push exception:', e);
+      return { success: false, reason: e.message };
     }
   }
 
@@ -723,9 +742,7 @@
   async function syncAllLocalWhitelistToSupabase() {
     const list = getWhitelist();
     if (!list || list.length === 0) return { success: true, count: 0 };
-    const emails = list.map(x => x.email);
-    const ok = await pushWhitelistToSupabase(emails, 'Sinkronisasi Awal');
-    return { success: ok, count: emails.length };
+    return await pushWhitelistToSupabase(list, 'Sinkronisasi Awal');
   }
 
   // Auto-sync whitelist on load

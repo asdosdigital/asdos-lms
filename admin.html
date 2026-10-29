@@ -918,12 +918,12 @@ async function uploadLocalWhitelistToSb() {
     window.showToast(`Berhasil mengunggah ${res.count} email ke Supabase!`);
   } else {
     if (notice) {
-      notice.textContent = 'Gagal mengunggah ke Supabase. Silakan klik Uji Koneksi Cloud untuk memeriksa.';
+      notice.textContent = `Gagal mengunggah ke Supabase: ${res.reason || 'Periksa pengaturan koneksi.'}`;
       notice.style.borderColor = 'var(--danger-ink)';
       notice.style.color = 'var(--danger-ink)';
       notice.style.background = 'var(--danger-bg)';
     }
-    window.showToast('Gagal mengunggah ke Supabase. Periksa koneksi.');
+    window.showToast(`Gagal: ${res.reason || 'Periksa koneksi.'}`);
   }
 }
 
