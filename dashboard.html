@@ -258,6 +258,125 @@
       transform: translateY(2px);
       box-shadow: 0 2px 0 var(--brand-dark);
     }
+    .btn-auth-submit:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .auth-badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .auth-pill {
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--brand-dark);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .auth-otp-input {
+      letter-spacing: 8px;
+      font-size: 26px;
+      text-align: center;
+      font-weight: 850;
+      max-width: 260px;
+      margin: 0 auto 16px;
+      display: block;
+    }
+    .trust-device-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 650;
+      margin-bottom: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .trust-device-label input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+    .auth-links-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 18px;
+      font-size: 13px;
+    }
+    .btn-text-link {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--brand);
+      font-weight: 750;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: underline;
+    }
+    .btn-text-link:disabled {
+      color: var(--muted);
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+    .auth-device-alert {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+    .auth-notice {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 14px;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .auth-notice.danger {
+      background: var(--danger-bg);
+      color: var(--danger-ink);
+      border: 1px solid rgba(138,42,18,0.2);
+    }
+    .auth-notice.info {
+      background: var(--leaf);
+      color: var(--go-dark);
+      border: 1px solid var(--leaf-line);
+    }
+    .auth-footer-help {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1.5px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+      text-align: left;
+      line-height: 1.6;
+    }
+    .auth-footer-help p {
+      margin: 0 0 8px;
+    }
+    .auth-footer-help a {
+      color: var(--brand);
+      font-weight: 750;
+      text-decoration: underline;
+    }
 
     /* Floating Bottom Navigation Dock (Universal Desktop & Mobile) */
     .mobile-bottom-nav {
@@ -691,23 +810,69 @@ function renderDashboard() {
       </a>
     `;
 
-    main.innerHTML = `
-      <div class="auth-box-wrap">
-        <h2>Masuk ke Ruang Belajar</h2>
-        <p>Gunakan email yang terdaftar saat melakukan pembelian modul kelas di Lynk.id.</p>
-        
-        <form onsubmit="event.preventDefault(); doLogin();">
-          <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus>
-          <button type="submit" class="btn-auth-submit">Buka Kelas Saya &rarr;</button>
-          <div id="authErrorMsg" style="display:none;color:var(--danger-ink);font-size:13px;margin-top:12px;font-weight:750;text-align:left;background:var(--danger-bg);padding:8px 12px;border-radius:8px"></div>
-        </form>
+    if (authState.step === 'otp') {
+      main.innerHTML = `
+        <div class="auth-box-wrap">
+          <h2>Verifikasi Kode OTP</h2>
+          <p>Kode 6 digit telah dikirim ke: <br><strong style="color:var(--brand);font-size:16px">${escapeHtml(authState.email)}</strong></p>
+          
+          <form onsubmit="event.preventDefault(); submitVerifyOtp();">
+            <input type="text" id="inputOtpCode" class="auth-input auth-otp-input" placeholder="······" maxlength="8" autocomplete="one-time-code" inputmode="numeric" required autofocus>
+            
+            <label class="trust-device-label">
+              <input type="checkbox" id="checkTrustDevice" checked>
+              <span>Ingat saya di perangkat ini (Aktif 60 hari)</span>
+            </label>
 
-        <div style="margin-top:24px;padding-top:18px;border-top:1.5px solid var(--line);font-size:13px;color:var(--muted);text-align:left;line-height:1.6">
-          <p style="margin:0 0 8px"><strong>Belum terdaftar?</strong> <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20tertarik%20ikut%20Kelas%20Animasi%20AI%207%20Hari" target="_blank" rel="noopener" style="color:var(--brand);font-weight:750;text-decoration:underline">Hubungi Tim Asdos di WhatsApp</a></p>
-          <p style="margin:0"><strong>Ingin coba dulu?</strong> <a href="v3.1/day1-v3.1.html" style="color:var(--go);font-weight:750;text-decoration:underline">Buka Day 1 Gratis (Tanpa Akun) &rarr;</a></p>
+            <button type="submit" id="btnVerifyOtp" class="btn-auth-submit">
+              <span>Verifikasi & Buka Kelas &rarr;</span>
+            </button>
+            <div id="authNoticeOtp" class="auth-notice info" style="display:none"></div>
+            <div id="authErrorMsgOtp" class="auth-notice danger" style="display:none"></div>
+          </form>
+
+          <div class="auth-links-row">
+            <button type="button" class="btn-text-link" id="btnResendOtp" onclick="resendOtp()" disabled>
+              Kirim ulang kode (<span id="resendCountdown">60</span>s)
+            </button>
+            <span style="color:var(--line)">|</span>
+            <button type="button" class="btn-text-link" onclick="switchBackToEmail()">
+              Ganti Email
+            </button>
+          </div>
+
+          <div class="auth-device-alert">
+            Demi keamanan akun, sistem membatasi maksimal 2 perangkat aktif (1 Laptop/PC + 1 HP).
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    } else {
+      main.innerHTML = `
+        <div class="auth-box-wrap">
+          <h2>Masuk ke Ruang Belajar</h2>
+          <p>Gunakan email pembelian kelas di Lynk.id. Kode OTP verifikasi akan dikirim ke email Anda.</p>
+          
+          <form onsubmit="event.preventDefault(); submitRequestOtp();">
+            <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus value="${escapeHtml(authState.email || '')}">
+            <button type="submit" id="btnRequestOtp" class="btn-auth-submit">
+              <span>Kirim Kode OTP Masuk &rarr;</span>
+            </button>
+            <div id="authErrorMsgEmail" class="auth-notice danger" style="display:none"></div>
+          </form>
+
+          <div class="auth-badge-row">
+            <span class="auth-pill">Bebas Password</span>
+            <span class="auth-pill">Maksimal 2 Perangkat</span>
+            <span class="auth-pill">Sesi Aktif 60 Hari</span>
+          </div>
+
+          <div class="auth-footer-help">
+            <p><strong>Belum terdaftar?</strong> <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20tertarik%20ikut%20Kelas%20Animasi%20AI%207%20Hari" target="_blank" rel="noopener">Hubungi Tim Asdos di WhatsApp</a></p>
+            <p style="margin:0"><strong>Ingin coba dulu?</strong> <a href="v3.1/day1-v3.1.html" style="color:var(--go);font-weight:750">Buka Day 1 Gratis (Tanpa Akun) &rarr;</a></p>
+          </div>
+        </div>
+      `;
+    }
     return;
   }
 
@@ -1027,28 +1192,153 @@ function escapeHtml(str) {
 }
 
 // ==========================================================================
-// AUTH LOGIC
+// AUTH LOGIC (OTP & TRUSTED DEVICES 60 HARI)
 // ==========================================================================
-function doLogin() {
-  const input = document.getElementById('inputStudentEmail');
-  const err = document.getElementById('authErrorMsg');
-  const email = (input.value || '').trim();
+let authState = {
+  step: 'email',
+  email: '',
+  timerInterval: null,
+  countdownSeconds: 60
+};
 
-  const res = window.LMS_DB.loginStudent(email);
+async function submitRequestOtp() {
+  const input = document.getElementById('inputStudentEmail');
+  const btn = document.getElementById('btnRequestOtp');
+  const err = document.getElementById('authErrorMsgEmail');
+  const email = (input ? input.value : '').trim();
+
+  if (!email) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Mengirim kode OTP...</span>';
+  }
+  if (err) err.style.display = 'none';
+
+  const res = await window.LMS_DB.requestStudentOtp(email);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Kirim Kode OTP Masuk &rarr;</span>';
+  }
+
   if (res.success) {
-    playSuccessTone();
-    window.showToast('Selamat datang, ' + res.student.name + '!');
+    authState.email = res.email;
+    authState.step = 'otp';
     renderDashboard();
+    startOtpCountdown();
+
+    if (res.isDemo && res.demoOtp) {
+      window.showToast('Kode OTP Percobaan: ' + res.demoOtp);
+      const notice = document.getElementById('authNoticeOtp');
+      if (notice) {
+        notice.style.display = 'block';
+        notice.textContent = res.message;
+      }
+    } else {
+      window.showToast('Kode OTP 6-digit terkirim ke email Anda.');
+    }
   } else {
-    err.textContent = res.message || 'Email belum terdaftar di whitelist Lynk.id.';
-    err.style.display = 'block';
+    if (err) {
+      err.textContent = res.message || 'Email belum terdaftar di whitelist Lynk.id.';
+      err.style.display = 'block';
+    }
   }
 }
 
-function doLogout() {
-  if (confirm('Keluar dari ruang belajar?')) {
-    window.LMS_DB.logoutStudent();
+async function submitVerifyOtp() {
+  const input = document.getElementById('inputOtpCode');
+  const btn = document.getElementById('btnVerifyOtp');
+  const err = document.getElementById('authErrorMsgOtp');
+  const checkTrust = document.getElementById('checkTrustDevice');
+  const token = (input ? input.value : '').trim();
+
+  if (!token) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Memverifikasi kode...</span>';
+  }
+  if (err) err.style.display = 'none';
+
+  const trustDevice = checkTrust ? checkTrust.checked : true;
+  const res = await window.LMS_DB.verifyStudentOtp(authState.email, token, trustDevice);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Verifikasi & Buka Kelas &rarr;</span>';
+  }
+
+  if (res.success) {
+    clearInterval(authState.timerInterval);
+    playSuccessTone();
+    window.showToast('Selamat datang, ' + res.student.name + '!');
+    if (res.deviceNotice) {
+      setTimeout(() => {
+        window.showToast(res.deviceNotice);
+      }, 2200);
+    }
+    renderDashboard();
+  } else {
+    if (err) {
+      err.textContent = res.message || 'Kode OTP salah atau telah kadaluarsa.';
+      err.style.display = 'block';
+    }
+  }
+}
+
+function startOtpCountdown() {
+  clearInterval(authState.timerInterval);
+  authState.countdownSeconds = 60;
+  const btn = document.getElementById('btnResendOtp');
+  const cd = document.getElementById('resendCountdown');
+  if (btn) btn.disabled = true;
+
+  authState.timerInterval = setInterval(() => {
+    authState.countdownSeconds--;
+    if (cd) cd.textContent = authState.countdownSeconds;
+    if (authState.countdownSeconds <= 0) {
+      clearInterval(authState.timerInterval);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = 'Kirim Ulang Kode';
+      }
+    }
+  }, 1000);
+}
+
+async function resendOtp() {
+  if (!authState.email) return;
+  const btn = document.getElementById('btnResendOtp');
+  if (btn) btn.disabled = true;
+  window.showToast('Mengirim ulang kode OTP...');
+
+  const res = await window.LMS_DB.requestStudentOtp(authState.email);
+  if (res.success) {
+    startOtpCountdown();
+    window.showToast('Kode OTP baru telah dikirim.');
+    if (res.isDemo && res.demoOtp) {
+      const notice = document.getElementById('authNoticeOtp');
+      if (notice) {
+        notice.style.display = 'block';
+        notice.textContent = res.message;
+      }
+    }
+  } else {
+    window.showToast(res.message || 'Gagal mengirim ulang kode.');
+    if (btn) btn.disabled = false;
+  }
+}
+
+function switchBackToEmail() {
+  clearInterval(authState.timerInterval);
+  authState.step = 'email';
+  renderDashboard();
+}
+
+async function doLogout() {
+  if (confirm('Keluar dari ruang belajar? Sesi perangkat ini akan dinonaktifkan.')) {
+    await window.LMS_DB.logoutStudent();
     window.showToast('Anda telah keluar dari akun.');
+    authState.step = 'email';
     renderDashboard();
   }
 }
@@ -1061,7 +1351,16 @@ window.addEventListener('click', (e) => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', renderDashboard);
+document.addEventListener('DOMContentLoaded', async () => {
+  // Silent auto-login via Trusted Device token di Supabase
+  if (window.LMS_DB && window.LMS_DB.checkTrustedDeviceSession) {
+    const sessionRes = await window.LMS_DB.checkTrustedDeviceSession();
+    if (sessionRes && sessionRes.kicked) {
+      window.showToast(sessionRes.message);
+    }
+  }
+  renderDashboard();
+});
 </script>
 </body>
 </html>

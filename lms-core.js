@@ -506,7 +506,12 @@ window.checkDayAccess = function(currentDayNumber) {
 };
 
 // Auto-run pada halaman materi
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // 0. Cek silent restore trusted device session
+  if (window.LMS_DB && window.LMS_DB.checkTrustedDeviceSession && !window.LMS_DB.getCurrentStudent()) {
+    await window.LMS_DB.checkTrustedDeviceSession();
+  }
+
   // Deteksi hari aktif dari title atau filename (mendukung Day 2 v3.1, day2-v3.1, day2-preview)
   const match = location.pathname.match(/day\s*(\d+)/i) || document.title.match(/day\s*(\d+)/i);
   const currentDay = match ? parseInt(match[1], 10) : 0;

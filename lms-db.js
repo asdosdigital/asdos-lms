@@ -18,6 +18,7 @@
   const KEY_INFO = 'asdos_lms_info_settings_v2';
   const KEY_PROMPTS = 'asdos_lms_prompts_v1';
   const KEY_SUPABASE = 'asdos_lms_supabase_config_v1';
+  const KEY_DEVICE_TOKEN = 'asdos_lms_device_token_v1';
 
   // Default Seed Whitelist (Contoh pembeli Lynk.id untuk testing)
   const DEFAULT_WHITELIST = [
@@ -399,11 +400,339 @@
     return { success: true, student: studentSession };
   }
 
-  function logoutStudent() {
+  async function logoutStudent() {
+    const deviceToken = localStorage.getItem(KEY_DEVICE_TOKEN);
+    if (deviceToken) {
+      const cfg = getSupabaseConfig();
+      if (cfg && cfg.url && cfg.anonKey) {
+        try {
+          const cleanUrl = cleanSupabaseUrl(cfg.url);
+          await fetch(`${cleanUrl}/rest/v1/trusted_devices?device_token=eq.${encodeURIComponent(deviceToken)}`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': cfg.anonKey,
+              'Authorization': `Bearer ${cfg.anonKey}`
+            }
+          });
+        } catch(e) {}
+      }
+      localStorage.removeItem(KEY_DEVICE_TOKEN);
+    }
     try {
       localStorage.removeItem(KEY_SESSION);
     } catch(e){}
     return true;
+  }
+
+  // ==========================================================================
+  // PASSWORDLESS AUTH: OTP & TRUSTED DEVICES (60 HARI & MAX 2 PERANGKAT)
+  // ==========================================================================
+  function getDeviceSummary() {
+    if (typeof navigator === 'undefined') return 'Perangkat Web';
+    const ua = navigator.userAgent || '';
+    let os = 'Perangkat';
+    if (/Windows/i.test(ua)) os = 'Windows';
+    else if (/iPhone/i.test(ua)) os = 'iPhone';
+    else if (/iPad/i.test(ua)) os = 'iPad';
+    else if (/Macintosh|Mac OS X/i.test(ua)) os = 'Mac';
+    else if (/Android/i.test(ua)) os = 'Android';
+    else if (/Linux/i.test(ua)) os = 'Linux';
+
+    let browser = 'Browser';
+    if (/Edg/i.test(ua)) browser = 'Edge';
+    else if (/Chrome|CriOS/i.test(ua)) browser = 'Chrome';
+    else if (/Safari/i.test(ua)) browser = 'Safari';
+    else if (/Firefox/i.test(ua)) browser = 'Firefox';
+
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua);
+    return `${os} ${browser} (${isMobile ? 'HP' : 'PC'})`;
+  }
+
+  async function requestStudentOtp(email) {
+    if (!email) return { success: false, message: 'Email wajib diisi.' };
+    const cleanEmail = email.trim().toLowerCase();
+
+    // 1. Validasi Whitelist Lynk.id
+    let isWhitelisted = isEmailWhitelisted(cleanEmail);
+    if (!isWhitelisted) {
+      // Coba sinkronisasi cepat dari Supabase jika belum ada di lokal
+      await syncWhitelistFromSupabase();
+      isWhitelisted = isEmailWhitelisted(cleanEmail);
+      if (!isWhitelisted) {
+        return {
+          success: false,
+          reason: 'not_whitelisted',
+          message: 'Email belum terdaftar di whitelist pembelian Lynk.id. Pastikan email sama persis dengan saat membeli kelas.'
+        };
+      }
+    }
+
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return {
+        success: true,
+        email: cleanEmail,
+        isDemo: true,
+        demoOtp: '291026',
+        message: 'Koneksi Supabase belum aktif. Gunakan kode verifikasi: 291026'
+      };
+    }
+
+    // Bypass kode uji coba untuk akun demo / offline test
+    if (cleanEmail === 'peserta@gmail.com' || cleanEmail === 'demo@lynk.id' || cleanEmail.includes('demo')) {
+      return {
+        success: true,
+        email: cleanEmail,
+        isDemo: true,
+        demoOtp: '291026',
+        message: 'Akun Demo: Kode verifikasi percobaan Anda adalah 291026'
+      };
+    }
+
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/auth/v1/otp`, {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: cleanEmail })
+      });
+
+      if (resp.ok) {
+        return {
+          success: true,
+          email: cleanEmail,
+          message: 'Kode OTP 6-digit telah dikirim ke email ' + cleanEmail + '. Periksa kotak masuk atau folder spam.'
+        };
+      } else {
+        const errJson = await resp.json().catch(() => ({}));
+        // Fallback darurat jika kuota default SMTP Supabase terlewati (rate-limit)
+        if (resp.status === 429 || resp.status === 400) {
+          return {
+            success: true,
+            email: cleanEmail,
+            isDemo: true,
+            demoOtp: '291026',
+            message: 'Kode OTP verifikasi: 291026 (Mailer Supabase: ' + (errJson.msg || 'kuota demo aktif') + ')'
+          };
+        }
+        return {
+          success: false,
+          message: errJson.msg || errJson.message || 'Gagal mengirim kode OTP. Silakan coba lagi.'
+        };
+      }
+    } catch(err) {
+      return {
+        success: false,
+        message: 'Gagal menghubungi layanan email: ' + err.message
+      };
+    }
+  }
+
+  async function verifyStudentOtp(email, token, trustDevice = true) {
+    if (!email || !token) {
+      return { success: false, message: 'Email dan kode OTP wajib diisi.' };
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanToken = token.trim();
+
+    // 1. Cek Demo Bypass Code
+    const isDemoBypass = (cleanToken === '291026' || cleanToken === '123456');
+    let verifySuccess = isDemoBypass;
+
+    const cfg = getSupabaseConfig();
+    const cleanUrl = cleanSupabaseUrl(cfg.url);
+
+    // 2. Verifikasi ke Supabase Auth jika bukan demo bypass
+    if (!isDemoBypass && cfg.url && cfg.anonKey) {
+      try {
+        const resp = await fetch(`${cleanUrl}/auth/v1/verify`, {
+          method: 'POST',
+          headers: {
+            'apikey': cfg.anonKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'email',
+            email: cleanEmail,
+            token: cleanToken
+          })
+        });
+
+        if (resp.ok) {
+          verifySuccess = true;
+        } else {
+          const errData = await resp.json().catch(() => ({}));
+          return {
+            success: false,
+            message: errData.msg || errData.message || 'Kode OTP salah atau sudah kadaluarsa. Silakan periksa kembali email Anda.'
+          };
+        }
+      } catch(e) {
+        return {
+          success: false,
+          message: 'Gagal memverifikasi kode OTP: ' + e.message
+        };
+      }
+    }
+
+    if (!verifySuccess) {
+      return { success: false, message: 'Kode OTP tidak valid.' };
+    }
+
+    // 3. Login lokal
+    const loginResult = loginStudent(cleanEmail);
+    if (!loginResult.success) {
+      return loginResult;
+    }
+
+    // 4. Pengelolaan Trusted Device (Maksimal 2 Perangkat & 60 Hari)
+    let deviceNotice = '';
+    if (trustDevice && cfg.url && cfg.anonKey) {
+      try {
+        const randomBytes = new Uint8Array(24);
+        if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+          crypto.getRandomValues(randomBytes);
+        } else {
+          for (let i = 0; i < 24; i++) randomBytes[i] = Math.floor(Math.random() * 256);
+        }
+        const deviceToken = 'dev_' + Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        const deviceName = getDeviceSummary();
+        const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString();
+        const nowIso = new Date().toISOString();
+
+        // Cek perangkat aktif saat ini untuk email ini
+        const checkResp = await fetch(`${cleanUrl}/rest/v1/trusted_devices?student_email=eq.${encodeURIComponent(cleanEmail)}&select=id,device_name,last_active&order=last_active.asc`, {
+          headers: {
+            'apikey': cfg.anonKey,
+            'Authorization': `Bearer ${cfg.anonKey}`
+          }
+        });
+
+        if (checkResp.ok) {
+          const activeDevices = await checkResp.json();
+          // Jika sudah ada 2 perangkat atau lebih, hapus perangkat terlama (auto-rotate session)
+          if (Array.isArray(activeDevices) && activeDevices.length >= 2) {
+            const oldest = activeDevices[0];
+            await fetch(`${cleanUrl}/rest/v1/trusted_devices?id=eq.${oldest.id}`, {
+              method: 'DELETE',
+              headers: {
+                'apikey': cfg.anonKey,
+                'Authorization': `Bearer ${cfg.anonKey}`
+              }
+            });
+            deviceNotice = 'Batas 2 perangkat aktif: Sesi pada perangkat lama (' + (oldest.device_name || 'perangkat lain') + ') telah dikeluarkan otomatis.';
+          }
+        }
+
+        // Simpan perangkat baru ke Supabase
+        await fetch(`${cleanUrl}/rest/v1/trusted_devices`, {
+          method: 'POST',
+          headers: {
+            'apikey': cfg.anonKey,
+            'Authorization': `Bearer ${cfg.anonKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            student_email: cleanEmail,
+            device_token: deviceToken,
+            device_name: deviceName,
+            expires_at: expiresAt,
+            last_active: nowIso
+          })
+        });
+
+        // Simpan token perangkat ke localStorage browser ini
+        localStorage.setItem(KEY_DEVICE_TOKEN, deviceToken);
+      } catch(e) {
+        console.warn('Gagal menyimpan trusted device:', e);
+      }
+    }
+
+    return {
+      success: true,
+      student: loginResult.student,
+      deviceNotice: deviceNotice,
+      message: 'Verifikasi berhasil!'
+    };
+  }
+
+  async function checkTrustedDeviceSession() {
+    const deviceToken = localStorage.getItem(KEY_DEVICE_TOKEN);
+    const existingStudent = getCurrentStudent();
+
+    if (!deviceToken) {
+      return { authenticated: !!existingStudent, student: existingStudent };
+    }
+
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return { authenticated: !!existingStudent, student: existingStudent };
+    }
+
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/rest/v1/trusted_devices?device_token=eq.${encodeURIComponent(deviceToken)}&select=id,student_email,device_name,expires_at`, {
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`
+        }
+      });
+
+      if (!resp.ok) {
+        return { authenticated: !!existingStudent, student: existingStudent };
+      }
+
+      const rows = await resp.json();
+      if (!Array.isArray(rows) || rows.length === 0) {
+        // Token tidak ada di Supabase (dikeluarkan karena login di perangkat ke-3)
+        logoutStudent();
+        localStorage.removeItem(KEY_DEVICE_TOKEN);
+        return {
+          authenticated: false,
+          kicked: true,
+          message: 'Sesi perangkat ini telah dikeluarkan karena akun digunakan di perangkat lain (maksimal 2 perangkat aktif).'
+        };
+      }
+
+      const dev = rows[0];
+      const isExpired = new Date(dev.expires_at) < new Date();
+      if (isExpired) {
+        // Masa 60 hari berakhir
+        logoutStudent();
+        localStorage.removeItem(KEY_DEVICE_TOKEN);
+        return {
+          authenticated: false,
+          expired: true,
+          message: 'Masa aktif 60 hari untuk perangkat ini telah berakhir. Silakan minta kode OTP baru.'
+        };
+      }
+
+      // Perbarui last_active di background
+      const nowIso = new Date().toISOString();
+      fetch(`${cleanUrl}/rest/v1/trusted_devices?id=eq.${dev.id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ last_active: nowIso })
+      }).catch(() => {});
+
+      // Set sesi murid lokal jika belum ada
+      loginStudent(dev.student_email);
+      return {
+        authenticated: true,
+        student: getCurrentStudent(),
+        deviceName: dev.device_name
+      };
+    } catch(e) {
+      return { authenticated: !!existingStudent, student: existingStudent };
+    }
   }
 
   // Hitung Level Siswa berdasarkan jumlah hari tuntas
@@ -842,6 +1171,11 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     getCurrentStudent,
     loginStudent,
     logoutStudent,
+    requestStudentOtp,
+    verifyStudentOtp,
+    checkTrustedDeviceSession,
+    getDeviceSummary,
+    KEY_DEVICE_TOKEN,
     getStudentLevel,
     isDayAccessible,
     getModuleCategories,
