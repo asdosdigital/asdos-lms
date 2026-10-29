@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Tutorial Video Affiliate TikTok & UGC - Asdos Digital Academy</title>
+  <link rel="stylesheet" href="../lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* BAR ATAS */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 46px;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 520px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 10px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.4s ease;
+    }
+
+    /* AREA KARTU */
+    .deck-container {
+      max-width: 520px; margin: 0 auto;
+      padding: 14px 16px 140px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 850; letter-spacing: 0.5px;
+      color: var(--brand-dark); background: var(--peach);
+      border: 1px solid var(--peach-line);
+      padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 22px; font-weight: 850; line-height: 1.3;
+      margin: 0 0 8px; color: var(--ink); letter-spacing: -0.3px;
+    }
+    .card-lead {
+      font-size: 15px; color: var(--muted); margin: 0 0 18px; line-height: 1.5;
+    }
+
+    /* VIDEO PLAYER LITE */
+    .video-wrap {
+      position: relative; width: 100%;
+      border-radius: 16px; overflow: hidden;
+      background: #000; border: 2px solid var(--line);
+      margin-bottom: 18px;
+    }
+    .video-wrap::before { content: ""; display: block; padding-top: 56.25%; }
+    .video-wrap iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+
+    /* LANGKAH TINDAKAN */
+    .step-list { list-style: none; padding: 0; margin: 0 0 20px; }
+    .step-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px; background: var(--bg);
+      border: 1.5px solid var(--line); border-radius: 14px;
+      margin-bottom: 10px; font-size: 15px;
+    }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 8px;
+      background: var(--brand); color: #fff;
+      font-size: 13px; font-weight: 850;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* CALLOUT INFO & TOOL LINKS */
+    .tool-box {
+      background: var(--leaf); border: 1.5px solid var(--leaf-line);
+      border-radius: 14px; padding: 14px 16px; margin: 16px 0;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .tool-box-text strong { display: block; font-size: 15px; color: var(--go-dark); }
+    .tool-box-text span { font-size: 13px; color: var(--muted); }
+    .btn-tool-link {
+      background: var(--go); color: #fff; font-weight: 750; font-size: 13px;
+      padding: 8px 14px; border-radius: 10px; border: 0;
+      white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* KOTAK SALIN CEPAT */
+    .prompt-box {
+      background: #F9F4EB; border: 1.5px solid #DFCFC0;
+      border-radius: 14px; padding: 14px; margin: 14px 0;
+    }
+    .prompt-box-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 850; color: var(--muted); margin-bottom: 8px;
+    }
+    .prompt-text {
+      font-family: Consolas, monospace; font-size: 13.5px;
+      line-height: 1.5; color: #3B2A1E; margin: 0 0 10px;
+      background: #fff; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--line); word-break: break-word;
+    }
+    .btn-copy-prompt {
+      background: #fff; border: 1.5px solid var(--line);
+      color: var(--brand-dark); font-weight: 750; font-size: 13px;
+      padding: 6px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-copy-prompt:active { background: var(--peach); }
+
+    /* CHECKBOX TUGAS */
+    .task-check-card {
+      background: #fff; border: 2px dashed var(--line);
+      border-radius: 16px; padding: 14px; margin-top: 18px;
+      cursor: pointer; display: flex; align-items: center; gap: 12px;
+      transition: all 0.2s;
+    }
+    .task-check-card:hover { border-color: var(--brand); }
+    .task-check-card.checked {
+      background: var(--leaf); border-color: var(--leaf-line); border-style: solid;
+    }
+    .task-checkbox-custom {
+      width: 24px; height: 24px; border-radius: 8px;
+      border: 2px solid #C8B8A6; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .task-check-card.checked .task-checkbox-custom {
+      background: var(--go); border-color: var(--go); color: #fff;
+    }
+    .task-check-text { font-size: 14.5px; font-weight: 750; color: var(--ink); line-height: 1.4; }
+
+    /* BANTUAN DARURAT ACCORDION */
+    .quick-trouble-link {
+      display: inline-block; font-size: 13.5px; font-weight: 700;
+      color: var(--brand); text-decoration: underline; margin-top: 14px;
+      cursor: pointer;
+    }
+
+    /* KUIS INTERAKTIF */
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .quiz-option-btn {
+      width: 100%; text-align: left; padding: 14px 16px;
+      border: 2px solid var(--line); border-radius: 14px;
+      background: #fff; font-size: 15px; font-weight: 650; color: var(--ink);
+      line-height: 1.4; transition: all 0.15s;
+    }
+    .quiz-option-btn:hover { border-color: var(--brand); background: var(--bg); }
+    .quiz-option-btn.correct {
+      border-color: var(--leaf-line); background: var(--leaf); color: var(--go-dark);
+    }
+    .quiz-option-btn.wrong {
+      border-color: var(--danger-ink); background: var(--danger-bg); color: var(--danger-ink);
+    }
+    .quiz-feedback {
+      display: none; padding: 12px 14px; border-radius: 12px;
+      font-size: 14px; line-height: 1.5; margin-top: 10px; font-weight: 650;
+    }
+    .quiz-feedback.success { display: block; background: var(--leaf); color: var(--go-dark); border: 1px solid var(--leaf-line); }
+    .quiz-feedback.fail { display: block; background: var(--danger-bg); color: var(--danger-ink); border: 1px solid var(--danger-bg); }
+
+    /* BOTTOM NAV DOCK */
+    .deck-bottom-dock {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+    }
+    .deck-bottom-inner {
+      max-width: 520px; margin: 0 auto;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .btn-dock-prev {
+      min-height: 52px; padding: 0 18px; border-radius: 14px;
+      background: #fff; border: 2px solid var(--line);
+      font-size: 15px; font-weight: 800; color: var(--ink);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-dock-next {
+      flex: 1; min-height: 52px; padding: 0 20px; border-radius: 14px;
+      background: var(--brand); border: 0;
+      box-shadow: 0 4px 0 var(--brand-dark);
+      font-size: 16px; font-weight: 850; color: #fff;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.15s;
+    }
+    .btn-dock-next:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brand-dark); }
+    .btn-dock-next.btn-complete {
+      background: var(--go); box-shadow: 0 4px 0 var(--go-dark);
+    }
+    .btn-dock-next.btn-complete:active { box-shadow: 0 2px 0 var(--go-dark); }
+
+    /* DRAWER TROUBLE */
+    .help-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(30, 20, 10, 0.5);
+      z-index: 90; display: none; align-items: flex-end; justify-content: center;
+    }
+    .help-drawer-backdrop.show { display: flex; }
+    .help-drawer-body {
+      width: 100%; max-width: 520px; max-height: 80vh;
+      background: #fff; border-radius: 24px 24px 0 0;
+      padding: 24px 20px 32px; overflow-y: auto;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.15);
+    }
+    .help-drawer-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .help-drawer-title { font-size: 18px; font-weight: 850; margin: 0; color: var(--ink); }
+    .help-drawer-close {
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 50%; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center; font-weight: 850;
+    }
+    .faq-item {
+      border: 1.5px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden;
+    }
+    .faq-q {
+      padding: 12px 14px; background: var(--bg); font-weight: 750; font-size: 14.5px;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+    }
+    .faq-a {
+      padding: 12px 14px; font-size: 14px; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--line);
+    }
+
+    /* TOAST */
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%; transform: translateX(-50%);
+      background: #231C16; color: #fff; font-size: 13.5px; font-weight: 700;
+      padding: 8px 18px; border-radius: 999px; z-index: 99;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2); display: none;
+    }
+    .toast-pill.show { display: block; animation: fadeInOut 2.5s forwards; }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -8px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -8px); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas"></canvas>
+<div id="toastPill" class="toast-pill">Teks berhasil disalin</div>
+
+<!-- HEADER TOPBAR -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="../dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <span style="font-size:13px;font-weight:800;color:var(--brand-dark);background:var(--sun);padding:4px 10px;border-radius:8px;border:1px solid #E8CF6A">
+      Modul Affiliate UGC
+    </span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="currentCardLabel">Misi 1 dari 7</span>
+      <span id="progressPercent">14% Selesai</span>
+    </div>
+    <div class="progress-track">
+      <div id="progressFill" class="progress-fill"></div>
+    </div>
+  </div>
+</header>
+
+<!-- CONTAINER CARD DECK -->
+<main class="deck-container">
+
+  <!-- ======================== KARTU 1: PENGENALAN & BUKA GPT ======================== -->
+  <section class="mission-card active" data-card="0">
+    <span class="card-badge">Misi 1 · Orientasi Alat</span>
+    <h1 class="card-title">Buka Asdos Affiliate GPT & Mulai Briefing</h1>
+    <p class="card-lead">Gunakan Asdos Affiliate GPT untuk merancang skrip hook video promosi yang memancing penonton mengklik keranjang kuning TikTok atau Reels.</p>
+
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/ozI7-rC2gVI?rel=0&playsinline=1" title="Tutorial Video Affiliate UGC" allowfullscreen loading="lazy"></iframe>
+    </div>
+
+    <div class="tool-box">
+      <div class="tool-box-text">
+        <strong>Asdos Affiliate GPT (ChatGPT)</strong>
+        <span>Generator otomatis storyboard & skrip iklan UGC</span>
+      </div>
+      <a href="https://chatgpt.com/g/g-6a20679037848191a01befec4b0e6e8d-asdos-affiliate-ugc" target="_blank" rel="noopener" class="btn-tool-link">
+        Buka GPT &rarr;
+      </a>
+    </div>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div>Buka tautan <strong>Asdos Affiliate GPT</strong> di atas pada browser atau aplikasi ChatGPT Anda.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div>Ketik kata <strong>"Mulai"</strong> pada ruang obrolan obrolan dengan GPT.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div>Sistem GPT akan menyapa dan bersiap meminta data produk serta konsep video Anda.</div>
+      </li>
+    </ul>
+
+    <div class="task-check-card" onclick="toggleCardCheck(0)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Saya sudah membuka Asdos Affiliate GPT dan mengetik "Mulai".</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Bingung atau link GPT tidak terbuka? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 2: UPLOAD PRODUK & SUBJEK ======================== -->
+  <section class="mission-card" data-card="1">
+    <span class="card-badge">Misi 2 · Input Data Produk</span>
+    <h2 class="card-title">Unggah Foto Produk & Karakter Subjek</h2>
+    <p class="card-lead">GPT akan menanyakan beberapa detail produk jualan Anda. Berikan foto produk asli dan referensi orang/karakter yang mempromosikannya.</p>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div><strong>Unggah Foto Produk:</strong> Foto jelas produk fisik yang ingin dipromosikan (contoh: botol serum, mukena, hijab, sepatu, dll).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div><strong>Unggah Karakter Subjek:</strong> Foto referensi orang atau karakter 3D/animasi yang akan memegang atau memakai produk.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div><strong>Jawab Pertanyaan Brief:</strong> Berikan informasi target audiens, poin keunggulan produk (USP), dan masalah yang diselesaikan produk tersebut.</div>
+      </li>
+    </ul>
+
+    <div class="prompt-box">
+      <div class="prompt-box-header">
+        <span>CONTOH JAWABAN SINGKAT KE GPT</span>
+        <button type="button" class="btn-copy-prompt" onclick="copyPromptText('contoh-brief')">Salin Contoh</button>
+      </div>
+      <div class="prompt-text" id="contoh-brief">Produk: Hijab Voal Anti-Kusut warna Sage Green. Karakter: Wanita berhijab kasual usia 23 tahun. Gaya video: UGC santai di depan kaca kamar, fokus tunjukkan kain lembut dan tidak kusut meski dilipat. Format 9:16 vertikal.</div>
+    </div>
+
+    <div class="task-check-card" onclick="toggleCardCheck(1)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Saya sudah mengunggah foto produk dan memberikan detail brief ke GPT.</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Produk tidak punya foto bersih? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 3: AMBIL PROMPT STORYBOARD ======================== -->
+  <section class="mission-card" data-card="2">
+    <span class="card-badge">Misi 3 · Formula Storyboard</span>
+    <h2 class="card-title">Ambil Prompt Storyboard dari GPT</h2>
+    <p class="card-lead">Setelah data masuk, Asdos Affiliate GPT akan merumuskan formula visual storyboard adegan per adegan untuk dibuat di Google Flow.</p>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div>Periksa hasil respon dari GPT. Anda akan mendapatkan blok teks formula Storyboard visual.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div>Salin formula teks prompt storyboard tersebut ke clipboard HP atau komputer Anda.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div>Buka Google Flow di tab baru untuk bersiap merender gambar visualnya.</div>
+      </li>
+    </ul>
+
+    <div class="tool-box">
+      <div class="tool-box-text">
+        <strong>Google Flow (FX Tools)</strong>
+        <span>Platform generator visual gambar & video AI</span>
+      </div>
+      <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener" class="btn-tool-link">
+        Buka Flow &rarr;
+      </a>
+    </div>
+
+    <div class="task-check-card" onclick="toggleCardCheck(2)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Saya sudah menyalin prompt storyboard dari GPT dan membuka Google Flow.</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Respon GPT terhenti di tengah jalan? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 4: GENERATE STORYBOARD DI FLOW ======================== -->
+  <section class="mission-card" data-card="3">
+    <span class="card-badge">Misi 4 · Render Gambar Flow</span>
+    <h2 class="card-title">Generate Gambar Storyboard di Flow (Nano Banana)</h2>
+    <p class="card-lead">Pilih model Nano Banana 2 dengan pengaturan rasio yang tepat agar karakter dan produk menyatu sempurna sebelum dianimasikan.</p>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div>Di Google Flow, pilih mode <strong>Create Image</strong> (Membuat Gambar).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div>Pilih model generator: <strong>Nano Banana 2</strong>.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div>Atur aspek rasio: pilih <strong>9:16</strong> (layar penuh vertikal) atau <strong>1:1</strong> (kotak).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">4</span>
+        <div>Tempel prompt storyboard dari GPT, lalu klik <strong>Generate</strong>.</div>
+      </li>
+    </ul>
+
+    <div class="task-check-card" onclick="toggleCardCheck(3)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Gambar storyboard telah berhasil ter-generate dengan model Nano Banana 2.</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Gambar tidak mirip dengan produk asli? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 5: RENDER VIDEO MULTI-REFERENCE ======================== -->
+  <section class="mission-card" data-card="4">
+    <span class="card-badge">Misi 5 · Animasikan Gerak</span>
+    <h2 class="card-title">Render Video dengan Multi-Image Reference</h2>
+    <p class="card-lead">Gunakan gambar storyboard yang baru saja dibuat sebagai acuan utama, lalu gabungkan dengan prompt video dari ChatGPT.</p>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div>Buka mode video di Flow atau platform video generator (seperti Seedance).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div>Masukkan <strong>Gambar Storyboard</strong> dan <strong>Foto Produk Anda</strong> ke kolom <em>Image Reference</em> (gambar acuan).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div>Tempel prompt video dari GPT ke kotak perintah.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">4</span>
+        <div>Pastikan rasio video adalah <strong>9:16 vertikal</strong>, lalu klik render video klip 5-10 detik.</div>
+      </li>
+    </ul>
+
+    <div class="prompt-box">
+      <div class="prompt-box-header">
+        <span>TIPS PENTING: JIKA PROMPT VIDEO TERLALU PANJANG</span>
+        <button type="button" class="btn-copy-prompt" onclick="copyPromptText('prompt-singkat')">Salin Trik Ini</button>
+      </div>
+      <div class="prompt-text" id="prompt-singkat">persingkat menjadi dibawah 1200 karakter</div>
+      <div style="font-size:12.5px;color:var(--muted)">Ketik perintah di atas ke ChatGPT jika Google Flow menolak karena prompt melebihi batas 1200 karakter.</div>
+    </div>
+
+    <div class="task-check-card" onclick="toggleCardCheck(4)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Klip video gerak promosi affiliate sudah berhasil ter-render dengan lancar.</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Karakter bergerak terlalu liar atau cacat? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 6: EDITING & FINISHING ======================== -->
+  <section class="mission-card" data-card="5">
+    <span class="card-badge">Misi 6 · Finishing & Publikasi</span>
+    <h2 class="card-title">Download & Satukan di Aplikasi Edit Video</h2>
+    <p class="card-lead">Unduh klip video hasil render, gabungkan adegan 15-30 detik di CapCut atau YouTube Create, lalu beri teks hook dan tautkan keranjang kuning.</p>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <div><strong>Unduh Klip:</strong> Download video hasil render dalam resolusi MP4 1080p.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <div><strong>Satukan di Editor:</strong> Buka CapCut atau YouTube Create di HP, susun klip pembuka (hook 3 detik pertama), klip produk, dan panggilan aksi (CTA).</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <div><strong>Voice Over & Teks:</strong> Masukkan narasi suara (dari Google AI Studio / CapCut TTS) dan teks caption otomatis.</div>
+      </li>
+      <li class="step-item">
+        <span class="step-num">4</span>
+        <div><strong>Siap Upload:</strong> Ekspor video rasio 9:16 dan siap diposting ke TikTok / Instagram Reels / YouTube Shorts.</div>
+      </li>
+    </ul>
+
+    <div class="task-check-card" onclick="toggleCardCheck(5)">
+      <div class="task-checkbox-custom"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-check-text">Saya sudah memahami alur penggabungan klip dan persiapan video promosi.</div>
+    </div>
+
+    <span class="quick-trouble-link" onclick="openHelpDrawer()">Bagaimana cara menambahkan keranjang kuning? Ketuk di sini</span>
+  </section>
+
+  <!-- ======================== KARTU 7: KUIS PEMAHAMAN ======================== -->
+  <section class="mission-card" data-card="6">
+    <span class="card-badge">Evaluasi · Uji Pemahaman</span>
+    <h2 class="card-title">Kuis Kilat: Alur Video Affiliate UGC</h2>
+    <p class="card-lead">Jawab 3 pertanyaan mendasar ini untuk memvalidasi pemahaman Anda sebelum memproduksi konten promosi pertama.</p>
+
+    <!-- Soal 1 -->
+    <div style="margin-bottom:24px;border-bottom:1px solid var(--line);padding-bottom:18px">
+      <p style="font-size:15px;font-weight:800;margin:0 0 10px">1. Mengapa foto produk fisik asli dan foto karakter subjek harus diunggah secara terpisah ke Asdos Affiliate GPT?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 1, false)">Agar GPT menghapus latar belakang produk secara otomatis.</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 1, true)">Agar AI memahami bentuk produk asli dan tokoh yang mempromosikannya secara akurat tanpa tertukar.</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 1, false)">Hanya formalitas, tidak ada pengaruhnya pada hasil prompt.</button>
+      </div>
+      <div id="qfb-1" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div style="margin-bottom:24px;border-bottom:1px solid var(--line);padding-bottom:18px">
+      <p style="font-size:15px;font-weight:800;margin:0 0 10px">2. Apa yang harus diketikkan ke ChatGPT jika prompt video yang diberikan kepanjangan dan ditolak Google Flow (>1200 karakter)?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 2, false)">Hapus prompt dan buat dari awal tanpa bantuan GPT.</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 2, true)">Ketik: "persingkat menjadi dibawah 1200 karakter".</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 2, false)">Ubah rasio Flow dari 9:16 menjadi 16:9.</button>
+      </div>
+      <div id="qfb-2" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div style="margin-bottom:12px">
+      <p style="font-size:15px;font-weight:800;margin:0 0 10px">3. Model apa yang direkomendasikan saat membuat gambar Storyboard di Google Flow untuk konten promosi vertikal?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 3, true)">Nano Banana 2 dengan aspek rasio 9:16 atau 1:1.</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 3, false)">Model horizontal 16:9 layar bioskop lebar.</button>
+        <button type="button" class="quiz-option-btn" onclick="checkQuiz(this, 3, false)">Format audio podcast suara saja.</button>
+      </div>
+      <div id="qfb-3" class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ======================== KARTU 8: SELESAI ======================== -->
+  <section class="mission-card" data-card="7">
+    <div style="text-align:center;padding:10px 0 16px">
+      <div style="width:72px;height:72px;border-radius:24px;background:var(--leaf);border:2px solid var(--leaf-line);color:var(--go-dark);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <span class="card-badge" style="background:var(--leaf);color:var(--go-dark);border-color:var(--leaf-line)">Materi Tuntas</span>
+      <h2 class="card-title" style="font-size:24px">Selamat! Anda Menguasai Video Affiliate UGC</h2>
+      <p class="card-lead" style="max-width:440px;margin:0 auto 24px">
+        Kini Anda memiliki alur kerja paten dari foto produk mentah, pembuatan storyboard di Flow, hingga render video promosi yang siap menghasilkan penjualan di medsos.
+      </p>
+
+      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:18px;text-align:left;margin-bottom:24px">
+        <strong style="display:block;font-size:15px;color:var(--ink);margin-bottom:6px">Rangkuman Kunci Produksi:</strong>
+        <div style="font-size:13.5px;color:var(--muted);line-height:1.6">
+          1. 3 detik pertama wajib menampilkan masalah atau visual produk yang memikat.<br>
+          2. Gunakan rasio vertikal 9:16 untuk kenyamanan layar ponsel.<br>
+          3. Jika teks terlalu panjang, gunakan trik limitasi 1200 karakter.<br>
+          4. Tambahkan audio voice over natural dan teks penjelasan jelas.
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="../dashboard.html" class="btn-dock-next btn-complete" style="width:100%;text-decoration:none">
+          Kembali ke Dashboard Kelas &rarr;
+        </a>
+        <button type="button" class="btn-dock-prev" onclick="goToCard(0)" style="width:100%">
+          Ulas Kembali Materi dari Awal
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- BOTTOM DOCK NAVIGATION -->
+<footer class="deck-bottom-dock">
+  <div class="deck-bottom-inner">
+    <button type="button" id="btnDockPrev" class="btn-dock-prev" onclick="navigateDeck(-1)" disabled>
+      &larr; Kembali
+    </button>
+    <button type="button" id="btnDockNext" class="btn-dock-next" onclick="navigateDeck(1)">
+      <span>Lanjut</span> &rarr;
+    </button>
+  </div>
+</footer>
+
+<!-- DRAWER TROUBLE & BANTUAN -->
+<div id="helpBackdrop" class="help-drawer-backdrop" onclick="closeHelpDrawer(event)">
+  <div class="help-drawer-body">
+    <div class="help-drawer-header">
+      <h3 class="help-drawer-title">Pusat Bantuan Modul Affiliate</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()">&times;</button>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Prompt di Flow ditolak karena terlalu panjang?</span>
+        <span>+</span>
+      </div>
+      <div class="faq-a" style="display:none">
+        Google Flow memiliki batas maksimal 1200 karakter per prompt. Cukup ketik kembali ke ChatGPT: <strong>"persingkat menjadi dibawah 1200 karakter"</strong>, lalu gunakan hasil ringkasannya di Flow.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Karakter bergerak terlalu heboh atau berubah wajah?</span>
+        <span>+</span>
+      </div>
+      <div class="faq-a" style="display:none">
+        Pastikan gambar storyboard awal dimasukkan ke kolom Image Reference dengan bobot yang cukup, dan tambahkan instruksi kamera stabil (contoh: <em>static camera, natural subtle movement, no morphing</em>).
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Bagaimana cara menautkan keranjang kuning di TikTok?</span>
+        <span>+</span>
+      </div>
+      <div class="faq-a" style="display:none">
+        Setelah akun memiliki minimal 1.000 followers atau terdaftar di TikTok Shop Affiliate Creator, saat upload video klik menu <strong>Tambahkan Tautan -> Produk</strong>, lalu pilih produk yang Anda ulas.
+      </div>
+    </div>
+
+    <div style="margin-top:20px;text-align:center">
+      <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20butuh%20bantuan%20terkait%20modul%20video%20affiliate" target="_blank" rel="noopener" style="font-size:14px;color:var(--brand);font-weight:750;text-decoration:underline">
+        Tanya Mentor via WhatsApp &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="../lms-db.js"></script>
+<script src="../lms-core.js"></script>
+<script>
+// ==========================================================================
+// DECK ENGINE CONTROLLER (MODUL AFFILIATE)
+// ==========================================================================
+const STORAGE_PREFIX = 'asdos_module_affiliate_';
+let currentCard = 0;
+const totalCards = 8;
+const quizAnswers = { 1: false, 2: false, 3: false };
+
+function updateDeckView() {
+  document.querySelectorAll('.mission-card').forEach((c, idx) => {
+    c.classList.toggle('active', idx === currentCard);
+  });
+
+  const pct = Math.round(((currentCard + 1) / totalCards) * 100);
+  const fill = document.getElementById('progressFill');
+  const label = document.getElementById('currentCardLabel');
+  const percentText = document.getElementById('progressPercent');
+
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = `Misi ${Math.min(currentCard + 1, totalCards - 1)} dari ${totalCards - 1}`;
+  if (percentText) percentText.textContent = `${pct}% Selesai`;
+
+  // Update button dock
+  const prevBtn = document.getElementById('btnDockPrev');
+  const nextBtn = document.getElementById('btnDockNext');
+
+  if (prevBtn) prevBtn.disabled = (currentCard === 0);
+
+  if (nextBtn) {
+    if (currentCard === totalCards - 1) {
+      nextBtn.style.display = 'none';
+    } else {
+      nextBtn.style.display = 'inline-flex';
+      if (currentCard === totalCards - 2) {
+        nextBtn.innerHTML = '<span>Lihat Hasil & Kelulusan</span> &rarr;';
+        nextBtn.className = 'btn-dock-next btn-complete';
+      } else {
+        nextBtn.innerHTML = '<span>Lanjut Misi Berikutnya</span> &rarr;';
+        nextBtn.className = 'btn-dock-next';
+      }
+    }
+  }
+
+  // Restore task check state
+  loadCardCheckState(currentCard);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateDeck(dir) {
+  const target = currentCard + dir;
+  if (target >= 0 && target < totalCards) {
+    currentCard = target;
+    updateDeckView();
+    if (currentCard === totalCards - 1) {
+      triggerConfetti();
+      playCompletionTone();
+    }
+  }
+}
+
+function goToCard(idx) {
+  if (idx >= 0 && idx < totalCards) {
+    currentCard = idx;
+    updateDeckView();
+  }
+}
+
+// Checklist logic
+function toggleCardCheck(cardIdx) {
+  const card = document.querySelector(`.mission-card[data-card="${cardIdx}"] .task-check-card`);
+  if (!card) return;
+  const isChecked = card.classList.toggle('checked');
+  localStorage.setItem(`${STORAGE_PREFIX}check_${cardIdx}`, isChecked ? '1' : '0');
+
+  if (isChecked) {
+    playSuccessTone();
+    showToast('Misi dicentang selesai!');
+  }
+}
+
+function loadCardCheckState(cardIdx) {
+  const card = document.querySelector(`.mission-card[data-card="${cardIdx}"] .task-check-card`);
+  if (!card) return;
+  const val = localStorage.getItem(`${STORAGE_PREFIX}check_${cardIdx}`);
+  card.classList.toggle('checked', val === '1');
+}
+
+// Copy prompt helper
+function copyPromptText(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Prompt disalin ke papan klip');
+    playSuccessTone();
+  }).catch(() => {
+    showToast('Teks dipilih. Silakan salin.');
+  });
+}
+
+// Quiz Logic
+function checkQuiz(btn, questionNum, isCorrect) {
+  const parent = btn.closest('.quiz-options');
+  const fb = document.getElementById(`qfb-${questionNum}`);
+  if (!parent || !fb) return;
+
+  parent.querySelectorAll('.quiz-option-btn').forEach(b => {
+    b.classList.remove('correct', 'wrong');
+  });
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback success';
+    fb.textContent = 'Jawaban Anda Tepat! Pemahaman ini sangat penting saat praktik di lapangan.';
+    quizAnswers[questionNum] = true;
+    playSuccessTone();
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'quiz-feedback fail';
+    fb.textContent = 'Kurang tepat. Silakan baca kembali instruksi di misi sebelumnya dan pilih jawaban yang benar.';
+    quizAnswers[questionNum] = false;
+  }
+}
+
+// Tone synthesis
+function playSuccessTone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    osc.start(); osc.stop(ctx.currentTime + 0.25);
+  } catch(e) {}
+}
+
+function playCompletionTone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.35);
+      osc.start(ctx.currentTime + idx * 0.1);
+      osc.stop(ctx.currentTime + idx * 0.1 + 0.35);
+    });
+  } catch(e) {}
+}
+
+// Accordion
+function toggleFaq(el) {
+  const ans = el.nextElementSibling;
+  const icon = el.querySelector('span:last-child');
+  const isHidden = (ans.style.display === 'none' || !ans.style.display);
+  ans.style.display = isHidden ? 'block' : 'none';
+  if (icon) icon.textContent = isHidden ? '-' : '+';
+}
+
+function openHelpDrawer() {
+  document.getElementById('helpBackdrop').classList.add('show');
+}
+
+function closeHelpDrawer(e) {
+  if (e && e.target && e.target.id !== 'helpBackdrop' && !e.target.closest('.help-drawer-close')) return;
+  document.getElementById('helpBackdrop').classList.remove('show');
+}
+
+function showToast(text) {
+  const t = document.getElementById('toastPill');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 2500);
+}
+
+// Confetti Engine
+function triggerConfetti() {
+  const canvas = document.getElementById('celebrationCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#2E7D4F', '#1F6B7A', '#F59E0B', '#E8893A', '#EF4444', '#10B981'];
+  const particles = Array.from({ length: 60 }, () => ({
+    x: canvas.width * 0.5,
+    y: canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 14,
+    vy: (Math.random() - 0.7) * 16,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.opacity -= 0.015;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillRect(p.x, p.y, p.size, p.size * 1.3);
+    });
+    frame++;
+    if (frame < 55) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// Touch swipe navigation
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 65) {
+    if (diff > 0 && currentCard < totalCards - 1) navigateDeck(1);
+    else if (diff < 0 && currentCard > 0) navigateDeck(-1);
+  }
+}, { passive: true });
+
+// Init
+updateDeckView();
+</script>
+</body>
+</html>

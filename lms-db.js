@@ -187,9 +187,9 @@
           badge: 'Video Affiliate',
           desc: 'Alur 6 langkah dari Asdos Affiliate GPT, generate storyboard di Flow (Nano Banana), hingga render video vertikal 9:16.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/ozI7-rC2gVI?rel=0&playsinline=1',
-          url: '#',
+          url: 'modules/tutorial-affiliate.html',
           isFree: false
         },
         {
