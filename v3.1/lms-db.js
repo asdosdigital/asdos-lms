@@ -104,6 +104,16 @@
           isFree: false
         },
         {
+          id: 'card-character-sheet',
+          title: 'Tutorial Lengkap Character Sheet',
+          badge: 'Pendalaman Fundamental',
+          desc: 'Panduan membuat lembar karakter konsisten 3 sudut pandang (depan, close-up dada, belakang) dengan rumus paten studio.',
+          thumbnail: 'cs-thumbnail.jpeg',
+          type: 'interactive_module',
+          url: 'modules/tutorial-charactersheet.html',
+          isFree: false
+        },
+        {
           id: 'card-perkenalan',
           title: 'Video Perkenalan & Orientasi',
           badge: 'Video Orientasi',

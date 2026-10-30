@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Tutorial Lengkap Character Sheet - Asdos Digital Academy</title>
+  <link rel="icon" type="image/png" href="asdos-square.png">
+  <link rel="apple-touch-icon" href="asdos-square.png">
+  <link rel="stylesheet" href="../lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+    .celebration-canvas {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      width: 100%; height: 100%; display: none;
+    }
+
+    /* TOP BAR & PROGRESS */
+    .deck-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px 12px;
+    }
+    .deck-topbar-inner {
+      max-width: 540px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .btn-top {
+      min-height: 44px;
+      font-size: 14.5px; font-weight: 750; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--line);
+    }
+    .btn-top:active { background: var(--peach); }
+    .btn-top svg { width: 17px; height: 17px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .progress-wrap { max-width: 540px; margin: 10px auto 0; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 13.5px; font-weight: 750; color: var(--ink); margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--brand); }
+    .progress-track {
+      height: 9px; background: #EADFCF; border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0; background: var(--go);
+      border-radius: 999px; transition: width 0.35s ease;
+    }
+
+    /* CARD DECK CONTAINER */
+    .deck-container {
+      max-width: 540px; margin: 0 auto;
+      padding: 14px 16px 140px; position: relative;
+    }
+    .mission-card {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+    }
+    .mission-card.active { display: block; }
+    .mission-card.slide-in-right { animation: inRight 0.28s ease forwards; }
+    .mission-card.slide-in-left { animation: inLeft 0.28s ease forwards; }
+    @keyframes inRight { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+    @keyframes inLeft  { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 850; letter-spacing: 0.3px;
+      color: var(--brand-dark); background: var(--sun);
+      border: 1.5px solid #E8CF6A;
+      padding: 4px 13px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 23px; font-weight: 850; line-height: 1.25;
+      letter-spacing: -0.3px; margin: 0 0 8px; color: var(--brand-dark);
+    }
+    .card-desc { font-size: 15.5px; color: var(--muted); margin: 0 0 18px; line-height: 1.5; }
+
+    /* HIGHLIGHT & GOAL BOX */
+    .goal-box {
+      background: var(--leaf); border: 2px solid var(--leaf-line);
+      border-radius: 16px; padding: 12px 14px; margin: 0 0 18px;
+      font-size: 15px; font-weight: 600;
+    }
+    .goal-box b { color: var(--go-dark); font-weight: 800; }
+
+    /* IMAGE SHOWCASE */
+    .image-showcase {
+      margin: 16px 0; border-radius: 16px; overflow: hidden;
+      border: 2px solid var(--line); background: #2A2420;
+      box-shadow: 0 6px 18px rgba(80, 55, 30, 0.08);
+    }
+    .image-showcase img {
+      width: 100%; height: auto; display: block; object-fit: contain;
+    }
+    .image-caption {
+      font-size: 13.5px; color: var(--muted); text-align: center;
+      margin: 6px 0 16px; font-weight: 600;
+    }
+
+    /* STEP CARDS */
+    .step-list { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 10px; }
+    .step-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px; background: #FBF6EC;
+      border: 1.5px solid var(--line); border-radius: 14px;
+      font-size: 15px;
+    }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 8px;
+      background: var(--brand); color: #fff;
+      font-size: 13px; font-weight: 850;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .step-body strong { display: block; color: var(--brand-dark); font-size: 15.5px; margin-bottom: 2px; }
+    .step-body p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.45; }
+
+    /* PROMPT COPY BOX */
+    .prompt-card {
+      background: #FBF6EC; border: 2px solid var(--brand);
+      border-radius: 18px; padding: 14px; margin-bottom: 18px;
+    }
+    .prompt-card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .prompt-card-title {
+      font-size: 15px; font-weight: 850; color: var(--brand-dark);
+    }
+    .prompt-card-badge {
+      font-size: 11.5px; font-weight: 800; background: var(--brand); color: #fff;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .prompt-content-code {
+      background: #fff; border: 1.5px dashed var(--brand);
+      border-radius: 12px; padding: 12px; font-size: 13.5px;
+      line-height: 1.45; color: #3B2A1E; margin-bottom: 12px;
+      max-height: 280px; overflow-y: auto; font-family: ui-monospace, Menlo, Consolas, monospace;
+      white-space: pre-wrap; word-break: break-word; user-select: all;
+    }
+    .btn-copy-main {
+      width: 100%; min-height: 48px; border-radius: 12px; border: 0;
+      background: var(--go); color: #fff; font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 0 var(--go-dark); transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn-copy-main:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--go-dark); }
+    .btn-copy-main svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* GENERATOR MINI FORM */
+    .prompt-builder-card {
+      background: #fff; border: 2px solid var(--peach-line);
+      border-radius: 16px; padding: 14px; margin: 16px 0;
+    }
+    .prompt-builder-title {
+      font-size: 15.5px; font-weight: 800; color: var(--ink); margin-bottom: 6px;
+    }
+    .builder-label {
+      display: block; font-size: 13px; font-weight: 750; color: var(--muted); margin: 10px 0 4px;
+    }
+    .builder-input, .builder-select {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1.5px solid var(--line); font-size: 14.5px;
+      background: #FDFBF8; color: var(--ink);
+    }
+    .builder-input:focus, .builder-select:focus {
+      outline: none; border-color: var(--brand); background: #fff;
+    }
+
+    /* EXAMPLE TABS */
+    .example-tabs {
+      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin: 14px 0 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .example-tab-btn {
+      padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line);
+      background: #fff; font-size: 13.5px; font-weight: 750; color: var(--muted);
+      white-space: nowrap; transition: all 0.15s;
+    }
+    .example-tab-btn.active {
+      background: var(--brand); color: #fff; border-color: var(--brand-dark);
+    }
+    .example-panel {
+      display: none; background: #FBF6EC; border: 1.5px solid var(--line);
+      border-radius: 16px; padding: 14px; margin-top: 8px;
+    }
+    .example-panel.active { display: block; animation: inRight 0.2s ease; }
+
+    /* CHECKBOX TUGAS */
+    .checklist-wrap { margin: 18px 0; display: grid; gap: 10px; }
+    .check-card {
+      background: #fff; border: 2px dashed var(--line);
+      border-radius: 14px; padding: 12px 14px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px; transition: all 0.15s;
+    }
+    .check-card:hover { border-color: var(--brand); }
+    .check-card.checked {
+      background: var(--leaf); border-color: var(--leaf-line); border-style: solid;
+    }
+    .custom-box {
+      width: 22px; height: 22px; border-radius: 7px;
+      border: 2px solid #C8B8A6; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 13px; font-weight: 850; color: #fff;
+    }
+    .check-card.checked .custom-box {
+      background: var(--go); border-color: var(--go);
+    }
+    .check-text { font-size: 14.5px; font-weight: 750; color: var(--ink); line-height: 1.4; }
+
+    /* ACCORDION FAQ / TROUBLESHOOTING */
+    .accordion-group { display: grid; gap: 10px; margin: 16px 0; }
+    .accordion-item {
+      background: #FBF6EC; border: 1.5px solid var(--line);
+      border-radius: 14px; overflow: hidden;
+    }
+    .accordion-header {
+      width: 100%; text-align: left; padding: 12px 14px;
+      background: transparent; border: 0; font-size: 15px; font-weight: 800;
+      color: var(--ink); display: flex; justify-content: space-between; align-items: center;
+    }
+    .accordion-header svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; transition: transform 0.2s; }
+    .accordion-item.open .accordion-header svg { transform: rotate(180deg); }
+    .accordion-content {
+      display: none; padding: 0 14px 12px; font-size: 14px; color: var(--muted); line-height: 1.5;
+    }
+    .accordion-item.open .accordion-content { display: block; }
+
+    /* OUTBOUND BUTTON */
+    .btn-outbound {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 48px; border-radius: 12px;
+      background: var(--brand); color: #fff; font-size: 15.5px; font-weight: 800;
+      margin: 14px 0; box-shadow: 0 4px 0 var(--brand-dark); text-decoration: none;
+    }
+    .btn-outbound:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brand-dark); }
+    .btn-outbound svg { width: 17px; height: 17px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+    /* KUIS INTERAKTIF */
+    .quiz-card {
+      background: #FBF6EC; border: 2px solid var(--line);
+      border-radius: 18px; padding: 16px; margin: 16px 0;
+    }
+    .quiz-q-title { font-size: 16px; font-weight: 850; color: var(--brand-dark); margin: 0 0 12px; }
+    .quiz-options { display: grid; gap: 8px; }
+    .quiz-opt-btn {
+      width: 100%; text-align: left; padding: 12px 14px;
+      background: #fff; border: 1.5px solid var(--line); border-radius: 12px;
+      font-size: 14.5px; font-weight: 650; color: var(--ink); line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .quiz-opt-btn:hover { border-color: var(--brand); background: var(--bg); }
+    .quiz-opt-btn.correct {
+      border-color: var(--leaf-line); background: var(--leaf); color: var(--go-dark); font-weight: 800;
+    }
+    .quiz-opt-btn.wrong {
+      border-color: var(--danger-ink); background: var(--danger-bg); color: var(--danger-ink);
+    }
+    .quiz-result-msg {
+      display: none; padding: 10px 12px; border-radius: 10px;
+      font-size: 13.5px; line-height: 1.45; margin-top: 10px; font-weight: 700;
+    }
+    .quiz-result-msg.ok { display: block; background: var(--leaf); color: var(--go-dark); border: 1px solid var(--leaf-line); }
+    .quiz-result-msg.err { display: block; background: var(--danger-bg); color: var(--danger-ink); border: 1px solid #E9B3A4; }
+
+    /* CELEBRATION SHOWCASE */
+    .complete-card {
+      text-align: center; padding: 20px 14px; background: var(--leaf);
+      border: 2px solid var(--leaf-line); border-radius: 18px; margin: 16px 0;
+    }
+    .complete-badge {
+      display: inline-block; font-size: 13px; font-weight: 850;
+      color: var(--go-dark); background: #fff; padding: 4px 14px;
+      border-radius: 999px; margin-bottom: 10px; border: 1.5px solid var(--leaf-line);
+    }
+    .complete-card h2 { font-size: 22px; color: var(--go-dark); margin: 0 0 8px; font-weight: 850; }
+    .complete-card p { font-size: 14.5px; color: var(--muted); margin: 0 0 16px; }
+    .btn-finish-module {
+      width: 100%; min-height: 52px; border-radius: 14px; border: 0;
+      background: var(--go); color: #fff; font-size: 16px; font-weight: 850;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 0 var(--go-dark);
+    }
+    .btn-finish-module:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--go-dark); }
+
+    /* BOTTOM FLOATING DOCK */
+    .deck-bottom-dock {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(255, 249, 240, 0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0));
+    }
+    .deck-bottom-inner {
+      max-width: 540px; margin: 0 auto;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .btn-dock-prev {
+      min-height: 48px; padding: 0 16px; border-radius: 12px;
+      background: #fff; border: 2px solid var(--line);
+      font-size: 14.5px; font-weight: 800; color: var(--ink);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-dock-prev:active { background: var(--peach); }
+    .btn-dock-next {
+      flex: 1; min-height: 48px; padding: 0 18px; border-radius: 12px;
+      background: var(--brand); border: 0;
+      box-shadow: 0 4px 0 var(--brand-dark);
+      font-size: 15.5px; font-weight: 850; color: #fff;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-dock-next:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brand-dark); }
+
+    /* HELP DRAWER / MODAL */
+    .help-backdrop {
+      position: fixed; inset: 0; background: rgba(42, 36, 32, 0.5);
+      z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .help-backdrop.show { opacity: 1; pointer-events: auto; }
+    .help-drawer {
+      background: #fff; width: 100%; max-width: 540px;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 18px calc(24px + env(safe-area-inset-bottom));
+      box-shadow: 0 -8px 30px rgba(42, 36, 32, 0.15);
+      max-height: 82vh; overflow-y: auto;
+      transform: translateY(100%); transition: transform 0.28s ease;
+    }
+    .help-backdrop.show .help-drawer { transform: translateY(0); }
+    .help-drawer-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .help-drawer-header h3 { font-size: 19px; margin: 0; color: var(--brand-dark); font-weight: 850; }
+    .help-drawer-close {
+      min-width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line);
+      background: #fff; color: var(--ink); display: grid; place-items: center;
+    }
+    .help-drawer-close svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    .btn-wa-sheet {
+      width: 100%; min-height: 50px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #1FA855; color: #fff; font-weight: 800; font-size: 15.5px;
+      border-radius: 14px; margin-top: 14px; text-decoration: none;
+    }
+    .btn-wa-sheet svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* TOAST */
+    .toast-pill {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 32px); max-width: 420px; text-align: center;
+      background: var(--ink); color: #fff; padding: 12px 18px;
+      border-radius: 14px; font-size: 15px; font-weight: 750;
+      z-index: 150; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    .toast-pill.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<canvas id="celebrationCanvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+<!-- TOPBAR -->
+<header class="deck-topbar">
+  <div class="deck-topbar-inner">
+    <a href="../dashboard.html" class="btn-top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Ruang Belajar</span>
+    </a>
+    <button type="button" class="btn-top" onclick="openHelpDrawer()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Bantuan</span>
+    </button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="deckStepTitle">Konsep Dasar</span>
+      <span id="deckStepNum">Langkah 1 dari 6</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN DECK -->
+<main class="deck-container" id="deckViewport">
+
+  <!-- ================= KARTU 0: KONSEP & PENGANTAR ================= -->
+  <section class="mission-card active" id="card-0" aria-label="Konsep dasar character sheet">
+    <span class="card-badge">Pendalaman Fundamental · ± 15 Menit</span>
+    <h1 class="card-title">Kunci Karakter Konsisten: Master Character Sheet AI</h1>
+    <p class="card-desc">Pelajari formula paten membuat lembar acuan karakter multi-sudut pandang agar tokoh animasi tidak berubah wajah, rambut, dan pakaian di setiap adegan.</p>
+
+    <div class="goal-box">
+      <b>Tujuan modul ini:</b> Menguasai struktur prompt 3 panel (tampak depan, close-up dada, tampak belakang), memilih rasio 16:9 yang tepat, dan menghasilkan acuan visual siap animasi.
+    </div>
+
+    <!-- Preview Gambar Utama (Kucing Gembul Pixar) -->
+    <div class="image-showcase">
+      <img src="assets/kucing_gembul.jpeg" alt="Contoh Character Sheet 3 Sudut Pandang Kucing Gembul" loading="eager">
+    </div>
+    <p class="image-caption">Contoh Character Sheet 3 Panel dari Studio Asdos: Tampak Depan Full Body, Close-Up Dada, dan Tampak Belakang.</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Kenapa Karakter Sering Berubah?</strong>
+          <p>Jika langsung meminta AI menggerakkan adegan tanpa acuan baku, generator AI akan mengacak ulang proporsi dan busana tokoh di tiap render.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Solusi: 1 Lembar Acuan (Turnaround Sheet)</strong>
+          <p>Dengan 3 sudut pandang dalam 1 canvas horizontal, AI memiliki panduan utuh 360 derajat untuk adegan gerak apa pun.</p>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-outbound" onclick="navigateDeck(1)">
+      <span>Lanjut ke 5 Tahapan Praktik</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </section>
+
+  <!-- ================= KARTU 1: 5 TAHAPAN PRAKTIK ================= -->
+  <section class="mission-card" id="card-1" aria-label="5 tahapan praktik membuat character sheet">
+    <span class="card-badge">Langkah 1 · Alur Praktik Cepat</span>
+    <h2 class="card-title">5 Langkah Praktik Menghasilkan Character Sheet</h2>
+    <p class="card-desc">Ikuti urutan langkah standar ini baik di ChatGPT, Google Flow (Nano Banana / Imagen), maupun Gemini.</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Salin Rumus Prompt Paten</strong>
+          <p>Gunakan format baku studio Asdos yang memisahkan deskripsi karakter dan layout studio lighting.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Buka Generator AI Pilihan</strong>
+          <p>Buka ChatGPT (DALL-E 3), Google Flow (Menu Text to Image), atau Google Gemini.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Isi Deskripsi & Pilihan Gaya</strong>
+          <p>Tuliskan ciri khas tokoh (usia, pakaian, warna rambut) serta gaya visual (3D Pixar, Realistik, Anime, atau Clay).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Pilih Ukuran Rasio 16:9 (Horizontal)</strong>
+          <p>Wajib pilih rasio melebar (landscape 16:9) agar ketiga panel tampak depan, close-up, dan belakang muat rapi berdampingan.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Klik Generate & Simpan Gambar</strong>
+          <p>Simpan hasil terbaik ke galeri HP untuk digunakan sebagai acuan visual di tahap animasi gerak.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="checklist-wrap">
+      <div class="check-card" onclick="toggleTaskCheck(this)">
+        <div class="custom-box">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="check-text">Paham urutan 5 langkah praktik dari salin prompt hingga simpan hasil di HP.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener noreferrer" class="btn-outbound" style="flex:1;">
+        <span>Buka Google Flow</span>
+      </a>
+      <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" class="btn-outbound" style="flex:1; background:#10A37F;">
+        <span>Buka ChatGPT</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= KARTU 2: BEDAH FORMULA PROMPT ================= -->
+  <section class="mission-card" id="card-2" aria-label="Formula prompt paten character sheet">
+    <span class="card-badge">Langkah 2 · Formula Universal</span>
+    <h2 class="card-title">Formula Prompt Paten Studio Asdos</h2>
+    <p class="card-desc">Struktur baku berstandar industri dengan layout 3 panel terpisah garis tipis, pencahayaan studio netral, dan negative prompt pembersih distorsi.</p>
+
+    <!-- BOX PROMPT UTAMA NOTION -->
+    <div class="prompt-card">
+      <div class="prompt-card-header">
+        <span class="prompt-card-title">Master Template Prompt</span>
+        <span class="prompt-card-badge">Universal</span>
+      </div>
+      <div class="prompt-content-code" id="masterPromptText"># CHARACTER DESCRIPTION
+[Masukkan deskripsi karakter secara lengkap di sini]
+
+# STYLE/GAYA
+[Photorealistic / Pixar-quality 3D / Stylized 3D Cartoon / Anime / Clay / Low Poly / Disney-inspired / dll]
+
+---
+
+Create a professional character sheet of the character described above in the specified style.
+## Character Consistency
+- Preserve every detail from the Character Description.
+- Maintain identical facial features, hairstyle, body proportions, clothing, accessories, colors, and materials across every view.
+- The character must be exactly the same in all panels.
+
+## Layout
+- Split the canvas into 3 equal vertical panels separated by thin black divider lines.
+- Left Panel: Wide Shot — Full Body Front View.
+- Center Panel: Close-Up Portrait — Chest Up, facing directly forward.
+- Right Panel: Wide Shot — Full Body Back View.
+- Ensure the entire body is visible from head to toe in both wide shots.
+
+## Background
+- Pure solid neutral grey background.
+- Flat single-color background.
+- No gradient.
+- No texture.
+- No floor.
+- No wall.
+- No environment.
+- No reflections.
+- No objects.
+- No props.
+
+## Lighting
+- Flat professional studio lighting.
+- Uniform illumination from every direction.
+- No dramatic lighting.
+- No directional lighting.
+- No hard light.
+- No rim light.
+- No volumetric light.
+- No ambient occlusion.
+- No facial shadow.
+- No nose shadow.
+- No eye shadow.
+- No chin shadow.
+- No clothing shadow.
+- No cast shadow.
+- No background shadow.
+
+## Camera
+- Orthographic presentation for the full-body views.
+- Front view perfectly centered.
+- Back view perfectly centered.
+- Close-up portrait centered with an 85mm portrait lens look and minimal distortion.
+- Eye-level camera.
+
+## Pose
+- Neutral standing pose.
+- Relaxed natural posture.
+- Looking straight ahead in the front views.
+- Back view facing directly away.
+- Neutral facial expression.
+
+## Image Quality
+- Extremely clean presentation.
+- High-resolution.
+- Professional character turnaround sheet.
+- Sharp details.
+- Symmetrical composition.
+- Consistent proportions.
+- Production-ready character reference.
+
+## Negative Prompt
+shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient background, textured background, environment, props, furniture, text, logo, watermark, caption, cropped body, duplicate character, extra limbs, deformed anatomy, inconsistent clothing, blur, noise, low quality</div>
+
+      <button type="button" class="btn-copy-main" onclick="copyMasterPrompt()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Seluruh Rumus Prompt</span>
+      </button>
+    </div>
+
+    <!-- BUILDER INTERAKTIF MINI -->
+    <div class="prompt-builder-card">
+      <div class="prompt-builder-title">Uji Coba Cepat: Rancang Tokoh Sendiri</div>
+      <label class="builder-label" for="charDescInput">Deskripsi Tokoh:</label>
+      <input type="text" id="charDescInput" class="builder-input" value="anak laki-laki indonesia umur 9 tahun baju kaos hijau celana jeans" oninput="updateCustomPromptPreview()">
+
+      <label class="builder-label" for="charStyleSelect">Pilihan Gaya Visual:</label>
+      <select id="charStyleSelect" class="builder-select" onchange="updateCustomPromptPreview()">
+        <option value="3d cartoon pixar gembull kayak kartun">3D Cartoon Pixar Lembut</option>
+        <option value="ultra realistik seperti nyata">Photorealistic Ultra HD</option>
+        <option value="anime style jepang bersih">Anime Style Halus</option>
+        <option value="clay yang lucu buat anak kecil">Clay / Tanah Liat Lucu</option>
+        <option value="disney-inspired 3d character">Disney-inspired 3D</option>
+      </select>
+
+      <label class="builder-label">Hasil Prompt Gabungan Siap Pakai:</label>
+      <div class="prompt-content-code" id="customPromptPreview" style="max-height:140px;"></div>
+
+      <button type="button" class="btn-copy-main" onclick="copyCustomPrompt()" style="background:var(--brand); box-shadow:0 4px 0 var(--brand-dark);">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Salin Prompt Custom Ini</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= KARTU 3: 4 CONTOH STUDI KASUS ================= -->
+  <section class="mission-card" id="card-3" aria-label="4 studi kasus nyata character sheet">
+    <span class="card-badge">Langkah 3 · Galeri Studi Kasus</span>
+    <h2 class="card-title">4 Contoh Nyata Hasil Studio Asdos</h2>
+    <p class="card-desc">Bandingkan 4 gaya visual berbeda beserta prompt siap salin yang terbukti berhasil menghasilkan karakter konsisten.</p>
+
+    <!-- TABS SWITCHER -->
+    <div class="example-tabs">
+      <button type="button" class="example-tab-btn active" onclick="switchExampleTab(0)">1. Kucing Pixar</button>
+      <button type="button" class="example-tab-btn" onclick="switchExampleTab(1)">2. Viking Realistik</button>
+      <button type="button" class="example-tab-btn" onclick="switchExampleTab(2)">3. Dokter Realistik</button>
+      <button type="button" class="example-tab-btn" onclick="switchExampleTab(3)">4. Dokter Clay</button>
+    </div>
+
+    <!-- PANEL 1: KUCING GEMBUL -->
+    <div class="example-panel active" id="ex-panel-0">
+      <div class="image-showcase">
+        <img src="assets/kucing_gembul.jpeg" alt="Character Sheet Kucing Gembul Pixar" loading="lazy">
+      </div>
+      <p class="image-caption">Kucing Gemoy 3D Cartoon (Seragam Tukang Parkir)</p>
+      <div class="prompt-card" style="margin:0;">
+        <div class="prompt-card-header">
+          <span class="prompt-card-title">Prompt Kucing Pixar</span>
+          <span class="prompt-card-badge">Gaya 3D</span>
+        </div>
+        <div class="prompt-content-code" id="promptKucingCode"># CHARACTER DESCRIPTION
+kucing oren imut yang pakai seragam tukang parkir
+
+# STYLE
+3d cartoon pixar gembull kayak kartun 
+
+---
+
+Create a professional character sheet of the character described above in the specified style.
+
+## Character Consistency
+- Preserve every detail from the Character Description.
+- Maintain identical facial features, hairstyle, body proportions, clothing, accessories, colors, and materials across every view.
+- The character must be exactly the same in all panels.
+
+## Layout
+- Split the canvas into 3 equal vertical panels separated by thin black divider lines.
+- Left Panel: Wide Shot — Full Body Front View.
+- Center Panel: Close-Up Portrait — Chest Up, facing directly forward.
+- Right Panel: Wide Shot — Full Body Back View.
+- Ensure the entire body is visible from head to toe in both wide shots.
+
+## Background
+- Pure solid neutral grey background.
+- Flat single-color background.
+- No gradient.
+- No texture.
+- No floor.
+- No wall.
+- No environment.
+- No reflections.
+- No objects.
+- No props.
+
+## Lighting
+- Flat professional studio lighting.
+- Uniform illumination from every direction.
+- No dramatic lighting.
+- No directional lighting.
+- No hard light.
+- No rim light.
+- No volumetric light.
+- No ambient occlusion.
+- No facial shadow.
+- No nose shadow.
+- No eye shadow.
+- No chin shadow.
+- No clothing shadow.
+- No cast shadow.
+- No background shadow.
+
+## Camera
+- Orthographic presentation for the full-body views.
+- Front view perfectly centered.
+- Back view perfectly centered.
+- Close-up portrait centered with an 85mm portrait lens look and minimal distortion.
+- Eye-level camera.
+
+## Pose
+- Neutral standing pose.
+- Relaxed natural posture.
+- Looking straight ahead in the front views.
+- Back view facing directly away.
+- Neutral facial expression.
+
+## Image Quality
+- Extremely clean presentation.
+- High-resolution.
+- Professional character turnaround sheet.
+- Sharp details.
+- Symmetrical composition.
+- Consistent proportions.
+- Production-ready character reference.
+
+## Negative Prompt
+shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient background, textured background, environment, props, furniture, text, logo, watermark, caption, cropped body, duplicate character, extra limbs, deformed anatomy, inconsistent clothing, blur, noise, low quality</div>
+        <button type="button" class="btn-copy-main" onclick="copySnippetPrompt('promptKucingCode', 'Prompt Kucing Pixar')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Salin Prompt Kucing Pixar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL 2: VIKING REALISTIK -->
+    <div class="example-panel" id="ex-panel-1">
+      <div class="image-showcase">
+        <img src="assets/viking.jpeg" alt="Character Sheet Viking Realistik" loading="lazy">
+      </div>
+      <p class="image-caption">Viking Jaman Dulu yang Gagah Sangar Berjenggot</p>
+      <div class="prompt-card" style="margin:0;">
+        <div class="prompt-card-header">
+          <span class="prompt-card-title">Prompt Viking Realistik</span>
+          <span class="prompt-card-badge">Ultra HD</span>
+        </div>
+        <div class="prompt-content-code" id="promptVikingCode"># CHARACTER DESCRIPTION
+viking jaman dulu yang gagah sangar berjenggot
+
+# STYLE
+realistik ultra hd seperti nyata
+
+---
+
+Create a professional character sheet of the character described above in the specified style.
+
+## Character Consistency
+- Preserve every detail from the Character Description.
+- Maintain identical facial features, hairstyle, body proportions, clothing, accessories, colors, and materials across every view.
+- The character must be exactly the same in all panels.
+
+## Layout
+- Split the canvas into 3 equal vertical panels separated by thin black divider lines.
+- Left Panel: Wide Shot — Full Body Front View.
+- Center Panel: Close-Up Portrait — Chest Up, facing directly forward.
+- Right Panel: Wide Shot — Full Body Back View.
+- Ensure the entire body is visible from head to toe in both wide shots.
+
+## Background
+- Pure solid neutral grey background.
+- Flat single-color background.
+- No gradient.
+- No texture.
+- No floor.
+- No wall.
+- No environment.
+- No reflections.
+- No objects.
+- No props.
+
+## Lighting
+- Flat professional studio lighting.
+- Uniform illumination from every direction.
+- No dramatic lighting.
+- No directional lighting.
+- No hard light.
+- No rim light.
+- No volumetric light.
+- No ambient occlusion.
+- No facial shadow.
+- No nose shadow.
+- No eye shadow.
+- No chin shadow.
+- No clothing shadow.
+- No cast shadow.
+- No background shadow.
+
+## Camera
+- Orthographic presentation for the full-body views.
+- Front view perfectly centered.
+- Back view perfectly centered.
+- Close-up portrait centered with an 85mm portrait lens look and minimal distortion.
+- Eye-level camera.
+
+## Pose
+- Neutral standing pose.
+- Relaxed natural posture.
+- Looking straight ahead in the front views.
+- Back view facing directly away.
+- Neutral facial expression.
+
+## Image Quality
+- Extremely clean presentation.
+- High-resolution.
+- Professional character turnaround sheet.
+- Sharp details.
+- Symmetrical composition.
+- Consistent proportions.
+- Production-ready character reference.
+
+## Negative Prompt
+shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient background, textured background, environment, props, furniture, text, logo, watermark, caption, cropped body, duplicate character, extra limbs, deformed anatomy, inconsistent clothing, blur, noise, low quality</div>
+        <button type="button" class="btn-copy-main" onclick="copySnippetPrompt('promptVikingCode', 'Prompt Viking Realistik')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Salin Prompt Viking</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL 3: DOKTER REALISTIK -->
+    <div class="example-panel" id="ex-panel-2">
+      <div class="image-showcase">
+        <img src="assets/dokter_realistik.jpeg" alt="Character Sheet Dokter Realistik" loading="lazy">
+      </div>
+      <p class="image-caption">Dokter Umur 24 Tahun Laki-Laki Indonesia</p>
+      <div class="prompt-card" style="margin:0;">
+        <div class="prompt-card-header">
+          <span class="prompt-card-title">Prompt Dokter Realistik</span>
+          <span class="prompt-card-badge">Indonesia</span>
+        </div>
+        <div class="prompt-content-code" id="promptDokterRealCode"># CHARACTER DESCRIPTION
+dokter umur 24 tahun laki laki indonesia
+
+# STYLE
+ultra realistik seperti nyata
+
+---
+
+Create a professional character sheet of the character described above in the specified style.
+
+## Character Consistency
+- Preserve every detail from the Character Description.
+- Maintain identical facial features, hairstyle, body proportions, clothing, accessories, colors, and materials across every view.
+- The character must be exactly the same in all panels.
+
+## Layout
+- Split the canvas into 3 equal vertical panels separated by thin black divider lines.
+- Left Panel: Wide Shot — Full Body Front View.
+- Center Panel: Close-Up Portrait — Chest Up, facing directly forward.
+- Right Panel: Wide Shot — Full Body Back View.
+- Ensure the entire body is visible from head to toe in both wide shots.
+
+## Background
+- Pure solid neutral grey background.
+- Flat single-color background.
+- No gradient.
+- No texture.
+- No floor.
+- No wall.
+- No environment.
+- No reflections.
+- No objects.
+- No props.
+
+## Lighting
+- Flat professional studio lighting.
+- Uniform illumination from every direction.
+- No dramatic lighting.
+- No directional lighting.
+- No hard light.
+- No rim light.
+- No volumetric light.
+- No ambient occlusion.
+- No facial shadow.
+- No nose shadow.
+- No eye shadow.
+- No chin shadow.
+- No clothing shadow.
+- No cast shadow.
+- No background shadow.
+
+## Camera
+- Orthographic presentation for the full-body views.
+- Front view perfectly centered.
+- Back view perfectly centered.
+- Close-up portrait centered with an 85mm portrait lens look and minimal distortion.
+- Eye-level camera.
+
+## Pose
+- Neutral standing pose.
+- Relaxed natural posture.
+- Looking straight ahead in the front views.
+- Back view facing directly away.
+- Neutral facial expression.
+
+## Image Quality
+- Extremely clean presentation.
+- High-resolution.
+- Professional character turnaround sheet.
+- Sharp details.
+- Symmetrical composition.
+- Consistent proportions.
+- Production-ready character reference.
+
+## Negative Prompt
+shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient background, textured background, environment, props, furniture, text, logo, watermark, caption, cropped body, duplicate character, extra limbs, deformed anatomy, inconsistent clothing, blur, noise, low quality</div>
+        <button type="button" class="btn-copy-main" onclick="copySnippetPrompt('promptDokterRealCode', 'Prompt Dokter Realistik')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Salin Prompt Dokter Realistik</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL 4: DOKTER CLAY -->
+    <div class="example-panel" id="ex-panel-3">
+      <div class="image-showcase">
+        <img src="assets/dokter_clay.jpeg" alt="Character Sheet Dokter Clay" loading="lazy">
+      </div>
+      <p class="image-caption">Dokter Clay yang Lucu untuk Anak-Anak</p>
+      <div class="prompt-card" style="margin:0;">
+        <div class="prompt-card-header">
+          <span class="prompt-card-title">Prompt Dokter Clay</span>
+          <span class="prompt-card-badge">Claymation</span>
+        </div>
+        <div class="prompt-content-code" id="promptDokterClayCode"># CHARACTER DESCRIPTION
+dokter umur 24 tahun
+
+# STYLE
+clay yang lucu buat anak kecil 
+
+---
+
+Create a professional character sheet of the character described above in the specified style.
+
+## Character Consistency
+- Preserve every detail from the Character Description.
+- Maintain identical facial features, hairstyle, body proportions, clothing, accessories, colors, and materials across every view.
+- The character must be exactly the same in all panels.
+
+## Layout
+- Split the canvas into 3 equal vertical panels separated by thin black divider lines.
+- Left Panel: Wide Shot — Full Body Front View.
+- Center Panel: Close-Up Portrait — Chest Up, facing directly forward.
+- Right Panel: Wide Shot — Full Body Back View.
+- Ensure the entire body is visible from head to toe in both wide shots.
+
+## Background
+- Pure solid neutral grey background.
+- Flat single-color background.
+- No gradient.
+- No texture.
+- No floor.
+- No wall.
+- No environment.
+- No reflections.
+- No objects.
+- No props.
+
+## Lighting
+- Flat professional studio lighting.
+- Uniform illumination from every direction.
+- No dramatic lighting.
+- No directional lighting.
+- No hard light.
+- No rim light.
+- No volumetric light.
+- No ambient occlusion.
+- No facial shadow.
+- No nose shadow.
+- No eye shadow.
+- No chin shadow.
+- No clothing shadow.
+- No cast shadow.
+- No background shadow.
+
+## Camera
+- Orthographic presentation for the full-body views.
+- Front view perfectly centered.
+- Back view perfectly centered.
+- Close-up portrait centered with an 85mm portrait lens look and minimal distortion.
+- Eye-level camera.
+
+## Pose
+- Neutral standing pose.
+- Relaxed natural posture.
+- Looking straight ahead in the front views.
+- Back view facing directly away.
+- Neutral facial expression.
+
+## Image Quality
+- Extremely clean presentation.
+- High-resolution.
+- Professional character turnaround sheet.
+- Sharp details.
+- Symmetrical composition.
+- Consistent proportions.
+- Production-ready character reference.
+
+## Negative Prompt
+shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient background, textured background, environment, props, furniture, text, logo, watermark, caption, cropped body, duplicate character, extra limbs, deformed anatomy, inconsistent clothing, blur, noise, low quality</div>
+        <button type="button" class="btn-copy-main" onclick="copySnippetPrompt('promptDokterClayCode', 'Prompt Dokter Clay')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Salin Prompt Dokter Clay</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= KARTU 4: ATURAN RASIO & TROUBLESHOOTING ================= -->
+  <section class="mission-card" id="card-4" aria-label="Aturan rasio dan panduan troubleshooting">
+    <span class="card-badge">Langkah 4 · Solusi Masalah</span>
+    <h2 class="card-title">Aturan Rasio 16:9 & Solusi Kendala</h2>
+    <p class="card-desc">Pahami perbedaan antara rasio generate acuan awal (16:9) dengan rasio video animasi akhir (9:16 vertikal).</p>
+
+    <div class="goal-box">
+      <b>Kunci Penting:</b> Generate character sheet wajib dalam format <b>16:9 (Horizontal)</b> agar ketiga panel tampak utuh. Saat membuat klip animasi di Google Flow barulah crop foto tokoh menjadi <b>9:16 (Vertikal)</b>.
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-item open">
+        <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+          <span>Wajah di panel tampak depan dan close-up berbeda?</span>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-content">
+          Tambahkan ciri fisik yang spesifik di `# CHARACTER DESCRIPTION`. Misalnya: <i>"mata hitam bulat, poni rambut belah samping, tahi lalat di pipi kanan, memakai kacamata frame hitam"</i>. Deskripsi spesifik memaksa AI menjaga konsistensi antarsudut.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+          <span>Latar belakang ada bayangan atau lantai bertekstur?</span>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-content">
+          Pastikan baris `## Background` dan `## Negative Prompt` tidak terhapus. AI butuh instruksi tegas: <i>"Pure solid neutral grey background, no floor, no shadows, no texture"</i> agar latar benar-benar bersih dan mudah dipotong.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+          <span>Jari tangan tampak lebih dari 5 atau menyatu?</span>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-content">
+          Posisikan tangan dalam keadaan santai di samping pinggang (<i>"hands relaxed at sides"</i>). Hindari pose mengepal atau gestur rumit saat generate character sheet pertama kali.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+          <span>Ujung kepala atau sepatu terpotong di tepi canvas?</span>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-content">
+          Gunakan kalimat <i>"Ensure the entire body is visible from head to toe with comfortable margin"</i> dan pastikan rasio gambar diatur ke 16:9 atau 3:2 landscape.
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-outbound" onclick="openHelpDrawer()" style="background:transparent; color:var(--brand); border:2px dashed var(--brand); box-shadow:none;">
+      <span>Ada kendala generate lain? Buka Konsultasi</span>
+    </button>
+  </section>
+
+  <!-- ================= KARTU 5: KUIS PEMAHAMAN & KELULUSAN ================= -->
+  <section class="mission-card" id="card-5" aria-label="Kuis pemahaman dan kelulusan modul">
+    <span class="card-badge">Evaluasi & Kelulusan</span>
+    <h2 class="card-title">Uji Pemahaman & Tuntaskan Modul</h2>
+    <p class="card-desc">Jawab 2 kuis singkat berikut untuk memastikan pemahaman sebelum mengklaim modul ini selesai di Dashboard.</p>
+
+    <!-- KUIS 1 -->
+    <div class="quiz-card" id="quizBox1">
+      <div class="quiz-q-title">Kuis 1: Mengapa rasio 16:9 (horizontal) wajib dipilih saat generate Character Sheet?</div>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 1, false, 'Kurang tepat. Format vertikal justru akan memotong panel kiri dan kanan.')">
+          A. Agar langsung pas untuk layar HP tanpa perlu diedit lagi
+        </button>
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 1, true, 'Tepat sekali! Bidang lebar horizontal 16:9 memberikan ruang yang cukup bagi 3 panel tubuh utuh berdampingan.')">
+          B. Memberikan ruang yang cukup agar 3 panel tubuh utuh muat rapi berdampingan
+        </button>
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 1, false, 'Kurang tepat. Rasio tidak memengaruhi kuota token AI.')">
+          C. Supaya menghemat kuota generate video di Flow
+        </button>
+      </div>
+      <div class="quiz-result-msg" id="quizMsg1"></div>
+    </div>
+
+    <!-- KUIS 2 -->
+    <div class="quiz-card" id="quizBox2">
+      <div class="quiz-q-title">Kuis 2: Berapa pembagian sudut pandang panel pada formula standar studio Asdos?</div>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 2, true, 'Tepat sekali! Panel kiri = Tampak Depan Full Body, tengah = Close-Up Dada, kanan = Tampak Belakang Full Body.')">
+          A. 3 Panel: Depan Full Body, Close-Up Dada, dan Belakang Full Body
+        </button>
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 2, false, 'Kurang tepat. Format standar studio Asdos adalah 3 panel dengan 1 close-up di tengah.')">
+          B. 1 Panel saja tampak depan
+        </button>
+        <button type="button" class="quiz-opt-btn" onclick="checkAnswer(this, 2, false, 'Kurang tepat. Menghasilkan terlalu banyak panel justru membuat detail wajah menjadi buram.')">
+          C. 8 Panel dari segala sudut kamera miring
+        </button>
+      </div>
+      <div class="quiz-result-msg" id="quizMsg2"></div>
+    </div>
+
+    <!-- BOX KELULUSAN -->
+    <div class="complete-card" id="completeBox" style="display:none;">
+      <span class="complete-badge">Modul Tuntas</span>
+      <h2>Selamat! Kamu Berhasil Menguasai Character Sheet AI</h2>
+      <p>Kini kamu memiliki formula paten untuk menjaga konsistensi karakter di segala proyek video animasi AI.</p>
+      <button type="button" class="btn-finish-module" onclick="finishCharacterSheetModule()">
+        <span>Simpan Progres & Kembali ke Dashboard</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<!-- BOTTOM DOCK NAVIGATION -->
+<footer class="deck-bottom-dock">
+  <div class="deck-bottom-inner">
+    <button type="button" class="btn-dock-prev" id="btnPrev" onclick="navigateDeck(-1)" disabled>
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Balik</span>
+    </button>
+    <button type="button" class="btn-dock-next" id="btnNext" onclick="navigateDeck(1)">
+      <span id="btnNextLabel">Lanjut ke Langkah 1</span>
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</footer>
+
+<!-- BANTUAN DRAWER BACKDROP -->
+<div class="help-backdrop" id="helpBackdrop" onclick="closeHelpDrawer(event)">
+  <div class="help-drawer" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-drawer-header">
+      <h3 id="helpTitle">Bantuan & Konsultasi Modul</h3>
+      <button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p style="font-size:14.5px; color:var(--muted); margin:0 0 14px;">
+      Butuh saran pemilihan gaya visual atau kendala saat prompt di ChatGPT/Flow? Hubungi mentor resmi Asdos Digital Academy.
+    </p>
+
+    <div class="step-item" style="background:#FBF6EC; border-color:var(--line); margin-bottom:10px;">
+      <div class="step-num" style="background:var(--go);">?</div>
+      <div class="step-body">
+        <strong>Ukuran Gambar Terbaik</strong>
+        <p>Gunakan rasio 16:9 saat generate sheet, lalu crop 9:16 untuk video animasi.</p>
+      </div>
+    </div>
+
+    <div class="step-item" style="background:#FBF6EC; border-color:var(--line); margin-bottom:14px;">
+      <div class="step-num" style="background:var(--brand);">AI</div>
+      <div class="step-body">
+        <strong>Pilihan Generator Gratis</strong>
+        <p>Google Flow (Nano Banana) dan ChatGPT gratis dapat menghasilkan 3 panel ini secara optimal.</p>
+      </div>
+    </div>
+
+    <a href="https://wa.me/6281289795589?text=Halo%20Admin%20Asdos,%20saya%20sedang%20mempelajari%20Modul%20Tutorial%20Character%20Sheet%20dan%20ada%20kendala" target="_blank" rel="noopener noreferrer" class="btn-wa-sheet">
+      <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.25-1.5-1.4-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.42 1.44.54.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.12-.22-.19-.47-.32"/></svg>
+      <span>Tanya Mentor via WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<!-- TOAST PILL -->
+<div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
+
+<!-- CORE SCRIPTS -->
+<script src="../lms-db.js"></script>
+<script src="../lms-core.js"></script>
+<script>
+// State Modul
+const CARD_ID = 'card-character-sheet';
+let currentCard = 0;
+const totalCards = 6;
+const cardTitles = [
+  'Konsep Dasar',
+  '5 Langkah Praktik',
+  'Formula Universal',
+  '4 Studi Kasus',
+  'Solusi Masalah',
+  'Uji Pemahaman'
+];
+
+let quiz1Correct = false;
+let quiz2Correct = false;
+
+// Tandai status aktif sedang dipelajari
+try {
+  localStorage.setItem('asdos_module_progress_' + CARD_ID, 'true');
+} catch(e) {}
+
+function updateDeckView(direction = 0) {
+  for (let i = 0; i < totalCards; i++) {
+    const cardEl = document.getElementById('card-' + i);
+    if (!cardEl) continue;
+    cardEl.classList.remove('active', 'slide-in-right', 'slide-in-left');
+    if (i === currentCard) {
+      cardEl.classList.add('active');
+      if (direction > 0) cardEl.classList.add('slide-in-right');
+      if (direction < 0) cardEl.classList.add('slide-in-left');
+    }
+  }
+
+  // Update Topbar
+  const titleEl = document.getElementById('deckStepTitle');
+  const numEl = document.getElementById('deckStepNum');
+  const fillEl = document.getElementById('progressFill');
+  const trackEl = document.getElementById('progressTrack');
+
+  if (titleEl) titleEl.textContent = cardTitles[currentCard];
+  if (numEl) numEl.textContent = 'Langkah ' + (currentCard + 1) + ' dari ' + totalCards;
+  const pct = Math.round(((currentCard + 1) / totalCards) * 100);
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (trackEl) trackEl.setAttribute('aria-valuenow', currentCard + 1);
+
+  // Update Bottom Dock Buttons
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnNextLabel = document.getElementById('btnNextLabel');
+
+  if (btnPrev) {
+    btnPrev.disabled = (currentCard === 0);
+    btnPrev.style.opacity = (currentCard === 0) ? '0.45' : '1';
+  }
+
+  if (btnNext && btnNextLabel) {
+    if (currentCard === totalCards - 1) {
+      btnNextLabel.textContent = 'Evaluasi Terakhir';
+      btnNext.style.display = 'none'; // Kelulusan lewat tombol kartu 5
+    } else {
+      btnNext.style.display = 'inline-flex';
+      btnNextLabel.textContent = 'Lanjut: ' + cardTitles[currentCard + 1];
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateDeck(delta) {
+  if (window.stopAllDeckVideos) window.stopAllDeckVideos();
+  if (delta > 0) {
+    if (currentCard < totalCards - 1) {
+      currentCard++;
+      updateDeckView(1);
+    }
+  } else if (delta < 0) {
+    if (currentCard > 0) {
+      currentCard--;
+      updateDeckView(-1);
+    }
+  }
+}
+
+// Copy prompt helpers
+function copyMasterPrompt() {
+  const el = document.getElementById('masterPromptText');
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  copyTextToClipboard(text, 'Seluruh rumus prompt berhasil disalin.');
+}
+
+function copySnippetPrompt(elementId, labelName) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  copyTextToClipboard(text, labelName + ' berhasil disalin.');
+}
+
+function copyCustomPrompt() {
+  const el = document.getElementById('customPromptPreview');
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  copyTextToClipboard(text, 'Prompt custom berhasil disalin.');
+}
+
+function copyTextToClipboard(text, successMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(successMsg);
+    }).catch(() => {
+      fallbackCopy(text, successMsg);
+    });
+  } else {
+    fallbackCopy(text, successMsg);
+  }
+}
+
+function fallbackCopy(text, successMsg) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast(successMsg);
+  } catch(e) {
+    showToast('Silakan pilih dan salin teks secara manual.');
+  }
+  document.body.removeChild(ta);
+}
+
+// Custom Prompt Preview Generator
+function updateCustomPromptPreview() {
+  const desc = document.getElementById('charDescInput').value.trim() || 'anak laki-laki indonesia';
+  const style = document.getElementById('charStyleSelect').value;
+  const previewEl = document.getElementById('customPromptPreview');
+
+  const customText = `# CHARACTER DESCRIPTION\n${desc}\n\n# STYLE\n${style}\n\n---\n\nCreate a professional character sheet of the character described above in the specified style.\n## Layout\nSplit canvas into 3 vertical panels: Left Wide Front View, Center Close-Up Chest, Right Wide Back View.\n## Lighting & Background\nNeutral solid grey background, flat studio lighting, no shadows. Orthographic 85mm lens.`;
+  if (previewEl) previewEl.textContent = customText;
+}
+
+// Switch Galeri Studi Kasus Tab
+function switchExampleTab(tabIndex) {
+  const tabs = document.querySelectorAll('.example-tab-btn');
+  tabs.forEach((t, idx) => {
+    t.classList.toggle('active', idx === tabIndex);
+  });
+  for (let i = 0; i < 4; i++) {
+    const p = document.getElementById('ex-panel-' + i);
+    if (p) p.classList.toggle('active', i === tabIndex);
+  }
+}
+
+// Toggle Task Check
+function toggleTaskCheck(card) {
+  card.classList.toggle('checked');
+  if (card.classList.contains('checked')) {
+    triggerConfetti();
+  }
+}
+
+// Accordion toggle
+function toggleAccordion(btn) {
+  const item = btn.closest('.accordion-item');
+  if (item) item.classList.toggle('open');
+}
+
+// Check Quiz Answers
+function checkAnswer(btn, quizNum, isCorrect, feedback) {
+  const box = document.getElementById('quizBox' + quizNum);
+  const msg = document.getElementById('quizMsg' + quizNum);
+  if (!box || !msg) return;
+
+  box.querySelectorAll('.quiz-opt-btn').forEach(b => {
+    b.classList.remove('correct', 'wrong');
+  });
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    msg.className = 'quiz-result-msg ok';
+    msg.textContent = feedback;
+    if (quizNum === 1) quiz1Correct = true;
+    if (quizNum === 2) quiz2Correct = true;
+    triggerConfetti();
+  } else {
+    btn.classList.add('wrong');
+    msg.className = 'quiz-result-msg err';
+    msg.textContent = feedback;
+    if (quizNum === 1) quiz1Correct = false;
+    if (quizNum === 2) quiz2Correct = false;
+  }
+
+  // Tampilkan box kelulusan jika kedua kuis benar
+  if (quiz1Correct && quiz2Correct) {
+    const compBox = document.getElementById('completeBox');
+    if (compBox) {
+      compBox.style.display = 'block';
+      compBox.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+}
+
+// Selesaikan Modul & Simpan Progres
+function finishCharacterSheetModule() {
+  try {
+    localStorage.setItem('asdos_module_completed_' + CARD_ID, 'true');
+    localStorage.removeItem('asdos_module_progress_' + CARD_ID);
+  } catch(e) {}
+
+  triggerConfetti();
+  showToast('Modul berhasil dituntaskan! Mengalihkan ke Dashboard...');
+  setTimeout(() => {
+    window.location.href = '../dashboard.html';
+  }, 900);
+}
+
+// Bantuan Drawer
+function openHelpDrawer() {
+  document.getElementById('helpBackdrop').classList.add('show');
+}
+function closeHelpDrawer(e) {
+  if (e && e.target && e.target.id !== 'helpBackdrop' && !e.target.closest('.help-drawer-close')) return;
+  document.getElementById('helpBackdrop').classList.remove('show');
+}
+
+// Toast
+function showToast(text) {
+  const t = document.getElementById('toastPill');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 2600);
+}
+
+// Confetti Engine (0 Emojis)
+function triggerConfetti() {
+  const canvas = document.getElementById('celebrationCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#2E7D4F', '#1F6B7A', '#F59E0B', '#E8893A', '#10B981'];
+  const particles = Array.from({ length: 50 }, () => ({
+    x: canvas.width * 0.5,
+    y: canvas.height * 0.45,
+    vx: (Math.random() - 0.5) * 12,
+    vy: (Math.random() - 0.7) * 14,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.opacity -= 0.018;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillRect(p.x, p.y, p.size, p.size * 1.3);
+    });
+    frame++;
+    if (frame < 50) requestAnimationFrame(animate);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+}
+
+// Touch swipe gesture navigation
+let touchStartX = 0;
+let touchEndX = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 65) {
+    if (diff > 0 && currentCard < totalCards - 1) navigateDeck(1);
+    else if (diff < 0 && currentCard > 0) navigateDeck(-1);
+  }
+}, { passive: true });
+
+// Init
+updateCustomPromptPreview();
+updateDeckView();
+</script>
+</body>
+</html>
