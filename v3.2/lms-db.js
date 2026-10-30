@@ -1841,22 +1841,75 @@ ALTER TABLE public.course_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.course_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.student_progress ENABLE ROW LEVEL SECURITY;
 
--- Kebijakan Akses Publik (Aman dengan Anon Key)
+-- Kebijakan Akses Publik (Aman dengan Anon Key & Idempoten)
+DROP POLICY IF EXISTS "Akses publik baca whitelist" ON public.whitelist_students;
 CREATE POLICY "Akses publik baca whitelist" ON public.whitelist_students FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis whitelist" ON public.whitelist_students;
 CREATE POLICY "Akses publik tulis whitelist" ON public.whitelist_students FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik update whitelist" ON public.whitelist_students;
 CREATE POLICY "Akses publik update whitelist" ON public.whitelist_students FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Akses publik baca settings" ON public.lms_global_settings;
 CREATE POLICY "Akses publik baca settings" ON public.lms_global_settings FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis settings" ON public.lms_global_settings;
 CREATE POLICY "Akses publik tulis settings" ON public.lms_global_settings FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik update settings" ON public.lms_global_settings;
 CREATE POLICY "Akses publik update settings" ON public.lms_global_settings FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Akses publik baca devices" ON public.trusted_devices;
 CREATE POLICY "Akses publik baca devices" ON public.trusted_devices FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis devices" ON public.trusted_devices;
 CREATE POLICY "Akses publik tulis devices" ON public.trusted_devices FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik hapus devices" ON public.trusted_devices;
 CREATE POLICY "Akses publik hapus devices" ON public.trusted_devices FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik update devices" ON public.trusted_devices;
 CREATE POLICY "Akses publik update devices" ON public.trusted_devices FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Akses publik untuk kategori kursus" ON public.course_categories;
 CREATE POLICY "Akses publik untuk kategori kursus" ON public.course_categories FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis kategori kursus" ON public.course_categories;
+CREATE POLICY "Akses publik tulis kategori kursus" ON public.course_categories FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik update kategori kursus" ON public.course_categories;
+CREATE POLICY "Akses publik update kategori kursus" ON public.course_categories FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik hapus kategori kursus" ON public.course_categories;
+CREATE POLICY "Akses publik hapus kategori kursus" ON public.course_categories FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik untuk kartu materi" ON public.course_cards;
 CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis kartu materi" ON public.course_cards;
+CREATE POLICY "Akses publik tulis kartu materi" ON public.course_cards FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik update kartu materi" ON public.course_cards;
+CREATE POLICY "Akses publik update kartu materi" ON public.course_cards FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik hapus kartu materi" ON public.course_cards;
+CREATE POLICY "Akses publik hapus kartu materi" ON public.course_cards FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik baca progress" ON public.student_progress;
+CREATE POLICY "Akses publik baca progress" ON public.student_progress FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Akses publik tulis progress" ON public.student_progress;
+CREATE POLICY "Akses publik tulis progress" ON public.student_progress FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Akses publik update progress" ON public.student_progress;
+CREATE POLICY "Akses publik update progress" ON public.student_progress FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik hapus whitelist" ON public.whitelist_students;
+CREATE POLICY "Akses publik hapus whitelist" ON public.whitelist_students FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Akses publik hapus settings" ON public.lms_global_settings;
+CREATE POLICY "Akses publik hapus settings" ON public.lms_global_settings FOR DELETE USING (true);
 `;
 
   // ==========================================================================
