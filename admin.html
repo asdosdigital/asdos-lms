@@ -1609,14 +1609,23 @@ function saveQuickEditCard() {
     video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
   }
 
+  const categories = window.LMS_DB.getModuleCategories();
+  const existingCard = (categories[currentEditingCatIdx]?.cards || [])[currentEditingCardIdx];
+  const cardId = existingCard ? existingCard.id : ('card-' + Date.now());
+
+  let targetUrl = document.getElementById('editCardUrl').value.trim();
+  if (!targetUrl || targetUrl === '#') {
+    targetUrl = 'module.html?id=' + encodeURIComponent(cardId);
+  }
+
   const patch = {
     title: document.getElementById('editCardTitle').value.trim(),
     badge: document.getElementById('editCardBadge').value.trim(),
     desc: document.getElementById('editCardDesc').value.trim(),
     thumbnail: document.getElementById('editCardThumbnail').value.trim() || 'banner-2.jpg',
     videoUrl: video,
-    url: document.getElementById('editCardUrl').value.trim() || '#',
-    type: document.getElementById('editCardType').value,
+    url: targetUrl,
+    type: 'interactive_module',
     isHidden: document.getElementById('editCardIsHidden') ? document.getElementById('editCardIsHidden').checked : false
   };
 
@@ -1721,15 +1730,17 @@ function handleAddCardSubmit() {
   }
 
   const isHidden = document.getElementById('inCardIsHidden')?.checked || false;
+  const newCardId = 'card-' + Date.now();
 
   const success = window.LMS_DB.addCardToCategory(catIdx, {
+    id: newCardId,
     title: title,
     desc: desc,
     badge: badge,
     thumbnail: thumbnail,
     videoUrl: video,
-    type: video ? 'single_video' : 'custom_link',
-    url: video ? '#' : '#',
+    type: 'interactive_module',
+    url: 'module.html?id=' + newCardId,
     isHidden: isHidden
   });
 

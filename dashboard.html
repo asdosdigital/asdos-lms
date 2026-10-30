@@ -1495,8 +1495,12 @@ function renderCategoriesHtml(categories, overall) {
         } else {
           footStatus = `<span>${overall.percent}% Tuntas</span> <span style="color:var(--brand);font-weight:850">Mulai Belajar &rarr;</span>`;
         }
-      } else if (card.type === 'interactive_module' || (card.url && card.url !== '#' && !card.url.startsWith('javascript:'))) {
-        targetHref = card.url;
+      } else {
+        // Seluruh modul interaktif Studio Builder (tidak ada lagi pop-up video MVP)
+        const targetUrl = (card.url && card.url !== '#' && !card.url.startsWith('javascript:'))
+          ? card.url
+          : ('module.html?id=' + encodeURIComponent(card.id));
+        targetHref = targetUrl;
         clickAttr = '';
         badgeLabel = card.badge || 'Modul Interaktif';
         if (statusInfo.status === 'completed') {
@@ -1506,18 +1510,6 @@ function renderCategoriesHtml(categories, overall) {
         } else {
           footStatus = `<span style="color:var(--brand);font-weight:850">Buka Modul Belajar &rarr;</span>`;
         }
-      } else if (card.videoUrl) {
-        targetHref = '#';
-        clickAttr = `onclick="openVideoModal('${encodeURIComponent(card.title)}', '${card.videoUrl}', '${card.id}'); return false;"`;
-        if (statusInfo.status === 'completed') {
-          footStatus = `<span style="color:var(--go);font-weight:850">Tuntas Ditonton &bull; Tonton Ulang &rarr;</span>`;
-        } else {
-          footStatus = `<span style="color:var(--brand);font-weight:800">Tonton Video Tutorial &rarr;</span>`;
-        }
-      } else {
-        targetHref = '#';
-        clickAttr = `onclick="alert('Materi ini sedang disiapkan.'); return false;"`;
-        footStatus = `<span style="color:var(--muted)">Materi Tambahan</span>`;
       }
 
       return `
@@ -2014,13 +2006,21 @@ window.addEventListener('click', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Silent auto-login via Trusted Device token di Supabase
+  // 1. Silent auto-login via Trusted Device token di Supabase
   if (window.LMS_DB && window.LMS_DB.checkTrustedDeviceSession) {
     const sessionRes = await window.LMS_DB.checkTrustedDeviceSession();
     if (sessionRes && sessionRes.kicked) {
       window.showToast(sessionRes.message);
     }
   }
+
+  // 2. Sinkronkan Pengaturan Global & Whitelist dari Supabase Cloud
+  if (window.LMS_DB && window.LMS_DB.syncGlobalSettingsFromSupabase) {
+    try {
+      await window.LMS_DB.syncGlobalSettingsFromSupabase();
+    } catch(e){}
+  }
+
   renderDashboard();
 });
 </script>

@@ -1666,6 +1666,16 @@ function checkAndApplyCustomBuilderContent() {
 checkAndApplyCustomBuilderContent();
 updateCustomPromptPreview();
 updateDeckView();
+
+if (window.LMS_DB && window.LMS_DB.getGlobalSettingFromSupabase) {
+  window.LMS_DB.getGlobalSettingFromSupabase('builder_card_' + CARD_ID).then(cloudData => {
+    if (cloudData && Array.isArray(cloudData.cards) && cloudData.cards.length > 0) {
+      localStorage.setItem('asdos_builder_card_' + CARD_ID, JSON.stringify(cloudData));
+      checkAndApplyCustomBuilderContent();
+      updateDeckView();
+    }
+  }).catch(() => {});
+}
 </script>
 </body>
 </html>

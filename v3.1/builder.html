@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#FFF9F0">
   <title>Visual Course Studio Builder - Asdos Digital Academy</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
   <link rel="icon" type="image/png" href="asdos-square.png">
   <link rel="apple-touch-icon" href="asdos-square.png">
   <link rel="stylesheet" href="lms-core.css">
@@ -3587,14 +3589,20 @@ function exportStandaloneHtml() {
 }
 
 function previewInNewTab() {
-  let htmlContent = generateStandaloneHtmlString();
-  const baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-  htmlContent = htmlContent.replace('<head>', `<head><base href="${baseHref}">`);
+  if (currentEditingCardId) {
+    localStorage.setItem('asdos_builder_card_' + currentEditingCardId, JSON.stringify(courseModel));
+    window.open(`module.html?id=${encodeURIComponent(currentEditingCardId)}`, '_blank');
+    showToast('Pratinjau layar penuh dibuka di tab baru!');
+  } else {
+    let htmlContent = generateStandaloneHtmlString();
+    const baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+    htmlContent = htmlContent.replace('<head>', `<head><base href="${baseHref}">`);
 
-  const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
-  const blobUrl = URL.createObjectURL(blob);
-  window.open(blobUrl, '_blank');
-  showToast('Pratinjau layar penuh dibuka di tab baru!');
+    const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, '_blank');
+    showToast('Pratinjau layar penuh dibuka di tab baru!');
+  }
 }
 
 // ==========================================================================
@@ -3658,6 +3666,8 @@ function saveToLmsDatabase() {
       cardObj.desc = desc;
       cardObj.thumbnail = thumbnail;
       cardObj.isHidden = isHidden;
+      cardObj.type = 'interactive_module';
+      cardObj.url = 'module.html?id=' + encodeURIComponent(currentEditingCardId);
 
       // Pindahkan kategori jika diubah oleh admin
       if (targetCategoryIdx !== foundCatIdx && categories[targetCategoryIdx]) {
@@ -3687,7 +3697,7 @@ function saveToLmsDatabase() {
     badge: cleanDay,
     thumbnail: thumbnail,
     type: 'interactive_module',
-    url: `v3.1/${cleanDay.toLowerCase().replace(/[^a-z0-9]/g, '')}-v3.1.html`,
+    url: 'module.html?id=' + encodeURIComponent(newCardId),
     isHidden: isHidden
   };
 
@@ -3805,3 +3815,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+

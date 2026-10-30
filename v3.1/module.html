@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FFF9F0">
+  <title>Modul Pembelajaran - Asdos Digital Academy</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="asdos-square.png">
+  <link rel="apple-touch-icon" href="asdos-square.png">
+  <link rel="stylesheet" href="lms-core.css">
+  <style>
+    :root {
+      --bg: #FFF9F0;
+      --card: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --ink: #2A2420;
+      --muted: #5E544C;
+      --line: #E8DCCB;
+      --brand: #1F6B7A;
+      --brand-dark: #164F5B;
+      --go: #2E7D4F;
+      --go-dark: #226139;
+      --leaf: #E6F4E4;
+      --leaf-line: #7DBB8A;
+      --peach: #FFEBD6;
+      --peach-line: #F0B98A;
+      --sun: #FFF3BF;
+      --danger-bg: #FFF0EC;
+      --danger-ink: #8A2A12;
+      --shadow: 0 8px 26px rgba(80, 55, 30, 0.07);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck-viewport {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 14px 16px 120px;
+    }
+
+    /* Topbar & Stepper */
+    .deck-topbar {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+    }
+    .deck-topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .btn-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      background: #ffffff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 7px 14px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+    .btn-top:hover {
+      background: #FAF6EE;
+    }
+    .progress-wrap { width: 100%; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-label span:last-child {
+      color: var(--brand);
+    }
+    .progress-track {
+      height: 7px;
+      background: #E8DCCB;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--go);
+      border-radius: 99px;
+      transition: width .35s ease;
+    }
+
+    /* Mission Card Container */
+    .sim-mission-card {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      position: relative;
+    }
+    @media (min-width: 540px) {
+      .sim-mission-card {
+        padding: 28px 24px;
+      }
+    }
+
+    .card-step-badge {
+      font-size: 11.5px;
+      font-weight: 850;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .badge-teal { background: #E0F2F1; color: #1F6B7A; border: 1px solid #80CBC4; }
+    .badge-go { background: #E6F4E4; color: #2E7D4F; border: 1px solid #7DBB8A; }
+    .badge-peach { background: #FFEBD6; color: #8A4B1A; border: 1px solid #F0B98A; }
+    .badge-sun { background: #FFF3BF; color: #7A4B00; border: 1px solid #E8CF6A; }
+    .badge-blue { background: #EFF6FF; color: #1D4ED8; border: 1px solid #93C5FD; }
+    .badge-rose { background: #FFE4E6; color: #9F1239; border: 1px solid #FDA4AF; }
+    .badge-lavender { background: #F3E8FF; color: #6D28D9; border: 1px solid #C4B5FD; }
+
+    .card-head-title {
+      font-size: 22px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      margin: 0 0 8px;
+      line-height: 1.25;
+    }
+    .card-head-desc {
+      font-size: 14.5px;
+      color: var(--muted);
+      margin: 0 0 20px;
+      line-height: 1.5;
+    }
+
+    /* Blocks */
+    .block-text {
+      background: #FAF6EE;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .block-text h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .block-text p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .block-steps {
+      background: #FAF6EE;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .block-steps h4 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 850;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .block-image {
+      margin-bottom: 16px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid var(--line);
+      background: #000;
+    }
+    .block-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .image-caption {
+      background: #FAF6EE;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .prompt-box {
+      background: #FFFBE8;
+      border: 1.5px solid #F0DA8A;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .prompt-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .prompt-tool-badge {
+      font-size: 11px;
+      font-weight: 850;
+      color: #7A4B00;
+      background: #FFF3BF;
+      border: 1px solid #E8CF6A;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .prompt-content {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #EADB9C;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #3B2806;
+      line-height: 1.5;
+    }
+    .prompt-note {
+      font-size: 12px;
+      color: #8C6D23;
+      margin-top: 6px;
+      font-style: italic;
+    }
+    .btn-copy-prompt {
+      width: 100%;
+      background: var(--brand);
+      color: #ffffff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background .2s ease;
+    }
+    .btn-copy-prompt:hover {
+      background: var(--brand-dark);
+    }
+
+    .trouble-box {
+      background: #FFF5EC;
+      border: 1.5px solid #F5CBA7;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .trouble-head {
+      font-size: 14px;
+      font-weight: 850;
+      color: #8A4B1A;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trouble-tips {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 13px;
+      color: #5E3917;
+      line-height: 1.5;
+    }
+    .trouble-tips li {
+      margin-bottom: 4px;
+    }
+
+    .quiz-box {
+      background: #F5F3FF;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .quiz-question {
+      font-size: 14.5px;
+      font-weight: 850;
+      color: #4C1D95;
+      margin-bottom: 12px;
+    }
+    .quiz-opt-btn {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #DDD6FE;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 750;
+      color: var(--ink);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .2s ease;
+    }
+    .quiz-opt-btn:hover {
+      background: #FAF9FF;
+      border-color: #C4B5FD;
+    }
+    .quiz-opt-btn.correct {
+      background: #E8F5E9 !important;
+      border-color: #81C784 !important;
+      color: #1B5E20 !important;
+    }
+    .quiz-opt-btn.wrong {
+      background: #FFEBEE !important;
+      border-color: #E57373 !important;
+      color: #B71C1C !important;
+    }
+    .quiz-feedback {
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+    .quiz-feedback.correct {
+      display: block;
+      background: #E8F5E9;
+      color: #1B5E20;
+    }
+    .quiz-feedback.wrong {
+      display: block;
+      background: #FFEBEE;
+      color: #B71C1C;
+    }
+
+    .block-video {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1.5px solid var(--line);
+      margin-bottom: 16px;
+      background: #000;
+    }
+    .block-video iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .block-callout {
+      background: #E6F4E4;
+      border: 1.5px solid #7DBB8A;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .block-callout h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: #226139;
+      font-weight: 850;
+    }
+    .block-callout p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #2D5A3A;
+      line-height: 1.5;
+    }
+
+    .btn-help-inline {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px dashed #E0BA98;
+      background: #FFF7EE;
+      color: #8A4B1A;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* Fixed Bottom Bar */
+    .sim-bottom-bar-fixed {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1.5px solid var(--line);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      max-width: 640px;
+      margin: 0 auto;
+      z-index: 100;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.04);
+    }
+    .sim-btn-prev, .sim-btn-next {
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      transition: all .2s ease;
+    }
+    .sim-btn-prev {
+      background: #FAF6EE;
+      color: var(--muted);
+      border: 1.5px solid var(--line);
+    }
+    .sim-btn-prev:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .sim-btn-next {
+      background: var(--brand);
+      color: #ffffff;
+      flex-grow: 1;
+      justify-content: center;
+    }
+    .sim-btn-next.finish {
+      background: var(--go);
+    }
+
+    /* Help Drawer */
+    .sim-help-drawer {
+      position: fixed;
+      inset: 0;
+      background: rgba(42,36,32,0.65);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .sim-help-drawer.open {
+      display: flex;
+    }
+    .sim-help-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 640px;
+      border-radius: 20px 20px 0 0;
+      padding: 20px 18px 28px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: sheetUp 0.25s ease-out;
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .help-faq-item {
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .help-faq-q {
+      font-size: 13.5px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      margin-bottom: 4px;
+    }
+    .help-faq-a {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Paywall screen */
+    .paywall-wrap {
+      text-align: center;
+      padding: 40px 20px;
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .paywall-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      background: #FFEBD6;
+      border-radius: 50%;
+      color: #8A4B1A;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-viewport" id="moduleApp">
+    <!-- Topbar -->
+    <header class="deck-topbar">
+      <div class="deck-topbar-inner">
+        <a href="dashboard.html" class="btn-top" title="Kembali ke Dashboard Siswa">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <button type="button" class="btn-top" onclick="openHelpDrawer()">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Bantuan</span>
+        </button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span id="stepCounterText">Langkah 1</span>
+          <span id="stepPercentText">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Card Body -->
+    <main id="cardContainerArea">
+      <!-- Dynamic Card Injected Here -->
+      <div style="text-align:center;padding:50px 20px;color:var(--muted)">
+        Memuat materi...
+      </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <footer class="sim-bottom-bar-fixed" id="moduleBottomBar">
+      <button type="button" class="sim-btn-prev" id="btnPrevCard" onclick="navPrevCard()" disabled>
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Balik</span>
+      </button>
+      <button type="button" class="sim-btn-next" id="btnNextCard" onclick="navNextCard()">
+        <span id="btnNextLabel">Lanjut &rarr;</span>
+      </button>
+    </footer>
+
+    <!-- Slide-up Help Drawer -->
+    <div class="sim-help-drawer" id="helpDrawer" onclick="closeHelpDrawerOnBg(event)">
+      <div class="sim-help-sheet">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--line)">
+          <strong style="font-size:16px;color:var(--brand-dark)" id="helpDrawerTitle">Pusat Bantuan Praktik</strong>
+          <button type="button" onclick="closeHelpDrawer()" style="background:#FAF6EE;border:1px solid var(--line);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;cursor:pointer">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="helpFaqList"></div>
+        <a id="helpWaBtn" href="#" target="_blank" rel="noopener noreferrer" style="margin-top:16px;background:#2E7D4F;color:#ffffff;text-decoration:none;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Tanya Mentor via WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="moduleToast" class="lms-toast" role="status"></div>
+
+  <script src="lms-db.js?v=20261030-v9"></script>
+  <script src="lms-core.js?v=20261030-v9"></script>
+  <script>
+    // ==========================================================================
+    // MODULE VIEWER CONTROLLER (STUDIO BUILDER FORMAT)
+    // ==========================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const CARD_ID = urlParams.get('id') || '';
+    let currentCardIndex = 0;
+    let courseModel = null;
+
+    if (!CARD_ID) {
+      window.location.replace('dashboard.html');
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function extractYouTubeId(url) {
+      if (!url) return '';
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      return match ? match[1] : '';
+    }
+
+    // Template Fallback Generator
+    function generateStarterModel(card) {
+      const title = card ? card.title : 'Modul Pembelajaran';
+      const badge = card ? card.badge : 'Modul Interaktif';
+      const desc = card ? (card.desc || '') : '';
+      const videoUrl = card ? (card.videoUrl || '') : '';
+
+      if (CARD_ID === 'card-character-sheet') {
+        return {
+          dayNumber: badge || 'Pendalaman Fundamental',
+          title: title || 'Tutorial Lengkap Character Sheet',
+          desc: desc || 'Panduan membuat lembar karakter konsisten 3 sudut pandang (depan, close-up dada, belakang) dengan rumus paten studio.',
+          helpCenter: {
+            waNumber: '6281289795589',
+            waText: 'Halo Mentor, saya butuh panduan untuk praktik modul Character Sheet',
+            faqs: [
+              { q: 'Ukuran aspek rasio terbaik?', a: 'Pilih format 16:9 (horizontal) saat generate character sheet agar 3 panel muat utuh berdampingan.' },
+              { q: 'Wajah tokoh berbeda antarsudut?', a: 'Tuliskan ciri fisik yang spesifik seperti warna mata, bentuk rambut, dan kacamata pada kolom deskripsi.' }
+            ]
+          },
+          cards: [
+            {
+              stepBadge: 'KONSEP DASAR',
+              accent: 'teal',
+              title: 'Kunci Karakter Konsisten: Master Character Sheet AI',
+              desc: 'Memahami prinsip turnaround sheet 3 panel agar wajah dan pakaian tokoh tidak berubah antarklip.',
+              showHelpBtn: true,
+              blocks: [
+                { id: 'cs1', type: 'text', heading: 'Kenapa Karakter Sering Berubah?', body: 'Generator AI mengacak ulang tokoh di tiap render jika tidak diberi acuan baku 360 derajat.' },
+                { id: 'cs2', type: 'image', imageUrl: 'modules/assets/kucing_gembul.jpeg', caption: 'Contoh Turnaround Sheet 3 Panel: Depan Full Body, Close-Up Dada, dan Belakang.' },
+                { id: 'cs3', type: 'callout', title: 'Tujuan Utama:', body: 'Menghasilkan 1 gambar acuan horizontal berisi 3 sudut pandang tokoh untuk dipakai di tahap animasi.' }
+              ]
+            },
+            {
+              stepBadge: 'LANGKAH 1',
+              accent: 'go',
+              title: 'Rumus Prompt Baku 3 Sudut Pandang',
+              desc: 'Salin formula di bawah ini dan sesuaikan deskripsi tokoh yang ingin Anda ciptakan.',
+              showHelpBtn: true,
+              blocks: [
+                { id: 'cs4', type: 'prompt', tool: 'Google Flow / Gemini', formula: 'Character sheet turnaround of a cute chubby orange cat wearing green hoodie and tiny round glasses, 3 panel multiple views: full body front view, close up bust shot, back view, neutral warm studio background, clean 3D clay animation style, cinematic soft lighting --ar 16:9', note: 'Tempel di kolom prompt Google Flow atau Midjourney dengan rasio 16:9.' },
+                { id: 'cs5', type: 'trouble', title: 'Perhatikan 2 hal penting ini:', tips: ['Gunakan kata kunci 3 panel turnaround sheet agar AI tidak membuat pose yang berbeda.', 'Wajib pakai rasio 16:9 agar ketiga sudut pandang tidak terpotong.'] }
+              ]
+            },
+            {
+              stepBadge: 'EVALUASI',
+              accent: 'sun',
+              title: 'Cek Pemahaman Character Sheet',
+              desc: 'Uji pemahaman dasar sebelum melanjutkan praktik di workspace.',
+              showHelpBtn: true,
+              blocks: [
+                { id: 'cs6', type: 'quiz', question: 'Format aspek rasio apa yang wajib digunakan saat membuat character sheet 3 panel?', options: ['9:16 (Vertikal)', '16:9 (Horizontal Melebar)', '1:1 (Persegi)'], correctIndex: 1, feedbackCorrect: 'Tepat sekali! Format 16:9 memberikan ruang cukup untuk 3 panel berjejer.', feedbackWrong: 'Kurang tepat. Gunakan 16:9 horizontal agar 3 panel muat utuh.' },
+                { id: 'cs7', type: 'callout', title: 'Langkah Berikutnya:', body: 'Simpan gambar hasil render character sheet Anda ke galeri untuk digunakan sebagai acuan gambar di Google Flow.' }
+              ]
+            }
+          ]
+        };
+      }
+
+      if (videoUrl) {
+        return {
+          dayNumber: badge || 'Video Tutorial',
+          title: title,
+          desc: desc,
+          helpCenter: {
+            waNumber: '6281289795589',
+            waText: 'Halo Mentor, saya butuh panduan untuk materi: ' + title,
+            faqs: [
+              { q: 'Video tidak bisa diputar?', a: 'Periksa koneksi internet Anda atau coba muat ulang halaman.' },
+              { q: 'Punya pertanyaan materi?', a: 'Gunakan tombol WhatsApp di bawah untuk langsung berdiskusi dengan mentor.' }
+            ]
+          },
+          cards: [
+            {
+              stepBadge: 'PANDUAN VIDEO',
+              accent: 'teal',
+              title: title,
+              desc: desc || 'Tonton video tutorial interaktif di bawah ini dan ikuti instruksi praktiknya.',
+              showHelpBtn: true,
+              blocks: [
+                { id: 'b1', type: 'video', videoUrl: videoUrl },
+                { id: 'b2', type: 'text', heading: 'Ringkasan Materi', body: desc || 'Pelajari materi ini dengan cermat, catat poin-poin penting, dan terapkan langsung di akun masing-masing.' },
+                { id: 'b3', type: 'callout', title: 'Tips Mentor:', body: 'Eksperimen langsung setelah menonton agar pemahaman menempel lebih kuat.' }
+              ]
+            },
+            {
+              stepBadge: 'PRAKTIK & EVALUASI',
+              accent: 'go',
+              title: 'Checklist Praktik Mandiri',
+              desc: 'Pastikan Anda telah mencoba fitur-fitur yang dicontohkan dalam video.',
+              showHelpBtn: true,
+              blocks: [
+                { id: 'b4', type: 'steps', title: 'Langkah Praktik:', items: ['Buka tools yang dibahas di tab terpisah.', 'Ikuti panduan langkah demi langkah sesuai tayangan.', 'Simpan aset hasil eksperimen ke folder khusus di komputermu.'] },
+                { id: 'b5', type: 'quiz', question: 'Apakah Anda sudah mencoba mempraktikkan langkah di atas?', options: ['Sudah, dan berhasil!', 'Sedang dalam proses', 'Perlu bantuan teknis mentor'], correctIndex: 0, feedbackCorrect: 'Hebat! Terus tingkatkan jam terbang praktik Anda.', feedbackWrong: 'Jangan ragu menghubungi mentor jika butuh panduan teknis.' }
+              ]
+            }
+          ]
+        };
+      }
+
+      // Default generic placeholder
+      return {
+        dayNumber: badge || 'Modul Pembelajaran',
+        title: title,
+        desc: desc || 'Materi pembelajaran terstruktur Akademi Animasi Asdos.',
+        helpCenter: {
+          waNumber: '6281289795589',
+          waText: 'Halo Mentor, saya butuh bantuan untuk modul ' + title,
+          faqs: [
+            { q: 'Bagaimana memulai praktik?', a: 'Ikuti materi pada tiap kartu langkah demi langkah.' }
+          ]
+        },
+        cards: [
+          {
+            stepBadge: 'LANGKAH 1',
+            accent: 'teal',
+            title: title,
+            desc: desc || 'Fokus pada fondasi materi dan pemahaman dasar.',
+            showHelpBtn: true,
+            blocks: [
+              { id: 'b1', type: 'text', heading: 'Instruksi Materi', body: desc || 'Materi ini dirancang untuk melengkapi keterampilan produksi animasi AI Anda.' },
+              { id: 'b2', type: 'callout', title: 'Catatan Pengajar:', body: 'Modul ini dapat disesuaikan dan diperbarui langsung melalui Studio Builder.' }
+            ]
+          },
+          {
+            stepBadge: 'LANGKAH 2',
+            accent: 'go',
+            title: 'Tindak Lanjut & Praktik',
+            desc: 'Langkah penerapan langsung materi ke dalam proyek karya.',
+            showHelpBtn: true,
+            blocks: [
+              { id: 'b3', type: 'steps', title: 'Rencana Tindakan:', items: ['Eksplorasi fitur terkait.', 'Terapkan ke proyek animasi Anda.', 'Diskusikan hasil karya di grup komunitas.'] }
+            ]
+          }
+        ]
+      };
+    }
+
+    // Render Blocks
+    function renderBlock(b) {
+      if (!b) return '';
+      if (b.type === 'text') {
+        return `
+          <div class="block-text">
+            <h3>${escapeHtml(b.heading || '')}</h3>
+            <p>${escapeHtml(b.body || '')}</p>
+          </div>
+        `;
+      }
+      if (b.type === 'steps') {
+        const items = Array.isArray(b.items) ? b.items : [];
+        return `
+          <div class="block-steps">
+            <h4>${escapeHtml(b.title || 'Langkah demi Langkah:')}</h4>
+            <div class="steps-list">
+              ${items.map((it, idx) => `
+                <div class="step-item">
+                  <span class="step-num">${idx + 1}</span>
+                  <span>${escapeHtml(it)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+      if (b.type === 'image') {
+        return `
+          <div class="block-image">
+            <img src="${escapeHtml(b.imageUrl || 'banner-2.jpg')}" alt="${escapeHtml(b.caption || 'Gambar Penjelas')}" loading="lazy">
+            ${b.caption ? `<div class="image-caption">${escapeHtml(b.caption)}</div>` : ''}
+          </div>
+        `;
+      }
+      if (b.type === 'prompt') {
+        return `
+          <div class="prompt-box">
+            <div class="prompt-head">
+              <span class="prompt-tool-badge">${escapeHtml(b.tool || 'Prompt AI')}</span>
+            </div>
+            <div class="prompt-content" id="promptText_${b.id}">${escapeHtml(b.formula || '')}</div>
+            ${b.note ? `<div class="prompt-note">${escapeHtml(b.note)}</div>` : ''}
+            <button type="button" class="btn-copy-prompt" onclick="copyPrompt('${escapeHtml(b.id)}')">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Salin Prompt</span>
+            </button>
+          </div>
+        `;
+      }
+      if (b.type === 'trouble') {
+        const tips = Array.isArray(b.tips) ? b.tips : [];
+        return `
+          <div class="trouble-box">
+            <div class="trouble-head">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>${escapeHtml(b.title || 'Perhatikan Hal Penting Ini:')}</span>
+            </div>
+            <ul class="trouble-tips">
+              ${tips.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+      if (b.type === 'quiz') {
+        const opts = Array.isArray(b.options) ? b.options : [];
+        const qId = b.id || ('q_' + Math.random().toString(36).substr(2, 6));
+        return `
+          <div class="quiz-box">
+            <div class="quiz-question">${escapeHtml(b.question || 'Kuis Pemahaman')}</div>
+            <div class="quiz-options">
+              ${opts.map((opt, oIdx) => `
+                <button type="button" class="quiz-opt-btn" onclick="checkQuizAnswer(this, ${oIdx}, ${b.correctIndex || 0}, '${escapeHtml(b.feedbackCorrect || 'Jawaban benar!')}', '${escapeHtml(b.feedbackWrong || 'Coba periksa kembali materi.')}', '${qId}')">
+                  <span style="opacity:0.6;font-size:12px">${String.fromCharCode(65 + oIdx)}.</span>
+                  <span>${escapeHtml(opt)}</span>
+                </button>
+              `).join('')}
+            </div>
+            <div class="quiz-feedback" id="quizFb_${qId}"></div>
+          </div>
+        `;
+      }
+      if (b.type === 'video') {
+        const yId = extractYouTubeId(b.videoUrl || '');
+        const embedSrc = yId ? `https://www.youtube-nocookie.com/embed/${yId}?rel=0&playsinline=1` : b.videoUrl;
+        return `
+          <div class="block-video">
+            <iframe src="${escapeHtml(embedSrc)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        `;
+      }
+      if (b.type === 'callout') {
+        return `
+          <div class="block-callout">
+            <h4>${escapeHtml(b.title || 'Catatan Penting:')}</h4>
+            <p>${escapeHtml(b.body || '')}</p>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    // Render Active Card
+    function renderActiveCard() {
+      if (!courseModel || !courseModel.cards || courseModel.cards.length === 0) return;
+      const total = courseModel.cards.length;
+      if (currentCardIndex >= total) currentCardIndex = total - 1;
+      if (currentCardIndex < 0) currentCardIndex = 0;
+
+      const card = courseModel.cards[currentCardIndex];
+      const accent = card.accent || 'teal';
+      const badgeClass = 'badge-' + accent;
+
+      // Update Stepper
+      const stepNum = currentCardIndex + 1;
+      const pct = Math.round((stepNum / total) * 100);
+      document.getElementById('stepCounterText').textContent = `Langkah ${stepNum} dari ${total}`;
+      document.getElementById('stepPercentText').textContent = `${pct}%`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+
+      // Update Card Body
+      const area = document.getElementById('cardContainerArea');
+      const blocksHtml = (card.blocks || []).map(b => renderBlock(b)).join('');
+
+      area.innerHTML = `
+        <article class="sim-mission-card">
+          <span class="card-step-badge ${badgeClass}">${escapeHtml(card.stepBadge || 'Langkah ' + stepNum)}</span>
+          <h1 class="card-head-title">${escapeHtml(card.title || '')}</h1>
+          <p class="card-head-desc">${escapeHtml(card.desc || '')}</p>
+
+          <div class="card-blocks-container">
+            ${blocksHtml}
+          </div>
+
+          ${card.showHelpBtn !== false ? `
+            <button type="button" class="btn-help-inline" onclick="openHelpDrawer()">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>${escapeHtml(card.helpBtnText || 'Punya kendala? Buka pusat bantuan')}</span>
+            </button>
+          ` : ''}
+        </article>
+      `;
+
+      // Update Bottom Bar
+      const prevBtn = document.getElementById('btnPrevCard');
+      const nextBtn = document.getElementById('btnNextCard');
+      const nextLabel = document.getElementById('btnNextLabel');
+
+      if (prevBtn) prevBtn.disabled = currentCardIndex === 0;
+
+      if (currentCardIndex === total - 1) {
+        nextBtn.classList.add('finish');
+        nextLabel.innerHTML = 'Selesai &amp; Ke Dashboard &rarr;';
+      } else {
+        nextBtn.classList.remove('finish');
+        nextLabel.innerHTML = 'Lanjut &rarr;';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Save Student Progress
+      const curStudent = window.LMS_DB ? window.LMS_DB.getCurrentStudent() : null;
+      if (curStudent && curStudent.email && window.LMS_DB.saveStudentProgress) {
+        window.LMS_DB.saveStudentProgress(curStudent.email, CARD_ID, {
+          cardIndex: currentCardIndex,
+          totalCards: total,
+          completed: currentCardIndex === total - 1
+        });
+      }
+    }
+
+    // Navigation Controls
+    function navPrevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        renderActiveCard();
+      }
+    }
+
+    function navNextCard() {
+      if (!courseModel || !courseModel.cards) return;
+      if (currentCardIndex < courseModel.cards.length - 1) {
+        currentCardIndex++;
+        renderActiveCard();
+      } else {
+        // Finished last card
+        if (window.showToast) window.showToast('Selamat! Anda telah menuntaskan modul ini.');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 600);
+      }
+    }
+
+    // Help Center Drawer
+    function openHelpDrawer() {
+      const drawer = document.getElementById('helpDrawer');
+      const faqContainer = document.getElementById('helpFaqList');
+      const waBtn = document.getElementById('helpWaBtn');
+      const titleEl = document.getElementById('helpDrawerTitle');
+
+      if (!courseModel) return;
+      const hc = courseModel.helpCenter || {
+        waNumber: '6281289795589',
+        waText: 'Halo Mentor, saya butuh bantuan praktik di materi ' + courseModel.title,
+        faqs: []
+      };
+
+      if (titleEl) titleEl.textContent = 'Pusat Bantuan: ' + (courseModel.dayNumber || 'Materi');
+
+      if (faqContainer) {
+        const faqs = Array.isArray(hc.faqs) && hc.faqs.length > 0 ? hc.faqs : [
+          { q: 'Ada kendala pada langkah praktik?', a: 'Periksa kembali panduan di tiap kartu. Jika masih ada kesulitan, tanyakan langsung pada mentor lewat tombol WhatsApp di bawah.' }
+        ];
+        faqContainer.innerHTML = faqs.map(f => `
+          <div class="help-faq-item">
+            <strong class="help-faq-q">${escapeHtml(f.q)}</strong>
+            <p class="help-faq-a">${escapeHtml(f.a)}</p>
+          </div>
+        `).join('');
+      }
+
+      if (waBtn) {
+        const phone = (hc.waNumber || '6281289795589').replace(/\D/g, '');
+        const text = encodeURIComponent(hc.waText || 'Halo Mentor, saya butuh bantuan praktik di modul ini');
+        waBtn.href = `https://wa.me/${phone}?text=${text}`;
+      }
+
+      if (drawer) {
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeHelpDrawer() {
+      const drawer = document.getElementById('helpDrawer');
+      if (drawer) drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeHelpDrawerOnBg(e) {
+      if (e.target.id === 'helpDrawer') {
+        closeHelpDrawer();
+      }
+    }
+
+    // Interactive Quiz Handler
+    function checkQuizAnswer(btn, optIdx, correctIdx, fbCorrect, fbWrong, qId) {
+      const parent = btn.closest('.quiz-box');
+      if (!parent) return;
+      const allBtns = parent.querySelectorAll('.quiz-opt-btn');
+      allBtns.forEach(b => {
+        b.classList.remove('correct', 'wrong');
+        b.disabled = true;
+      });
+
+      const fb = document.getElementById('quizFb_' + qId);
+      if (optIdx === correctIdx) {
+        btn.classList.add('correct');
+        if (fb) {
+          fb.className = 'quiz-feedback correct';
+          fb.textContent = fbCorrect || 'Jawaban Anda benar!';
+        }
+      } else {
+        btn.classList.add('wrong');
+        if (allBtns[correctIdx]) allBtns[correctIdx].classList.add('correct');
+        if (fb) {
+          fb.className = 'quiz-feedback wrong';
+          fb.textContent = fbWrong || 'Jawaban belum tepat. Perhatikan jawaban yang ditandai hijau.';
+        }
+      }
+    }
+
+    // Copy Prompt
+    function copyPrompt(blockId) {
+      const el = document.getElementById('promptText_' + blockId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        if (window.showToast) window.showToast('Prompt berhasil disalin ke papan klip!');
+      }).catch(() => {
+        // Fallback copy
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (window.showToast) window.showToast('Prompt berhasil disalin!');
+      });
+    }
+
+    // Initialization & Data Loading
+    async function initModule() {
+      // 1. Cek Paywall Akses
+      const currentStudent = window.LMS_DB ? window.LMS_DB.getCurrentStudent() : null;
+      const foundCardData = window.LMS_DB ? window.LMS_DB.findCardById(CARD_ID) : null;
+      const card = foundCardData ? foundCardData.card : null;
+
+      const isFree = card ? !!card.isFree : false;
+      const isWhitelisted = currentStudent && window.LMS_DB ? window.LMS_DB.isEmailWhitelisted(currentStudent.email) : false;
+
+      if (!isFree && !isWhitelisted) {
+        // Tampilkan Layar Paywall Ramah
+        document.getElementById('cardContainerArea').innerHTML = `
+          <div class="paywall-wrap">
+            <div class="paywall-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2.2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2 style="font-size:22px;color:var(--brand-dark);margin:0 0 8px">Materi Terkunci</h2>
+            <p style="font-size:14.5px;color:var(--muted);margin:0 0 24px;line-height:1.5">
+              Modul ini merupakan bagian dari kurikulum khusus member Akademi Animasi Asdos. Silakan masuk dengan email pembelian Lynk.id Anda.
+            </p>
+            <div style="display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto">
+              <a href="dashboard.html" class="sim-btn-next" style="text-decoration:none">
+                <span>Masuk dengan Email Lynk.id</span>
+              </a>
+              <a href="index.html" class="sim-btn-prev" style="text-decoration:none;justify-content:center">
+                <span>Kembali ke Beranda</span>
+              </a>
+            </div>
+          </div>
+        `;
+        document.getElementById('moduleBottomBar').style.display = 'none';
+        return;
+      }
+
+      // 2. Baca dari Local Storage Terlebih Dahulu
+      const localData = localStorage.getItem('asdos_builder_card_' + CARD_ID);
+      if (localData) {
+        try {
+          courseModel = JSON.parse(localData);
+        } catch(e){}
+      }
+
+      // Jika belum ada di local builder_card, buatkan dari starter model
+      if (!courseModel || !Array.isArray(courseModel.cards) || courseModel.cards.length === 0) {
+        courseModel = generateStarterModel(card);
+      }
+
+      if (courseModel && courseModel.title) {
+        document.title = `${courseModel.title} - Asdos Digital Academy`;
+      }
+
+      // Render pertama kali (instan)
+      renderActiveCard();
+
+      // 3. Asynchronous Pull dari Supabase Cloud
+      if (window.LMS_DB && window.LMS_DB.getGlobalSettingFromSupabase) {
+        try {
+          const cloudData = await window.LMS_DB.getGlobalSettingFromSupabase('builder_card_' + CARD_ID);
+          if (cloudData && Array.isArray(cloudData.cards) && cloudData.cards.length > 0) {
+            courseModel = cloudData;
+            localStorage.setItem('asdos_builder_card_' + CARD_ID, JSON.stringify(cloudData));
+            if (courseModel.title) {
+              document.title = `${courseModel.title} - Asdos Digital Academy`;
+            }
+            renderActiveCard();
+          }
+        } catch(e) {
+          console.warn('Gagal menarik update modul dari Supabase:', e);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initModule);
+  </script>
+</body>
+</html>

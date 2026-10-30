@@ -204,7 +204,7 @@
           desc: 'Panduan membuat lembar karakter konsisten 3 sudut pandang (depan, close-up dada, belakang) dengan rumus paten studio.',
           thumbnail: 'cs-thumbnail.jpeg',
           type: 'interactive_module',
-          url: 'modules/tutorial-charactersheet.html',
+          url: 'module.html?id=card-character-sheet',
           isFree: false
         },
         {
@@ -213,9 +213,9 @@
           badge: 'Video Orientasi',
           desc: 'Selamat datang di Akademi Animasi Asdos. Pahami alur belajar santai, fokus buat karakter kucing dulu sebelum proyek kompleks.',
           thumbnail: 'asdos-square.png',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/y7uuQRH_aCw?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-perkenalan',
           isFree: true
         },
         {
@@ -224,9 +224,9 @@
           badge: 'Konsep Mindset',
           desc: 'Mindset alur produksi standar: dari ide cerita, karakter acuan, render klip gerak, hingga editing audio akhir.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/EU0-LG3zQXE?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-alur',
           isFree: true
         }
       ]
@@ -243,7 +243,7 @@
           thumbnail: 'banner-2.jpg',
           type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/eOZVJUmjjwA?rel=0&playsinline=1',
-          url: 'modules/tutorial-flow.html',
+          url: 'module.html?id=card-flow-generate',
           isFree: false
         },
         {
@@ -252,9 +252,9 @@
           badge: 'Video Tutorial',
           desc: 'Aplikasi resmi YouTube di HP untuk mengedit video, dubbing suara, dan formula prompt max 900 karakter.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/SdeMH0knyac?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-yt-create',
           isFree: false
         },
         {
@@ -263,9 +263,9 @@
           badge: 'Alternatif Web',
           desc: 'Mencoba platform alternatif Leonardo AI untuk variasi karakter dan gaya visual sinematik (Modul opsional).',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/5-dRbxvYlec?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-leonardo',
           isFree: false
         }
       ]
@@ -280,9 +280,9 @@
           badge: 'Video Iklan',
           desc: 'Membuat panel storyboard iklan produk di Gemini Gem Asdos Iklan 1.5 lalu render video di Leonardo Seedance.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/Ai9ddkB-bCY?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-iklan-seedance',
           isFree: false
         },
         {
@@ -293,7 +293,7 @@
           thumbnail: 'banner-2.jpg',
           type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/ozI7-rC2gVI?rel=0&playsinline=1',
-          url: 'modules/tutorial-affiliate.html',
+          url: 'module.html?id=card-affiliate-ugc',
           isFree: false
         },
         {
@@ -302,9 +302,9 @@
           badge: 'Video Edukasi',
           desc: 'Membuat konten edukasi fakta menarik dengan struktur 3 adegan menggunakan bantuan Asdos Video Edukasi GPT.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/djFDIvJG08g?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-video-edukasi',
           isFree: false
         },
         {
@@ -313,9 +313,9 @@
           badge: 'Storytelling',
           desc: 'Menyusun animasi kisah fiksi dan dongeng dengan dialog antartokoh memanfaatkan Asdos Cerita GPT.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/FwCu0RuVmvE?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-narasi-cerita',
           isFree: false
         }
       ]
@@ -330,9 +330,9 @@
           badge: 'Strategi Medsos',
           desc: 'Solusi akun terkena shadowban, views mentok di bawah 200, dan trik memancing algoritma rekomendasi FYP.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/BqsBpcJ68Hk?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-algoritma-tiktok',
           isFree: false
         },
         {
@@ -341,9 +341,9 @@
           badge: 'Growth Akun',
           desc: 'Langkah taktis bagi kreator baru untuk mencapai 1000 followers pertama agar fitur keranjang kuning dan live terbuka.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/cm8bxLwLnVA?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-1000-followers',
           isFree: false
         },
         {
@@ -352,9 +352,9 @@
           badge: 'Mastery Prompt',
           desc: 'Rumus universal menyusun prompt visual karakter, pencahayaan, dan kamera untuk berbagai tema video animasi.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/dLb719vkG6k?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-prompting-segala',
           isFree: false
         },
         {
@@ -363,9 +363,9 @@
           badge: 'Audio & Dubbing',
           desc: 'Panduan membuat rekaman suara narasi berbahasa Indonesia yang jernih dan natural secara gratis.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/iZ7lQFOsQwk?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-voice-over',
           isFree: false
         },
         {
@@ -374,9 +374,9 @@
           badge: 'Editing Final',
           desc: 'Menyatukan klip animasi hasil generate dari Flow dengan audio narasi dan musik latar menjadi video utuh.',
           thumbnail: 'banner-2.jpg',
-          type: 'single_video',
+          type: 'interactive_module',
           videoUrl: 'https://www.youtube-nocookie.com/embed/4_tAKLSC9Ws?rel=0&playsinline=1',
-          url: '#',
+          url: 'module.html?id=card-gabung-edit',
           isFree: false
         }
       ]
@@ -402,6 +402,75 @@
   function saveWhitelist(list) {
     try {
       localStorage.setItem(KEY_WHITELIST, JSON.stringify(list));
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async function syncWhitelistFromSupabase() {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) return false;
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=email,username,note,created_at`, {
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`
+        }
+      });
+      if (!resp.ok) return false;
+      const remoteList = await resp.json();
+      if (!Array.isArray(remoteList) || remoteList.length === 0) return false;
+
+      const localList = getWhitelist();
+      const map = new Map();
+      localList.forEach(item => {
+        if (item && item.email) map.set(item.email.trim().toLowerCase(), item);
+      });
+
+      let changed = false;
+      remoteList.forEach(r => {
+        if (!r || !r.email) return;
+        const key = r.email.trim().toLowerCase();
+        const existing = map.get(key);
+        if (existing) {
+          if (r.username && r.username.trim() && existing.username !== r.username.trim()) {
+            existing.username = r.username.trim();
+            existing.hasSetUsername = true;
+            changed = true;
+          }
+          if (r.note && existing.note !== r.note) {
+            existing.note = r.note;
+            changed = true;
+          }
+        } else {
+          map.set(key, {
+            email: r.email.trim().toLowerCase(),
+            username: (r.username || '').trim(),
+            hasSetUsername: !!(r.username && r.username.trim()),
+            note: r.note || 'Pembelian Lynk.id',
+            dateAdded: r.created_at || new Date().toISOString()
+          });
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        const merged = Array.from(map.values());
+        saveWhitelist(merged);
+
+        const currentStudent = getCurrentStudent();
+        if (currentStudent && currentStudent.email) {
+          const match = map.get(currentStudent.email.trim().toLowerCase());
+          if (match && match.username && currentStudent.username !== match.username) {
+            currentStudent.username = match.username;
+            currentStudent.name = match.username;
+            currentStudent.hasSetUsername = true;
+            localStorage.setItem(KEY_SESSION, JSON.stringify(currentStudent));
+          }
+        }
+      }
       return true;
     } catch(e) {
       return false;
@@ -762,6 +831,11 @@
       return { success: false, message: 'Kode OTP tidak valid.' };
     }
 
+    // 2.5 Sinkronkan Whitelist terbaru dari Supabase agar status username langsung terbaca
+    if (cfg.url && cfg.anonKey) {
+      try { await syncWhitelistFromSupabase(); } catch(e){}
+    }
+
     // 3. Login lokal
     const loginResult = loginStudent(cleanEmail);
     if (!loginResult.success) {
@@ -1013,13 +1087,18 @@
         });
       });
 
-      // Pastikan properti resmi sinkron untuk kartu bawaan penting
+      // Pastikan seluruh modul terarah ke module viewer interaktif (tidak ada pop-up video MVP)
       data.forEach(cat => {
         if (Array.isArray(cat.cards)) {
           cat.cards.forEach(c => {
-            if (c && c.id === 'card-character-sheet') {
-              if (!c.url || c.url === '#' || c.type !== 'interactive_module') {
-                c.url = 'modules/tutorial-charactersheet.html';
+            if (c && c.id && c.id !== 'card-7hari') {
+              if (c.type === 'single_video' || !c.url || c.url === '#' || c.url.startsWith('javascript:')) {
+                c.url = 'module.html?id=' + encodeURIComponent(c.id);
+                c.type = 'interactive_module';
+                changed = true;
+              }
+              if (c.id === 'card-character-sheet') {
+                c.url = 'module.html?id=card-character-sheet';
                 c.type = 'interactive_module';
                 c.thumbnail = c.thumbnail || 'cs-thumbnail.jpeg';
                 c.badge = c.badge || 'Pendalaman Fundamental';
@@ -1656,6 +1735,9 @@
     const cfg = getSupabaseConfig();
     if (!cfg || !cfg.url || !cfg.anonKey) return false;
     try {
+      // 1. Sinkronkan Whitelist dan Username siswa terbaru
+      try { await syncWhitelistFromSupabase(); } catch(e){}
+
       const cleanUrl = cleanSupabaseUrl(cfg.url);
       const resp = await fetch(`${cleanUrl}/rest/v1/lms_global_settings?select=key,value,updated_at`, {
         headers: {
