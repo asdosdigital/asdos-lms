@@ -323,26 +323,204 @@
       .panel-box { padding: 18px 14px; }
       .form-row { grid-template-columns: 1fr; }
       .btn-save { width: 100%; justify-content: center; min-height: 44px; }
+      .placement-card-actions { width: 100%; justify-content: flex-start; }
+    }
+
+    /* Placement Manager Styles */
+    .placement-cat-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .placement-cat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .placement-cat-title {
+      font-size: 16px;
+      font-weight: 850;
+      color: var(--brand-dark);
+      margin: 0;
+    }
+    .placement-cat-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 2px 0 0;
+    }
+    .placement-card-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .placement-card-item:hover {
+      border-color: var(--brand);
+      background: #FFFDF9;
+    }
+    .placement-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 260px;
+      flex: 1;
+    }
+    .placement-card-thumb {
+      width: 68px;
+      height: 46px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #E8DCCB;
+      flex-shrink: 0;
+    }
+    .placement-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-action-mini {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      color: var(--ink);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s ease;
+    }
+    .btn-action-mini:hover:not(:disabled) {
+      background: #F4EFE6;
+      border-color: var(--muted);
+    }
+    .btn-action-mini:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .btn-action-mini.builder-btn {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand-dark);
+    }
+    .btn-action-mini.builder-btn:hover {
+      background: var(--brand-dark);
+    }
+    .btn-action-mini.del-btn {
+      color: var(--danger-ink);
+      border-color: #F8D7DA;
+    }
+    .btn-action-mini.del-btn:hover {
+      background: var(--danger-bg);
+    }
+
+    /* Admin Modals */
+    .admin-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 36, 32, 0.68);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .admin-modal-overlay.open {
+      display: flex;
+    }
+    .admin-modal-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 26px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 48px rgba(42, 36, 32, 0.22);
+    }
+    .admin-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .admin-modal-head h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--brand-dark);
+      font-weight: 850;
+    }
+    .admin-modal-close {
+      background: #FAF6EE;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
 
-<!-- PIN GATE PENGAMAN ADMIN -->
+<!-- ADMIN AUTH GATE (EMAIL & PASSWORD KHUSUS 2 ADMIN) -->
 <div id="adminPinGate" class="pin-overlay">
-  <div class="pin-box">
-    <div style="font-size:12px;font-weight:850;color:var(--brand);letter-spacing:.8px;margin-bottom:6px">[ KEAMANAN ADMIN ]</div>
+  <div class="pin-box" style="max-width:440px;text-align:center">
+    <div style="font-size:12px;font-weight:850;color:var(--brand);letter-spacing:.8px;margin-bottom:6px">[ KEAMANAN ADMIN ASDOS ]</div>
     <h2>Area Pengajar Asdos</h2>
-    <p>Masukkan sandi pengajar untuk mengakses manajemen siswa dan modul kelas.</p>
-    <input type="password" id="adminPinField" class="pin-input" placeholder="Sandi (admin123)" autofocus>
-    <button type="button" class="btn-save" style="width:100%;justify-content:center" onclick="checkPin()">
-      Buka Dashboard Admin &rarr;
-    </button>
-    <div id="pinErr" style="display:none;color:var(--danger-ink);font-size:12px;margin-top:10px;font-weight:750">
-      Sandi salah. Silakan coba lagi.
-    </div>
-    <div style="margin-top:16px;font-size:12px">
-      <a href="../index.html" style="color:var(--brand);text-decoration:underline">&larr; Kembali ke Halaman Depan</a>
+    <p style="margin-bottom:20px;font-size:14px;color:var(--muted)">Khusus untuk Administrator resmi terdaftar (<strong style="color:var(--brand-dark)">Haniyo & Hami</strong>).</p>
+    
+    <form onsubmit="event.preventDefault(); doAdminLogin();">
+      <div style="text-align:left;margin-bottom:12px">
+        <label for="adminEmailInput" style="font-size:12px;font-weight:750;color:var(--muted);display:block;margin-bottom:4px">Email Admin:</label>
+        <input type="email" id="adminEmailInput" class="pin-input" style="text-align:left;font-size:15px;letter-spacing:normal;margin-bottom:0" placeholder="nama@gmail.com" required autofocus>
+      </div>
+
+      <div style="text-align:left;margin-bottom:16px">
+        <label for="adminPassInput" style="font-size:12px;font-weight:750;color:var(--muted);display:block;margin-bottom:4px">Password Akun:</label>
+        <input type="password" id="adminPassInput" class="pin-input" style="text-align:left;font-size:15px;letter-spacing:normal;margin-bottom:0" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" id="btnAdminLogin" class="btn-save" style="width:100%;justify-content:center;padding:12px;font-size:15px">
+        Masuk Dashboard Admin &rarr;
+      </button>
+
+      <div id="adminAuthErr" style="display:none;color:var(--danger-ink);font-size:12px;margin-top:12px;font-weight:750;text-align:left;background:var(--danger-bg);padding:8px 12px;border-radius:8px;line-height:1.4"></div>
+      <div id="adminAuthSuccess" style="display:none;color:var(--go-dark);font-size:12px;margin-top:12px;font-weight:750;text-align:left;background:var(--leaf);padding:8px 12px;border-radius:8px;line-height:1.4"></div>
+    </form>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;align-items:center">
+      <button type="button" onclick="requestAdminResetLink()" style="background:none;border:none;color:var(--brand);font-weight:750;cursor:pointer;padding:0;text-decoration:underline">
+        Lupa / Buat Sandi Baru?
+      </button>
+      <a href="index.html" style="color:var(--muted);text-decoration:underline">&larr; Halaman Depan</a>
     </div>
   </div>
 </div>
@@ -355,14 +533,16 @@
       <span class="admin-badge-role">AREA PENGAJAR</span>
     </div>
     <div style="display:flex;gap:12px;align-items:center;font-size:13px;font-weight:750">
+      <span id="currentAdminBadge" style="background:var(--peach);color:#7A3500;padding:5px 10px;border-radius:8px;font-size:12px;border:1px solid var(--peach-line);display:none"></span>
+      <button type="button" id="btnAdminLogout" onclick="doAdminLogout()" style="background:none;border:1px solid var(--line);padding:5px 10px;border-radius:8px;font-size:12px;color:var(--danger-ink);cursor:pointer;font-weight:750;display:none">Keluar</button>
       <a href="builder.html" style="background:var(--brand);color:#ffffff;padding:7px 14px;border-radius:10px;display:flex;align-items:center;gap:6px;font-weight:850">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         <span>Visual Studio Builder</span>
       </a>
-      <a href="../dashboard.html" target="_blank" style="color:var(--brand);display:flex;align-items:center;gap:4px">
+      <a href="dashboard.html" target="_blank" style="color:var(--brand);display:flex;align-items:center;gap:4px">
         <span>Pratinjau Siswa</span> &rarr;
       </a>
-      <a href="../index.html" style="color:var(--muted);display:flex;align-items:center;gap:4px">
+      <a href="index.html" style="color:var(--muted);display:flex;align-items:center;gap:4px">
         <span>Halaman Depan</span> &rarr;
       </a>
     </div>
@@ -461,6 +641,25 @@
     </div>
 
     <div class="panel-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Tata Letak &amp; Urutan Modul di Dashboard</h3>
+          <p class="pdesc" style="margin:4px 0 0">Atur posisi urutan kategori dan modul yang tampil di dashboard siswa. Modul bisa digeser naik/turun, dipindahkan antarkategori, atau diedit via Studio Builder.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn-action-mini" onclick="syncDefaultModulesAdmin()" style="background:#fff;border-color:var(--line);padding:8px 14px;font-size:13px" title="Sinkronkan modul bawaan kurikulum terbaru (termasuk Tutorial Character Sheet)">
+            Sinkronkan Modul Bawaan
+          </button>
+          <button type="button" class="btn-action-mini" onclick="openCreateCategoryPrompt()" style="background:var(--brand);color:#fff;border-color:var(--brand-dark);padding:8px 14px;font-size:13px">
+            + Tambah Kategori Baru
+          </button>
+        </div>
+      </div>
+
+      <div id="catalogPlacementManager"></div>
+    </div>
+
+    <div class="panel-box">
       <h3>Tambah Kartu Materi Baru ke Galeri</h3>
       <p class="pdesc">Tambahkan video tutorial atau panduan baru ke dashboard siswa tanpa perlu mengedit file HTML.</p>
 
@@ -487,19 +686,44 @@
         </div>
 
         <div class="form-group">
+          <label for="inCardThumbnail">Gambar Thumbnail:</label>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <img id="inCardThumbPreview" src="banner-2.jpg" alt="Pratinjau" style="width:76px;height:50px;object-fit:cover;border-radius:8px;border:1.5px solid var(--line);background:#E8DCCB;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+            <div style="flex:1">
+              <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+                <input type="file" id="inCardFileInput" accept="image/*" style="display:none" onchange="handleThumbnailUpload(event, 'inCardThumbnail', 'inCardThumbPreview')">
+                <button type="button" class="btn-action-mini" onclick="document.getElementById('inCardFileInput').click()" style="padding:6px 14px;background:var(--brand);color:#fff;border-color:var(--brand-dark);font-size:12.5px;font-weight:800;cursor:pointer">
+                  Pilih Foto / Upload
+                </button>
+                <button type="button" class="btn-action-mini" onclick="resetThumbnailDefault('inCardThumbnail', 'inCardThumbPreview')" style="padding:6px 12px;font-size:12.5px;cursor:pointer">
+                  Gunakan Default
+                </button>
+              </div>
+              <input type="text" id="inCardThumbnail" value="banner-2.jpg" placeholder="banner-2.jpg atau URL gambar" oninput="document.getElementById('inCardThumbPreview').src=this.value" style="font-size:12.5px;padding:7px 10px;width:100%">
+              <span style="font-size:11px;color:var(--muted);margin-top:3px;display:block">Bisa langsung unggah foto dari komputer/HP (JPG, PNG, WebP) atau ketik nama file / URL.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="inCardVideo">Link Video Tutorial YouTube (Opsional):</label>
           <input type="text" id="inCardVideo" placeholder="https://www.youtube.com/watch?v=... atau embed">
+        </div>
+
+        <div class="form-group" style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px">
+          <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:750;cursor:pointer;margin:0">
+            <input type="checkbox" id="inCardIsHidden" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer">
+            <div>
+              <span style="color:var(--brand-dark)">Simpan sebagai Draft / Tersembunyi</span>
+              <div style="font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px">Modul baru tidak akan langsung tampil di dashboard siswa sampai Anda mengaktifkannya.</div>
+            </div>
+          </label>
         </div>
 
         <button type="submit" class="btn-save">
           Simpan Kartu Materi Baru
         </button>
       </form>
-    </div>
-
-    <div class="panel-box">
-      <h3>Pratinjau Kategori &amp; Kartu Galeri</h3>
-      <div id="catalogListPreview" style="margin-top:14px"></div>
     </div>
   </section>
 
@@ -527,6 +751,34 @@
       <button type="button" class="btn-save" onclick="saveInfoEdits()">
         Simpan Informasi Pengajar
       </button>
+    </div>
+
+    <!-- 2. Link Penting Praktik -->
+    <div class="panel-box" style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Kelola Link Penting Praktik</h3>
+          <p class="pdesc" style="margin:4px 0 0">Tautan platform dan referensi web yang tampil di Tab Informasi siswa (misal: Google Flow, AI Studio, Leonardo, dsb).</p>
+        </div>
+        <button type="button" class="btn-save" onclick="openAddImportantLinkModal()" style="font-size:13px;padding:8px 16px">
+          + Tambah Link Praktik Baru
+        </button>
+      </div>
+      <div id="adminImportantLinksList"></div>
+    </div>
+
+    <!-- 3. Tools Asdos -->
+    <div class="panel-box" style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0">Kelola Tools Asdos</h3>
+          <p class="pdesc" style="margin:4px 0 0">Aplikasi bantu khusus Asdos (Gemini Gems, Custom GPTs, tools asisten animasi) di Tab Informasi siswa.</p>
+        </div>
+        <button type="button" class="btn-save" onclick="openAddToolAsdosModal()" style="font-size:13px;padding:8px 16px">
+          + Tambah Tool Asdos Baru
+        </button>
+      </div>
+      <div id="adminToolsAsdosList"></div>
     </div>
   </section>
 
@@ -597,9 +849,18 @@
           <input type="password" id="sbKeyInput" placeholder="eyJhbGci...">
         </div>
       </div>
-      <button type="button" class="btn-save" onclick="saveSbSettings()">
-        Simpan Pengaturan Cloud
-      </button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn-save" onclick="saveSbSettings()">
+          Simpan Pengaturan Cloud
+        </button>
+        <button type="button" class="btn-subtle" onclick="testSbConnection()">
+          Uji Koneksi Cloud
+        </button>
+        <button type="button" class="btn-subtle" onclick="uploadLocalWhitelistToSb()">
+          Unggah Whitelist ke Cloud
+        </button>
+      </div>
+      <div id="sbStatusNotice" style="margin-top:12px;font-size:13px;color:var(--muted);display:none;padding:10px 14px;border-radius:8px;background:var(--bg);border:1px solid var(--line);"></div>
       <div style="margin-top:16px">
         <button type="button" class="btn-subtle" onclick="copySchema()">
           Salin Skema SQL Supabase
@@ -610,30 +871,287 @@
 
 </div>
 
+<!-- MODAL QUICK EDIT CARD -->
+<div id="modalQuickEditCard" class="admin-modal-overlay">
+  <div class="admin-modal-box">
+    <div class="admin-modal-head">
+      <h3>Edit Informasi Kartu Materi</h3>
+      <button type="button" class="admin-modal-close" onclick="closeQuickEditCardModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveQuickEditCard();">
+      <div class="form-row">
+        <div>
+          <label for="editCardBadge">Label Badge:</label>
+          <input type="text" id="editCardBadge" placeholder="misal: Modul Interaktif, Video Tutorial" required>
+        </div>
+        <div>
+          <label for="editCardType">Tipe Materi:</label>
+          <select id="editCardType">
+            <option value="single_video">Video Tutorial YouTube</option>
+            <option value="interactive_module">Modul Interaktif (HTML)</option>
+            <option value="core_7day">Program Inti (7 Hari)</option>
+            <option value="custom_link">Tautan Eksternal / Kustom</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardTitle">Judul Materi:</label>
+        <input type="text" id="editCardTitle" placeholder="Judul Modul" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardDesc">Deskripsi Ringkas:</label>
+        <textarea id="editCardDesc" rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;resize:vertical" placeholder="Deskripsi materi..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="editCardThumbnail">Thumbnail Gambar:</label>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <img id="editCardThumbPreview" src="banner-2.jpg" alt="Pratinjau" style="width:76px;height:50px;object-fit:cover;border-radius:8px;border:1.5px solid var(--line);background:#E8DCCB;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+          <div style="flex:1">
+            <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+              <input type="file" id="editCardFileInput" accept="image/*" style="display:none" onchange="handleThumbnailUpload(event, 'editCardThumbnail', 'editCardThumbPreview')">
+              <button type="button" class="btn-action-mini" onclick="document.getElementById('editCardFileInput').click()" style="padding:6px 14px;background:var(--brand);color:#fff;border-color:var(--brand-dark);font-size:12.5px;font-weight:800;cursor:pointer">
+                Pilih Foto / Upload
+              </button>
+              <button type="button" class="btn-action-mini" onclick="resetThumbnailDefault('editCardThumbnail', 'editCardThumbPreview')" style="padding:6px 12px;font-size:12.5px;cursor:pointer">
+                Gunakan Default
+              </button>
+            </div>
+            <input type="text" id="editCardThumbnail" placeholder="banner-2.jpg atau URL gambar" oninput="document.getElementById('editCardThumbPreview').src=this.value" required style="font-size:12.5px;padding:7px 10px;width:100%">
+            <span style="font-size:11px;color:var(--muted);margin-top:3px;display:block">Bisa langsung unggah foto dari komputer/HP (JPG, PNG, WebP) atau ketik nama file / URL.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="editCardVideo">Link Video YouTube (Opsional):</label>
+          <input type="text" id="editCardVideo" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div>
+          <label for="editCardUrl">Tautan Target Modul (URL / Path):</label>
+          <input type="text" id="editCardUrl" placeholder="modules/tutorial-flow.html atau #">
+        </div>
+      </div>
+
+      <div class="form-group" style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:750;cursor:pointer;margin:0">
+          <input type="checkbox" id="editCardIsHidden" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer">
+          <div>
+            <span style="color:var(--brand-dark)">Sembunyikan Modul ini dari Dashboard Siswa (Draft / Arsip)</span>
+            <div style="font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px">Jika dicentang, kartu modul tidak akan tampil bagi siswa namun tetap dapat dikelola di admin sewaktu-waktu.</div>
+          </div>
+        </label>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeQuickEditCardModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT CATEGORY -->
+<div id="modalEditCategory" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:460px">
+    <div class="admin-modal-head">
+      <h3>Ubah Judul Kategori</h3>
+      <button type="button" class="admin-modal-close" onclick="closeEditCategoryModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveEditCategory();">
+      <div class="form-group">
+        <label for="editCatTitle">Judul Kategori:</label>
+        <input type="text" id="editCatTitle" placeholder="misal: Fundamental Animasi AI" required>
+      </div>
+      <div class="form-group">
+        <label for="editCatSubtitle">Subtitle / Penjelasan Kategori:</label>
+        <input type="text" id="editCatSubtitle" placeholder="misal: Ikuti langkah demi langkah...">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeEditCategoryModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Kategori</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT IMPORTANT LINK -->
+<div id="modalEditImportantLink" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:480px">
+    <div class="admin-modal-head">
+      <h3 id="modalImportantLinkHeading">Tambah / Edit Link Praktik</h3>
+      <button type="button" class="admin-modal-close" onclick="closeImportantLinkModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveImportantLinkModal();">
+      <input type="hidden" id="inLinkIndex" value="-1">
+      <div class="form-group">
+        <label for="inLinkTitle">Judul / Nama Platform:</label>
+        <input type="text" id="inLinkTitle" placeholder="misal: Google Flow (Generator Gambar &amp; Video)" required>
+      </div>
+      <div class="form-group">
+        <label for="inLinkDesc">Deskripsi Ringkas:</label>
+        <input type="text" id="inLinkDesc" placeholder="misal: labs.google/fx/tools/flow" required>
+      </div>
+      <div class="form-group">
+        <label for="inLinkUrl">URL / Tautan Lengkap:</label>
+        <input type="text" id="inLinkUrl" placeholder="https://..." required>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeImportantLinkModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Link Praktik</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDIT TOOL ASDOS -->
+<div id="modalEditToolAsdos" class="admin-modal-overlay">
+  <div class="admin-modal-box" style="max-width:480px">
+    <div class="admin-modal-head">
+      <h3 id="modalToolAsdosHeading">Tambah / Edit Tool Asdos</h3>
+      <button type="button" class="admin-modal-close" onclick="closeToolAsdosModal()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="event.preventDefault(); saveToolAsdosModal();">
+      <input type="hidden" id="inToolIndex" value="-1">
+      <div class="form-group">
+        <label for="inToolName">Nama Aplikasi / Custom GPT:</label>
+        <input type="text" id="inToolName" placeholder="misal: Asdos Fakta Unik (Gemini)" required>
+      </div>
+      <div class="form-group">
+        <label for="inToolDesc">Deskripsi Fungsi Tool:</label>
+        <input type="text" id="inToolDesc" placeholder="misal: Gemini Gem generator topik fakta unik otomatis" required>
+      </div>
+      <div class="form-group">
+        <label for="inToolUrl">URL / Link Akses Tool:</label>
+        <input type="text" id="inToolUrl" placeholder="https://..." required>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="btn-subtle" onclick="closeToolAsdosModal()">Batal</button>
+        <button type="submit" class="btn-save">Simpan Tool Asdos</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="lms-db.js"></script>
-<script src="lms-core.js"></script>
+<script src="lms-db.js?v=20261030-v4"></script>
+<script src="lms-core.js?v=20261030-v4"></script>
 <script>
 // ==========================================================================
-// 1. PIN CHECK
+// 1. ADMIN AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
 // ==========================================================================
-const PIN_PASS = 'admin123';
-function checkPin() {
-  const val = document.getElementById('adminPinField').value;
-  if (val === PIN_PASS || sessionStorage.getItem('asdos_admin_pass') === 'true') {
-    sessionStorage.setItem('asdos_admin_pass', 'true');
-    document.getElementById('adminPinGate').style.display = 'none';
+function checkAdminAuth() {
+  const current = window.LMS_DB ? window.LMS_DB.getCurrentAdmin() : null;
+  const gate = document.getElementById('adminPinGate');
+  const badge = document.getElementById('currentAdminBadge');
+  const logoutBtn = document.getElementById('btnAdminLogout');
+
+  if (current && window.LMS_DB.isAdminEmail(current.email)) {
+    if (gate) gate.style.display = 'none';
+    if (badge) {
+      badge.textContent = 'Admin: ' + current.email.split('@')[0];
+      badge.style.display = 'inline-block';
+      badge.title = current.email;
+    }
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    return true;
   } else {
-    document.getElementById('pinErr').style.display = 'block';
+    if (gate) gate.style.display = 'flex';
+    if (badge) badge.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    return false;
   }
 }
-document.getElementById('adminPinField').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkPin();
-});
-if (sessionStorage.getItem('asdos_admin_pass') === 'true') {
-  document.getElementById('adminPinGate').style.display = 'none';
+
+async function doAdminLogin() {
+  const emailInput = document.getElementById('adminEmailInput');
+  const passInput = document.getElementById('adminPassInput');
+  const errBox = document.getElementById('adminAuthErr');
+  const successBox = document.getElementById('adminAuthSuccess');
+  const btn = document.getElementById('btnAdminLogin');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const pass = (passInput ? passInput.value : '').trim();
+
+  if (!email || !pass) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = 'Memverifikasi...';
+  }
+  if (errBox) errBox.style.display = 'none';
+  if (successBox) successBox.style.display = 'none';
+
+  const res = await window.LMS_DB.loginAdminWithPassword(email, pass);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = 'Masuk Dashboard Admin &rarr;';
+  }
+
+  if (res.success) {
+    window.showToast('Selamat datang, Admin ' + res.admin.name + '!');
+    checkAdminAuth();
+  } else {
+    if (errBox) {
+      errBox.textContent = res.message;
+      errBox.style.display = 'block';
+    }
+  }
 }
+
+async function requestAdminResetLink() {
+  const emailInput = document.getElementById('adminEmailInput');
+  const errBox = document.getElementById('adminAuthErr');
+  const successBox = document.getElementById('adminAuthSuccess');
+  const email = (emailInput ? emailInput.value : '').trim();
+
+  if (!email) {
+    alert('Ketikkan alamat email admin Anda terlebih dahulu pada kolom Email.');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  if (errBox) errBox.style.display = 'none';
+  if (successBox) successBox.style.display = 'none';
+
+  window.showToast('Mengirim link reset sandi...');
+  const res = await window.LMS_DB.sendAdminPasswordReset(email);
+
+  if (res.success) {
+    if (successBox) {
+      successBox.textContent = res.message;
+      successBox.style.display = 'block';
+    }
+    window.showToast('Link berhasil dikirim ke Gmail.');
+  } else {
+    if (errBox) {
+      errBox.textContent = res.message;
+      errBox.style.display = 'block';
+    }
+  }
+}
+
+function doAdminLogout() {
+  if (confirm('Keluar dari sesi Administrator?')) {
+    window.LMS_DB.logoutAdmin();
+    window.showToast('Anda telah keluar dari akun Admin.');
+    checkAdminAuth();
+  }
+}
+
+checkAdminAuth();
 
 // ==========================================================================
 // 2. TABS CONTROLLER
@@ -645,8 +1163,20 @@ function switchAdminTab(secId) {
   const sec = document.getElementById(secId);
   if (sec) sec.classList.add('active');
 
-  const btn = Array.from(document.querySelectorAll('.atab-btn')).find(b => b.getAttribute('onclick').includes(secId));
+  const btn = Array.from(document.querySelectorAll('.atab-btn')).find(b => b && b.getAttribute('onclick') && b.getAttribute('onclick').includes(secId));
   if (btn) btn.classList.add('active');
+
+  if (secId === 'sec-modules') {
+    refreshCategorySelect();
+  }
+}
+
+function syncDefaultModulesAdmin() {
+  if (window.LMS_DB && window.LMS_DB.syncDefaultModules) {
+    window.LMS_DB.syncDefaultModules();
+    refreshCategorySelect();
+    window.showToast('Modul kurikulum bawaan (termasuk Tutorial Character Sheet) berhasil disinkronkan!');
+  }
 }
 
 // ==========================================================================
@@ -720,22 +1250,329 @@ function downloadWhitelistCsv() {
 }
 
 // ==========================================================================
-// 4. MODULES & CATEGORIES LOGIC
+// 4. MODULES & CATEGORIES LOGIC (PLACEMENT MANAGER & QUICK EDIT)
 // ==========================================================================
-function refreshCategorySelect() {
-  const sel = document.getElementById('selCategory');
-  const categories = window.LMS_DB.getModuleCategories();
-  sel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+let currentEditingCatIdx = null;
+let currentEditingCardIdx = null;
 
-  const preview = document.getElementById('catalogListPreview');
-  preview.innerHTML = categories.map(cat => `
-    <div style="background:#f8faf8;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">
-      <strong>${cat.categoryTitle} (${cat.cards.length} Kartu)</strong>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">
-        ${cat.cards.map(k => `• ${k.title}`).join(' | ')}
+function refreshCategorySelect() {
+  const categories = window.LMS_DB.getModuleCategories();
+  const sel = document.getElementById('selCategory');
+  if (sel) {
+    sel.innerHTML = categories.map((c, i) => `<option value="${i}">${c.categoryTitle}</option>`).join('');
+  }
+  renderPlacementManager();
+}
+
+function renderPlacementManager() {
+  const container = document.getElementById('catalogPlacementManager');
+  if (!container) return;
+  const categories = window.LMS_DB.getModuleCategories();
+
+  container.innerHTML = categories.map((cat, catIdx) => {
+    const isFirstCat = catIdx === 0;
+    const isLastCat = catIdx === categories.length - 1;
+    const isCatHidden = !!cat.isHidden;
+
+    const cardsHtml = (cat.cards || []).map((card, cardIdx) => {
+      const isFirstCard = cardIdx === 0;
+      const isLastCard = cardIdx === cat.cards.length - 1;
+      const isHidden = !!card.isHidden;
+
+      let typeLabel = 'Materi Kustom';
+      if (card.type === 'core_7day') typeLabel = 'Program Inti (7 Hari)';
+      else if (card.type === 'interactive_module') typeLabel = 'Modul Interaktif';
+      else if (card.videoUrl) typeLabel = 'Video YouTube';
+
+      return `
+        <div class="placement-card-item" style="${isHidden ? 'opacity:0.82;background:#FAF8F5;border-left:3.5px solid #94A3B8;' : ''}">
+          <div class="placement-card-left">
+            <img src="${card.thumbnail || 'banner-2.jpg'}" alt="${card.title}" class="placement-card-thumb">
+            <div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
+                <span style="font-size:11px;font-weight:800;background:var(--sun);color:#7A4B00;padding:2px 7px;border-radius:5px;border:1px solid #E8CF6A">${card.badge || 'Modul'}</span>
+                <span style="font-size:11px;color:var(--muted);background:#FFFFFF;border:1px solid var(--line);padding:2px 6px;border-radius:4px">${typeLabel}</span>
+                ${isHidden ?
+                  `<span style="font-size:11px;font-weight:800;background:#F1F5F9;color:#64748B;padding:2px 7px;border-radius:5px;border:1px solid #CBD5E1">Tersembunyi</span>` :
+                  `<span style="font-size:11px;font-weight:800;background:#ECFDF5;color:#065F46;padding:2px 7px;border-radius:5px;border:1px solid #A7F3D0">Tampil</span>`
+                }
+              </div>
+              <strong style="font-size:14.5px;color:var(--brand-dark);display:block;line-height:1.3">${card.title}</strong>
+              <div style="font-size:12px;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${card.desc || ''}</div>
+            </div>
+          </div>
+          <div class="placement-card-actions">
+            <button type="button" class="btn-action-mini" title="${isHidden ? 'Tampilkan modul ini di dashboard siswa' : 'Sembunyikan modul ini dari dashboard siswa'}" onclick="toggleCardVisibilityAdmin(${catIdx}, ${cardIdx})" style="${isHidden ? 'color:var(--go);font-weight:800;border-color:#86EFAC;' : 'color:var(--muted);'}">
+              ${isHidden ? 'Tampilkan' : 'Sembunyikan'}
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveCardAdmin(${catIdx}, ${cardIdx}, -1)" ${isFirstCard ? 'disabled' : ''}>
+              &uarr; Naik
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveCardAdmin(${catIdx}, ${cardIdx}, 1)" ${isLastCard ? 'disabled' : ''}>
+              &darr; Turun
+            </button>
+            <select class="btn-action-mini" onchange="transferCardAdmin(${catIdx}, ${cardIdx}, this.value)" style="padding:5px 8px" title="Pindah ke Kategori Lain">
+              <option value="" disabled selected>Pindah Kategori...</option>
+              ${categories.map((c, i) => i !== catIdx ? `<option value="${i}">${c.categoryTitle}</option>` : '').join('')}
+            </select>
+            <button type="button" class="btn-action-mini" onclick="openQuickEditCardModal(${catIdx}, ${cardIdx})" title="Edit ringkas thumbnail, judul, dan deskripsi">
+              Edit Cepat
+            </button>
+            <a href="builder.html?editCardId=${card.id}" class="btn-action-mini builder-btn" title="Buka di Visual Studio Builder untuk edit seluruh isi blok kartu">
+              <span>Studio Builder &rarr;</span>
+            </a>
+            <button type="button" class="btn-action-mini del-btn" title="Hapus Kartu" onclick="deleteCardAdmin(${catIdx}, ${cardIdx})">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="placement-cat-box" style="${isCatHidden ? 'opacity:0.85;border:1.5px dashed #CBD5E1;background:#F8FAFC;' : ''}">
+        <div class="placement-cat-head">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:850;background:var(--brand);color:#fff;padding:2px 8px;border-radius:6px">KATEGORI ${catIdx + 1}</span>
+              <h4 class="placement-cat-title">${cat.categoryTitle}</h4>
+              <span style="font-size:12px;color:var(--muted);background:#F4EFE6;padding:2px 8px;border-radius:6px;border:1px solid #DFCFC0">${(cat.cards || []).length} Modul</span>
+              ${isCatHidden ? `<span style="font-size:11px;font-weight:800;background:#F1F5F9;color:#64748B;padding:2px 8px;border-radius:6px;border:1px solid #CBD5E1">Kategori Tersembunyi</span>` : ''}
+            </div>
+            ${cat.categorySubtitle ? `<p class="placement-cat-sub">${cat.categorySubtitle}</p>` : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <button type="button" class="btn-action-mini" title="${isCatHidden ? 'Tampilkan seluruh kategori ini di dashboard siswa' : 'Sembunyikan seluruh kategori ini dari dashboard siswa'}" onclick="toggleCategoryVisibilityAdmin(${catIdx})" style="${isCatHidden ? 'color:var(--go);font-weight:800;border-color:#86EFAC;' : ''}">
+              ${isCatHidden ? 'Tampilkan Kategori' : 'Sembunyikan Kategori'}
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Kategori Naik" onclick="moveCategoryAdmin(${catIdx}, -1)" ${isFirstCat ? 'disabled' : ''}>
+              &uarr; Geser Kategori
+            </button>
+            <button type="button" class="btn-action-mini" title="Geser Kategori Turun" onclick="moveCategoryAdmin(${catIdx}, 1)" ${isLastCat ? 'disabled' : ''}>
+              &darr; Geser Kategori
+            </button>
+            <button type="button" class="btn-action-mini" onclick="openEditCategoryModal(${catIdx})">
+              Ubah Judul Kategori
+            </button>
+            <button type="button" class="btn-action-mini del-btn" onclick="deleteCategoryAdmin(${catIdx})" title="Hapus Kategori">
+              Hapus Kategori
+            </button>
+          </div>
+        </div>
+        <div class="placement-cat-cards">
+          ${cardsHtml.length > 0 ? cardsHtml : '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada modul di kategori ini. Tambahkan kartu materi di bawah atau pindahkan dari kategori lain.</div>'}
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+}
+
+function moveCategoryAdmin(catIdx, direction) {
+  const success = window.LMS_DB.moveCategory(catIdx, direction);
+  if (success) {
+    window.showToast('Urutan kategori di dashboard berhasil diperbarui!');
+    refreshCategorySelect();
+  }
+}
+
+function moveCardAdmin(catIdx, cardIdx, direction) {
+  const success = window.LMS_DB.moveCard(catIdx, cardIdx, direction);
+  if (success) {
+    window.showToast('Posisi kartu berhasil digeser!');
+    refreshCategorySelect();
+  }
+}
+
+function toggleCardVisibilityAdmin(catIdx, cardIdx) {
+  const res = window.LMS_DB.toggleCardVisibility(catIdx, cardIdx);
+  if (res.success) {
+    const statusTxt = res.isHidden ? 'disembunyikan dari dashboard siswa' : 'kembali ditampilkan di dashboard siswa';
+    window.showToast(`Modul "${res.card?.title || 'materi'}" berhasil ${statusTxt}!`);
+    refreshCategorySelect();
+  }
+}
+
+function toggleCategoryVisibilityAdmin(catIdx) {
+  const res = window.LMS_DB.toggleCategoryVisibility(catIdx);
+  if (res.success) {
+    const statusTxt = res.isHidden ? 'disembunyikan dari dashboard siswa' : 'kembali ditampilkan di dashboard siswa';
+    window.showToast(`Kategori "${res.category?.categoryTitle || ''}" berhasil ${statusTxt}!`);
+    refreshCategorySelect();
+  }
+}
+
+function transferCardAdmin(fromCatIdx, cardIdx, toCatIdx) {
+  if (toCatIdx === '' || toCatIdx === null || toCatIdx === undefined) return;
+  const targetIdx = parseInt(toCatIdx, 10);
+  const success = window.LMS_DB.transferCardCategory(fromCatIdx, cardIdx, targetIdx);
+  if (success) {
+    window.showToast('Kartu materi berhasil dipindahkan ke kategori baru!');
+    refreshCategorySelect();
+  }
+}
+
+function deleteCardAdmin(catIdx, cardIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const card = categories[catIdx]?.cards[cardIdx];
+  if (!card) return;
+  if (!confirm(`Hapus kartu "${card.title}" dari kurikulum?`)) return;
+  const success = window.LMS_DB.deleteCard(catIdx, cardIdx);
+  if (success) {
+    window.showToast(`Kartu "${card.title}" telah dihapus.`);
+    refreshCategorySelect();
+  }
+}
+
+function deleteCategoryAdmin(catIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const cat = categories[catIdx];
+  if (!cat) return;
+  if (cat.cards && cat.cards.length > 0) {
+    if (!confirm(`Kategori "${cat.categoryTitle}" memiliki ${cat.cards.length} kartu. Seluruh kartu di dalamnya juga akan terhapus. Lanjutkan?`)) return;
+  } else {
+    if (!confirm(`Hapus kategori "${cat.categoryTitle}"?`)) return;
+  }
+  const success = window.LMS_DB.deleteCategory(catIdx);
+  if (success) {
+    window.showToast(`Kategori "${cat.categoryTitle}" telah dihapus.`);
+    refreshCategorySelect();
+  }
+}
+
+function openQuickEditCardModal(catIdx, cardIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const card = categories[catIdx]?.cards[cardIdx];
+  if (!card) return;
+
+  currentEditingCatIdx = catIdx;
+  currentEditingCardIdx = cardIdx;
+
+  const thumbVal = card.thumbnail || 'banner-2.jpg';
+  document.getElementById('editCardTitle').value = card.title || '';
+  document.getElementById('editCardBadge').value = card.badge || '';
+  document.getElementById('editCardDesc').value = card.desc || '';
+  document.getElementById('editCardThumbnail').value = thumbVal;
+  const previewImg = document.getElementById('editCardThumbPreview');
+  if (previewImg) previewImg.src = thumbVal;
+  document.getElementById('editCardVideo').value = card.videoUrl || '';
+  document.getElementById('editCardUrl').value = card.url || '#';
+  document.getElementById('editCardType').value = card.type || 'single_video';
+  const isHiddenInput = document.getElementById('editCardIsHidden');
+  if (isHiddenInput) isHiddenInput.checked = !!card.isHidden;
+
+  const modal = document.getElementById('modalQuickEditCard');
+  if (modal) modal.classList.add('open');
+}
+
+function closeQuickEditCardModal() {
+  const modal = document.getElementById('modalQuickEditCard');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveQuickEditCard() {
+  if (currentEditingCatIdx === null || currentEditingCardIdx === null) return;
+  
+  let video = document.getElementById('editCardVideo').value.trim();
+  if (video && video.includes('watch?v=')) {
+    const vId = video.split('watch?v=')[1].split('&')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  } else if (video && video.includes('youtu.be/')) {
+    const vId = video.split('youtu.be/')[1].split('?')[0];
+    video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
+  }
+
+  const patch = {
+    title: document.getElementById('editCardTitle').value.trim(),
+    badge: document.getElementById('editCardBadge').value.trim(),
+    desc: document.getElementById('editCardDesc').value.trim(),
+    thumbnail: document.getElementById('editCardThumbnail').value.trim() || 'banner-2.jpg',
+    videoUrl: video,
+    url: document.getElementById('editCardUrl').value.trim() || '#',
+    type: document.getElementById('editCardType').value,
+    isHidden: document.getElementById('editCardIsHidden') ? document.getElementById('editCardIsHidden').checked : false
+  };
+
+  const success = window.LMS_DB.updateCardData(currentEditingCatIdx, currentEditingCardIdx, patch);
+  if (success) {
+    window.showToast(`Kartu "${patch.title}" berhasil diperbarui!`);
+    closeQuickEditCardModal();
+    refreshCategorySelect();
+  }
+}
+
+function openEditCategoryModal(catIdx) {
+  const categories = window.LMS_DB.getModuleCategories();
+  const cat = categories[catIdx];
+  if (!cat) return;
+
+  currentEditingCatIdx = catIdx;
+  document.getElementById('editCatTitle').value = cat.categoryTitle || '';
+  document.getElementById('editCatSubtitle').value = cat.categorySubtitle || '';
+
+  const modal = document.getElementById('modalEditCategory');
+  if (modal) modal.classList.add('open');
+}
+
+function closeEditCategoryModal() {
+  const modal = document.getElementById('modalEditCategory');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveEditCategory() {
+  if (currentEditingCatIdx === null) return;
+  const title = document.getElementById('editCatTitle').value.trim();
+  const subtitle = document.getElementById('editCatSubtitle').value.trim();
+  if (!title) return;
+
+  const success = window.LMS_DB.updateCategory(currentEditingCatIdx, title, subtitle);
+  if (success) {
+    window.showToast(`Kategori "${title}" berhasil diperbarui!`);
+    closeEditCategoryModal();
+    refreshCategorySelect();
+  }
+}
+
+function openCreateCategoryPrompt() {
+  const title = prompt('Masukkan Judul Kategori Baru:');
+  if (!title || !title.trim()) return;
+  const subtitle = prompt('Masukkan Subtitle Kategori (opsional):') || '';
+  window.LMS_DB.createNewCategory(title.trim(), subtitle.trim());
+  window.showToast(`Kategori "${title.trim()}" berhasil dibuat!`);
+  refreshCategorySelect();
+}
+
+async function handleThumbnailUpload(event, inputId, previewId) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  try {
+    const dataUrl = await window.LMS_DB.compressAndReadImage(file, 800, 0.82);
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (input) {
+      input.value = dataUrl;
+    }
+    if (preview) {
+      preview.src = dataUrl;
+    }
+    window.showToast('Foto berhasil diunggah dan dioptimalkan!');
+  } catch (err) {
+    alert(err.message || 'Gagal memproses berkas foto.');
+  } finally {
+    event.target.value = '';
+  }
+}
+
+function resetThumbnailDefault(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) {
+    input.value = 'banner-2.jpg';
+  }
+  if (preview) {
+    preview.src = 'banner-2.jpg';
+  }
+  window.showToast('Thumbnail dikembalikan ke gambar default.');
 }
 
 function handleAddCardSubmit() {
@@ -743,6 +1580,7 @@ function handleAddCardSubmit() {
   const title = document.getElementById('inCardTitle').value.trim();
   const desc = document.getElementById('inCardDesc').value.trim();
   const badge = document.getElementById('inCardBadge').value.trim() || 'Modul Baru';
+  const thumbnail = (document.getElementById('inCardThumbnail')?.value || '').trim() || 'banner-2.jpg';
   let video = document.getElementById('inCardVideo').value.trim();
 
   // Konversi otomatis format link youtube ke embed
@@ -754,33 +1592,42 @@ function handleAddCardSubmit() {
     video = `https://www.youtube-nocookie.com/embed/${vId}?rel=0&playsinline=1`;
   }
 
+  const isHidden = document.getElementById('inCardIsHidden')?.checked || false;
+
   const success = window.LMS_DB.addCardToCategory(catIdx, {
     title: title,
     desc: desc,
     badge: badge,
-    thumbnail: 'banner-2.jpg',
+    thumbnail: thumbnail,
     videoUrl: video,
     type: video ? 'single_video' : 'custom_link',
-    url: video ? '#' : '#'
+    url: video ? '#' : '#',
+    isHidden: isHidden
   });
 
   if (success) {
-    window.showToast(`Kartu "${title}" berhasil ditambahkan ke dashboard siswa!`);
+    window.showToast(isHidden ? `Kartu "${title}" berhasil disimpan sebagai draft (tersembunyi)!` : `Kartu "${title}" berhasil ditambahkan ke dashboard siswa!`);
     document.getElementById('inCardTitle').value = '';
     document.getElementById('inCardDesc').value = '';
     document.getElementById('inCardVideo').value = '';
+    if (document.getElementById('inCardIsHidden')) document.getElementById('inCardIsHidden').checked = false;
+    if (document.getElementById('inCardThumbnail')) document.getElementById('inCardThumbnail').value = 'banner-2.jpg';
+    if (document.getElementById('inCardThumbPreview')) document.getElementById('inCardThumbPreview').src = 'banner-2.jpg';
     refreshCategorySelect();
   }
 }
 
 // ==========================================================================
-// 5. INFORMASI & TOOLS LOGIC
+// 5. INFORMASI & TOOLS LOGIC (PENGUMUMAN, LINK PRAKTIK & TOOLS ASDOS)
 // ==========================================================================
 function loadInfoData() {
   const info = window.LMS_DB.getInfoSettings();
-  if (info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
-  if (info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
+  if (info.announcements && info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
+  if (info.announcements && info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
   if (info.memberHubUrl) document.getElementById('editMemberHub').value = info.memberHubUrl;
+
+  renderAdminImportantLinks();
+  renderAdminToolsAsdos();
 }
 
 function saveInfoEdits() {
@@ -790,6 +1637,232 @@ function saveInfoEdits() {
   info.memberHubUrl = document.getElementById('editMemberHub').value.trim();
   window.LMS_DB.saveInfoSettings(info);
   window.showToast('Informasi penting pengajar berhasil diperbarui!');
+}
+
+// LINK PENTING PRAKTIK
+function renderAdminImportantLinks() {
+  const container = document.getElementById('adminImportantLinksList');
+  if (!container) return;
+  const info = window.LMS_DB.getInfoSettings();
+  const list = info.importantLinks || [];
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada tautan penting praktik. Klik tombol di atas untuk menambahkan.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((item, idx) => {
+    const isFirst = idx === 0;
+    const isLast = idx === list.length - 1;
+
+    return `
+      <div class="placement-card-item">
+        <div style="flex:1;min-width:240px">
+          <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${item.title}</strong>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
+        </div>
+        <div class="placement-card-actions">
+          <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveImportantLinkAdmin(${idx}, -1)" ${isFirst ? 'disabled' : ''}>
+            &uarr; Naik
+          </button>
+          <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveImportantLinkAdmin(${idx}, 1)" ${isLast ? 'disabled' : ''}>
+            &darr; Turun
+          </button>
+          <button type="button" class="btn-action-mini" onclick="openEditImportantLinkModal(${idx})" title="Edit tautan ini">
+            Edit
+          </button>
+          <button type="button" class="btn-action-mini del-btn" onclick="deleteImportantLinkAdmin(${idx})" title="Hapus tautan ini">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddImportantLinkModal() {
+  document.getElementById('inLinkIndex').value = '-1';
+  document.getElementById('inLinkTitle').value = '';
+  document.getElementById('inLinkDesc').value = '';
+  document.getElementById('inLinkUrl').value = 'https://';
+  document.getElementById('modalImportantLinkHeading').textContent = 'Tambah Link Praktik Baru';
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.add('open');
+}
+
+function openEditImportantLinkModal(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.importantLinks || [])[idx];
+  if (!item) return;
+
+  document.getElementById('inLinkIndex').value = idx;
+  document.getElementById('inLinkTitle').value = item.title || '';
+  document.getElementById('inLinkDesc').value = item.desc || '';
+  document.getElementById('inLinkUrl').value = item.url || '';
+  document.getElementById('modalImportantLinkHeading').textContent = 'Edit Link Praktik';
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.add('open');
+}
+
+function closeImportantLinkModal() {
+  const modal = document.getElementById('modalEditImportantLink');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveImportantLinkModal() {
+  const idx = parseInt(document.getElementById('inLinkIndex').value, 10);
+  const title = document.getElementById('inLinkTitle').value.trim();
+  const desc = document.getElementById('inLinkDesc').value.trim();
+  const url = document.getElementById('inLinkUrl').value.trim();
+
+  if (!title || !url) return;
+
+  const linkObj = { title, desc, url };
+
+  if (idx >= 0) {
+    window.LMS_DB.updateImportantLink(idx, linkObj);
+    window.showToast(`Link "${title}" berhasil diperbarui!`);
+  } else {
+    window.LMS_DB.addImportantLink(linkObj);
+    window.showToast(`Link baru "${title}" berhasil ditambahkan!`);
+  }
+
+  closeImportantLinkModal();
+  renderAdminImportantLinks();
+}
+
+function deleteImportantLinkAdmin(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.importantLinks || [])[idx];
+  if (!item) return;
+  if (!confirm(`Hapus link "${item.title}" dari Tab Informasi?`)) return;
+
+  window.LMS_DB.deleteImportantLink(idx);
+  window.showToast(`Link "${item.title}" telah dihapus.`);
+  renderAdminImportantLinks();
+}
+
+function moveImportantLinkAdmin(idx, dir) {
+  const success = window.LMS_DB.moveImportantLink(idx, dir);
+  if (success) {
+    window.showToast('Urutan link praktik berhasil digeser!');
+    renderAdminImportantLinks();
+  }
+}
+
+// TOOLS ASDOS
+function renderAdminToolsAsdos() {
+  const container = document.getElementById('adminToolsAsdosList');
+  if (!container) return;
+  const info = window.LMS_DB.getInfoSettings();
+  const list = info.toolsAsdos || [];
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:13px;background:#FAF6EE;border-radius:10px;border:1px dashed var(--line)">Belum ada Tool Asdos. Klik tombol di atas untuk menambahkan.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((item, idx) => {
+    const isFirst = idx === 0;
+    const isLast = idx === list.length - 1;
+    const toolName = item.name || item.title || 'Tool Asdos';
+
+    return `
+      <div class="placement-card-item">
+        <div style="flex:1;min-width:240px">
+          <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${toolName}</strong>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
+        </div>
+        <div class="placement-card-actions">
+          <button type="button" class="btn-action-mini" title="Geser Urutan Naik" onclick="moveToolAsdosAdmin(${idx}, -1)" ${isFirst ? 'disabled' : ''}>
+            &uarr; Naik
+          </button>
+          <button type="button" class="btn-action-mini" title="Geser Urutan Turun" onclick="moveToolAsdosAdmin(${idx}, 1)" ${isLast ? 'disabled' : ''}>
+            &darr; Turun
+          </button>
+          <button type="button" class="btn-action-mini" onclick="openEditToolAsdosModal(${idx})" title="Edit tool ini">
+            Edit
+          </button>
+          <button type="button" class="btn-action-mini del-btn" onclick="deleteToolAsdosAdmin(${idx})" title="Hapus tool ini">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddToolAsdosModal() {
+  document.getElementById('inToolIndex').value = '-1';
+  document.getElementById('inToolName').value = '';
+  document.getElementById('inToolDesc').value = '';
+  document.getElementById('inToolUrl').value = 'https://';
+  document.getElementById('modalToolAsdosHeading').textContent = 'Tambah Tool Asdos Baru';
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.add('open');
+}
+
+function openEditToolAsdosModal(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.toolsAsdos || [])[idx];
+  if (!item) return;
+
+  document.getElementById('inToolIndex').value = idx;
+  document.getElementById('inToolName').value = item.name || item.title || '';
+  document.getElementById('inToolDesc').value = item.desc || '';
+  document.getElementById('inToolUrl').value = item.url || '';
+  document.getElementById('modalToolAsdosHeading').textContent = 'Edit Tool Asdos';
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.add('open');
+}
+
+function closeToolAsdosModal() {
+  const modal = document.getElementById('modalEditToolAsdos');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveToolAsdosModal() {
+  const idx = parseInt(document.getElementById('inToolIndex').value, 10);
+  const name = document.getElementById('inToolName').value.trim();
+  const desc = document.getElementById('inToolDesc').value.trim();
+  const url = document.getElementById('inToolUrl').value.trim();
+
+  if (!name || !url) return;
+
+  const toolObj = { name, desc, url };
+
+  if (idx >= 0) {
+    window.LMS_DB.updateToolAsdos(idx, toolObj);
+    window.showToast(`Tool "${name}" berhasil diperbarui!`);
+  } else {
+    window.LMS_DB.addToolAsdos(toolObj);
+    window.showToast(`Tool baru "${name}" berhasil ditambahkan!`);
+  }
+
+  closeToolAsdosModal();
+  renderAdminToolsAsdos();
+}
+
+function deleteToolAsdosAdmin(idx) {
+  const info = window.LMS_DB.getInfoSettings();
+  const item = (info.toolsAsdos || [])[idx];
+  if (!item) return;
+  const toolName = item.name || item.title;
+  if (!confirm(`Hapus tool "${toolName}" dari Tab Informasi?`)) return;
+
+  window.LMS_DB.deleteToolAsdos(idx);
+  window.showToast(`Tool "${toolName}" telah dihapus.`);
+  renderAdminToolsAsdos();
+}
+
+function moveToolAsdosAdmin(idx, dir) {
+  const success = window.LMS_DB.moveToolAsdos(idx, dir);
+  if (success) {
+    window.showToast('Urutan tool asdos berhasil digeser!');
+    renderAdminToolsAsdos();
+  }
 }
 
 // ==========================================================================
@@ -860,12 +1933,69 @@ function copySchema() {
 function saveSbSettings() {
   const u = document.getElementById('sbUrlInput').value;
   const k = document.getElementById('sbKeyInput').value;
-  window.LMS_DB.saveSupabaseConfig(u, k);
+  const cfg = window.LMS_DB.saveSupabaseConfig(u, k);
+  if (cfg.url) document.getElementById('sbUrlInput').value = cfg.url;
   window.showToast('Pengaturan Supabase tersimpan.');
+  testSbConnection();
+}
+
+async function testSbConnection() {
+  const notice = document.getElementById('sbStatusNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = 'Memeriksa koneksi ke Supabase...';
+    notice.style.borderColor = 'var(--line)';
+    notice.style.color = 'var(--muted)';
+  }
+  const res = await window.LMS_DB.testSupabaseConnection();
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = res.message;
+    if (res.success) {
+      notice.style.borderColor = 'var(--leaf-line)';
+      notice.style.color = 'var(--go-dark)';
+      notice.style.background = 'var(--leaf)';
+    } else {
+      notice.style.borderColor = 'var(--danger-ink)';
+      notice.style.color = 'var(--danger-ink)';
+      notice.style.background = 'var(--danger-bg)';
+    }
+  }
+  window.showToast(res.message);
+}
+
+async function uploadLocalWhitelistToSb() {
+  const notice = document.getElementById('sbStatusNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = 'Mengunggah daftar whitelist ke Supabase...';
+    notice.style.borderColor = 'var(--line)';
+    notice.style.color = 'var(--muted)';
+    notice.style.background = 'var(--bg)';
+  }
+  const res = await window.LMS_DB.syncAllLocalWhitelistToSupabase();
+  if (res.success) {
+    if (notice) {
+      notice.textContent = `Berhasil mengunggah ${res.count} email ke database Supabase!`;
+      notice.style.borderColor = 'var(--leaf-line)';
+      notice.style.color = 'var(--go-dark)';
+      notice.style.background = 'var(--leaf)';
+    }
+    window.showToast(`Berhasil mengunggah ${res.count} email ke Supabase!`);
+  } else {
+    if (notice) {
+      notice.textContent = `Gagal mengunggah ke Supabase: ${res.reason || 'Periksa pengaturan koneksi.'}`;
+      notice.style.borderColor = 'var(--danger-ink)';
+      notice.style.color = 'var(--danger-ink)';
+      notice.style.background = 'var(--danger-bg)';
+    }
+    window.showToast(`Gagal: ${res.reason || 'Periksa koneksi.'}`);
+  }
 }
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
+  checkAdminAuth();
   renderWhitelistTable();
   refreshCategorySelect();
   loadInfoData();

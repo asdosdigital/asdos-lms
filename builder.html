@@ -1242,8 +1242,8 @@
 
 <div id="studioToast" class="studio-toast" role="status"></div>
 
-<script src="lms-db.js"></script>
-<script src="lms-core.js"></script>
+<script src="lms-db.js?v=20261030-v4"></script>
+<script src="lms-core.js?v=20261030-v4"></script>
 <script>
 // ==========================================================================
 // COURSE BUILDER ENGINE - STATE & DATA MODEL
@@ -2795,6 +2795,91 @@ function generateStarterCourseModel(card) {
           blocks: [
             { id: 'b4', type: 'steps', title: 'Alur Eksekusi Final:', items: ['Render adegan produk di Flow.', 'Tambahkan suara voice over AI naratif.', 'Tautkan link affiliate saat upload di TikTok.'] },
             { id: 'b5', type: 'quiz', question: 'Kapan waktu terbaik menyisipkan ajakan checkout (Call To Action)?', options: ['Di 3 detik awal', 'Di detik-detik akhir setelah manfaat produk dijelaskan', 'Tidak perlu disisipkan'], correctIndex: 1, feedbackCorrect: 'Bagus! Penonton butuh tahu manfaat produk dulu sebelum terdorong membeli.', feedbackWrong: 'Letakkan ajakan belanja di bagian akhir video setelah manfaat terbukti.' }
+          ]
+        }
+      ]
+    };
+  }
+
+  if (card.id === 'card-character-sheet') {
+    return {
+      dayNumber: card.badge || 'Pendalaman Fundamental',
+      title: card.title || 'Tutorial Lengkap Character Sheet',
+      desc: card.desc || 'Panduan membuat lembar karakter konsisten 3 sudut pandang (depan, close-up dada, belakang) dengan rumus paten studio.',
+      thumbnail: card.thumbnail || 'cs-thumbnail.jpeg',
+      helpCenter: {
+        waNumber: '6281289795589',
+        waText: 'Halo Mentor, saya butuh panduan untuk praktik modul Character Sheet',
+        faqs: [
+          { q: 'Ukuran aspek rasio terbaik?', a: 'Pilih format 16:9 (horizontal) saat generate character sheet agar 3 panel muat utuh berdampingan.' },
+          { q: 'Wajah tokoh berbeda antarsudut?', a: 'Tuliskan ciri fisik yang spesifik seperti warna mata, bentuk rambut, dan kacamata pada kolom deskripsi.' }
+        ]
+      },
+      cards: [
+        {
+          stepBadge: 'KONSEP DASAR',
+          accent: 'teal',
+          title: 'Kunci Karakter Konsisten: Master Character Sheet AI',
+          desc: 'Memahami prinsip turnaround sheet 3 panel agar wajah dan pakaian tokoh tidak berubah antarklip.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs1', type: 'text', heading: 'Kenapa Karakter Sering Berubah?', body: 'Generator AI mengacak ulang tokoh di tiap render jika tidak diberi acuan baku 360 derajat.' },
+            { id: 'cs2', type: 'image', imageUrl: 'modules/assets/kucing_gembul.jpeg', caption: 'Contoh Turnaround Sheet 3 Panel: Depan Full Body, Close-Up Dada, dan Belakang.' },
+            { id: 'cs3', type: 'callout', title: 'Tujuan Utama:', body: 'Menghasilkan 1 gambar acuan horizontal berisi 3 sudut pandang tokoh untuk dipakai di tahap animasi.' }
+          ]
+        },
+        {
+          stepBadge: 'LANGKAH 1',
+          accent: 'go',
+          title: '5 Langkah Praktik Menghasilkan Character Sheet',
+          desc: 'Urutan eksekusi di ChatGPT, Google Flow, maupun Gemini.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs4', type: 'steps', title: 'Alur 5 Langkah:', items: ['Salin formula prompt paten studio Asdos.', 'Buka ChatGPT (DALL-E 3) atau Google Flow.', 'Isi deskripsi tokoh dan pilihan gaya visual.', 'Pilih rasio 16:9 (Horizontal / Melebar).', 'Klik Generate dan unduh gambar ke galeri HP.'] },
+            { id: 'cs5', type: 'trouble', title: 'Peringatan Rasio:', tips: ['Jangan gunakan rasio 9:16 vertikal saat generate sheet awal karena panel kiri-kanan akan terpotong.', 'Gunakan rasio 16:9 agar ketiga panel muat berdampingan.'] }
+          ]
+        },
+        {
+          stepBadge: 'LANGKAH 2',
+          accent: 'peach',
+          title: 'Formula Prompt Paten Studio Asdos',
+          desc: 'Struktur instruksi baku berstandar industri dengan 3 panel terpisah garis tipis.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs6', type: 'prompt', tool: 'ChatGPT / Flow / Gemini', formula: '# CHARACTER DESCRIPTION\n[Deskripsi karakter lengkap]\n\n# STYLE\n[Gaya visual: 3D Pixar / Realistik / Anime / Clay]\n\n---\n\nCreate a professional character sheet of the character described above in the specified style.\n## Layout\nSplit canvas into 3 equal vertical panels: Left Wide Front View, Center Close-Up Chest, Right Wide Back View.\n## Lighting & Background\nNeutral grey background, flat studio lighting, no shadows, orthographic 85mm lens look.\n## Negative Prompt\nshadow, cast shadow, textured background, environment, duplicate character, extra limbs, low quality', note: 'Salin template ini lalu ganti deskripsi dan gaya sesuai keinginanmu.' }
+          ]
+        },
+        {
+          stepBadge: 'LANGKAH 3',
+          accent: 'teal',
+          title: 'Galeri Studi Kasus Nyata Asdos',
+          desc: 'Contoh hasil generate 4 gaya visual berbeda beserta prompt siap salin.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs7', type: 'image', imageUrl: 'modules/assets/kucing_gembul.jpeg', caption: 'Kucing Gemoy 3D Cartoon (Seragam Tukang Parkir)' },
+            { id: 'cs8', type: 'image', imageUrl: 'modules/assets/viking.jpeg', caption: 'Viking Realistik Ultra HD Berjenggot' },
+            { id: 'cs9', type: 'image', imageUrl: 'modules/assets/dokter_realistik.jpeg', caption: 'Dokter Realistik Indonesia Umur 24 Tahun' },
+            { id: 'cs10', type: 'image', imageUrl: 'modules/assets/dokter_clay.jpeg', caption: 'Dokter Clay Lucu Anak-Anak' }
+          ]
+        },
+        {
+          stepBadge: 'LANGKAH 4',
+          accent: 'sun',
+          title: 'Aturan Rasio 16:9 & Solusi Kendala',
+          desc: 'Trik mengatasi inkonsistensi wajah, bayangan bocor, dan anatomi jari.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs11', type: 'trouble', title: 'Solusi Kendala Umum:', tips: ['Wajah beda: Perjelas ciri fisik spesifik (warna mata, bentuk rambut, tahi lalat).', 'Latar ada lantai: Pastikan keyword no floor, no shadows ada di background prompt.', 'Jari aneh: Posisikan pose tangan hands relaxed at sides.'] }
+          ]
+        },
+        {
+          stepBadge: 'EVALUASI',
+          accent: 'go',
+          title: 'Kuis Pemahaman & Kelulusan',
+          desc: 'Uji pemahaman konsep character sheet sebelum mengklaim modul tuntas.',
+          showHelpBtn: true,
+          blocks: [
+            { id: 'cs12', type: 'quiz', question: 'Mengapa rasio 16:9 (horizontal) wajib dipilih saat generate Character Sheet?', options: ['Agar langsung pas layar HP', 'Memberikan ruang cukup agar 3 panel tubuh utuh muat rapi berdampingan', 'Supaya hemat kuota token'], correctIndex: 1, feedbackCorrect: 'Tepat sekali! Format 16:9 memberi ruang bagi 3 sudut pandang sekaligus.', feedbackWrong: 'Gunakan rasio 16:9 agar ketiga panel muat berdampingan tanpa terpotong.' }
           ]
         }
       ]

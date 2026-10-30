@@ -826,12 +826,38 @@
             let targetCat = data.find(c => c.categoryTitle === defCat.categoryTitle);
             if (!targetCat) targetCat = data[0];
             if (targetCat) {
-              targetCat.cards.push(JSON.parse(JSON.stringify(defCard)));
+              if (defCard.id === 'card-character-sheet') {
+                const idx7 = targetCat.cards.findIndex(c => c.id === 'card-7hari');
+                if (idx7 !== -1) {
+                  targetCat.cards.splice(idx7 + 1, 0, JSON.parse(JSON.stringify(defCard)));
+                } else {
+                  targetCat.cards.unshift(JSON.parse(JSON.stringify(defCard)));
+                }
+              } else {
+                targetCat.cards.push(JSON.parse(JSON.stringify(defCard)));
+              }
               allExistingCardIds.add(defCard.id);
               changed = true;
             }
           }
         });
+      });
+
+      // Pastikan properti resmi sinkron untuk kartu bawaan penting
+      data.forEach(cat => {
+        if (Array.isArray(cat.cards)) {
+          cat.cards.forEach(c => {
+            if (c && c.id === 'card-character-sheet') {
+              if (!c.url || c.url === '#' || c.type !== 'interactive_module') {
+                c.url = 'modules/tutorial-charactersheet.html';
+                c.type = 'interactive_module';
+                c.thumbnail = c.thumbnail || 'cs-thumbnail.jpeg';
+                c.badge = c.badge || 'Pendalaman Fundamental';
+                changed = true;
+              }
+            }
+          });
+        }
       });
 
       if (changed) {
@@ -841,6 +867,16 @@
     } catch(e) {
       return DEFAULT_MODULE_CATEGORIES;
     }
+  }
+
+  function syncDefaultModules(forceReset = false) {
+    if (forceReset) {
+      localStorage.setItem(KEY_COURSES, JSON.stringify(DEFAULT_MODULE_CATEGORIES));
+      return DEFAULT_MODULE_CATEGORIES;
+    }
+    localStorage.removeItem(KEY_COURSES);
+    const refreshed = getModuleCategories();
+    return refreshed;
   }
 
   function saveModuleCategories(categories) {
@@ -1577,6 +1613,7 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     isDayAccessible,
     getModuleCategories,
     saveModuleCategories,
+    syncDefaultModules,
     addCardToCategory,
     createNewCategory,
     updateCategory,

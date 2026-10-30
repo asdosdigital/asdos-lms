@@ -647,6 +647,9 @@
           <p class="pdesc" style="margin:4px 0 0">Atur posisi urutan kategori dan modul yang tampil di dashboard siswa. Modul bisa digeser naik/turun, dipindahkan antarkategori, atau diedit via Studio Builder.</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn-action-mini" onclick="syncDefaultModulesAdmin()" style="background:#fff;border-color:var(--line);padding:8px 14px;font-size:13px" title="Sinkronkan modul bawaan kurikulum terbaru (termasuk Tutorial Character Sheet)">
+            Sinkronkan Modul Bawaan
+          </button>
           <button type="button" class="btn-action-mini" onclick="openCreateCategoryPrompt()" style="background:var(--brand);color:#fff;border-color:var(--brand-dark);padding:8px 14px;font-size:13px">
             + Tambah Kategori Baru
           </button>
@@ -1043,8 +1046,8 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="lms-db.js"></script>
-<script src="lms-core.js"></script>
+<script src="lms-db.js?v=20261030-v4"></script>
+<script src="lms-core.js?v=20261030-v4"></script>
 <script>
 // ==========================================================================
 // 1. ADMIN AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
@@ -1160,8 +1163,20 @@ function switchAdminTab(secId) {
   const sec = document.getElementById(secId);
   if (sec) sec.classList.add('active');
 
-  const btn = Array.from(document.querySelectorAll('.atab-btn')).find(b => b.getAttribute('onclick').includes(secId));
+  const btn = Array.from(document.querySelectorAll('.atab-btn')).find(b => b && b.getAttribute('onclick') && b.getAttribute('onclick').includes(secId));
   if (btn) btn.classList.add('active');
+
+  if (secId === 'sec-modules') {
+    refreshCategorySelect();
+  }
+}
+
+function syncDefaultModulesAdmin() {
+  if (window.LMS_DB && window.LMS_DB.syncDefaultModules) {
+    window.LMS_DB.syncDefaultModules();
+    refreshCategorySelect();
+    window.showToast('Modul kurikulum bawaan (termasuk Tutorial Character Sheet) berhasil disinkronkan!');
+  }
 }
 
 // ==========================================================================
