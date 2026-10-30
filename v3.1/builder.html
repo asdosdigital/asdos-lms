@@ -960,21 +960,29 @@
       box-shadow: 0 16px 40px rgba(0,0,0,0.25);
     }
 
-    /* Toast */
+    /* Toast Notifikasi Melayang di Bawah Toolbar */
     .studio-toast {
       position: fixed;
-      bottom: 24px;
+      top: 72px;
       left: 50%;
       transform: translateX(-50%);
-      background: #2A2420;
+      background: #164F5B;
       color: #ffffff;
-      padding: 10px 20px;
-      border-radius: 99px;
-      font-size: 13px;
+      padding: 11px 22px;
+      border-radius: 50px;
+      font-size: 13.5px;
       font-weight: 750;
       z-index: 20000;
       display: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      align-items: center;
+      gap: 9px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      animation: toastDrop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes toastDrop {
+      from { transform: translate(-50%, -14px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
     }
   </style>
 </head>
@@ -1242,8 +1250,8 @@
 
 <div id="studioToast" class="studio-toast" role="status"></div>
 
-<script src="lms-db.js?v=20261030-v4"></script>
-<script src="lms-core.js?v=20261030-v4"></script>
+<script src="lms-db.js?v=20261030-v7"></script>
+<script src="lms-core.js?v=20261030-v7"></script>
 <script>
 // ==========================================================================
 // COURSE BUILDER ENGINE - STATE & DATA MODEL
@@ -3598,6 +3606,9 @@ function saveToLmsDatabase() {
     return;
   }
 
+  const saveBtn = document.querySelector('.btn-save');
+  const origContent = saveBtn ? saveBtn.innerHTML : '';
+
   const cleanDay = (courseModel.dayNumber || 'Modul').trim();
   const title = (courseModel.title || 'Materi Tambahan').trim();
   const desc = (courseModel.desc || '').trim();
@@ -3606,6 +3617,25 @@ function saveToLmsDatabase() {
   const isHidden = document.getElementById('modIsHidden')?.checked || false;
 
   const categories = window.LMS_DB.getModuleCategories();
+
+  function triggerSaveSuccessAnimation() {
+    playSuccessTone();
+    if (saveBtn) {
+      saveBtn.style.background = '#2E7D4F';
+      saveBtn.style.borderColor = '#226139';
+      saveBtn.style.boxShadow = '0 4px 14px rgba(46, 125, 79, 0.4)';
+      saveBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.8" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Tersimpan di LMS!</span>
+      `;
+      setTimeout(() => {
+        saveBtn.style.background = '';
+        saveBtn.style.borderColor = '';
+        saveBtn.style.boxShadow = '';
+        saveBtn.innerHTML = origContent;
+      }, 2500);
+    }
+  }
 
   if (currentEditingCardId) {
     // 1. Perbarui kartu materi yang sudah ada
@@ -3637,7 +3667,9 @@ function saveToLmsDatabase() {
 
       localStorage.setItem('asdos_builder_card_' + currentEditingCardId, JSON.stringify(courseModel));
       window.LMS_DB.saveModuleCategories(categories);
-      showToast(`Modul "${title}" berhasil diperbarui di kurikulum LMS!`);
+
+      triggerSaveSuccessAnimation();
+      showToast(`Modul "${title}" berhasil diperbarui di kurikulum LMS!`, true);
       return;
     }
   }
@@ -3664,7 +3696,8 @@ function saveToLmsDatabase() {
   window.LMS_DB.saveModuleCategories(categories);
 
   initStudioModuleSelector();
-  showToast(`Modul baru "${title}" berhasil ditambahkan ke kurikulum LMS!`);
+  triggerSaveSuccessAnimation();
+  showToast(`Modul baru "${title}" berhasil ditambahkan ke kurikulum LMS!`, true);
 }
 
 // Helpers
@@ -3693,7 +3726,7 @@ async function handleThumbnailUpload(event, inputId, previewId) {
       preview.src = dataUrl;
     }
     updateCourseMeta();
-    showToast('Foto berhasil diunggah dan dioptimalkan!');
+    showToast('Foto berhasil diunggah dan dioptimalkan!', true);
   } catch (err) {
     alert(err.message || 'Gagal memproses berkas foto.');
   } finally {
@@ -3714,12 +3747,41 @@ function resetThumbnailDefault(inputId, previewId) {
   showToast('Thumbnail dikembalikan ke gambar default.');
 }
 
-function showToast(msg) {
+let audioCtx = null;
+function playSuccessTone() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!audioCtx && AudioContext) audioCtx = new AudioContext();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (!audioCtx) return;
+
+    const notes = [659.25, 830.61, 987.77];
+    notes.forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 0.28);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + idx * 0.08);
+      osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
+    });
+  } catch(e) {}
+}
+
+let toastTimer = null;
+function showToast(msg, isSuccess = false) {
   const t = document.getElementById('studioToast');
   if (!t) return;
-  t.textContent = msg;
-  t.style.display = 'block';
-  setTimeout(() => { t.style.display = 'none'; }, 2600);
+  clearTimeout(toastTimer);
+  const icon = isSuccess 
+    ? '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.6" fill="none" style="color:#4EED88;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>'
+    : '';
+  t.innerHTML = `${icon}<span>${msg}</span>`;
+  t.style.display = 'inline-flex';
+  toastTimer = setTimeout(() => { t.style.display = 'none'; }, 3200);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
