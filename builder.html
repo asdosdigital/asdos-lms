@@ -3669,6 +3669,9 @@ function saveToLmsDatabase() {
 
       localStorage.setItem('asdos_builder_card_' + currentEditingCardId, JSON.stringify(courseModel));
       window.LMS_DB.saveModuleCategories(categories);
+      if (window.LMS_DB && window.LMS_DB.saveGlobalSettingToSupabase) {
+        window.LMS_DB.saveGlobalSettingToSupabase('builder_card_' + currentEditingCardId, courseModel);
+      }
 
       triggerSaveSuccessAnimation();
       showToast(`Modul "${title}" berhasil diperbarui di kurikulum LMS!`, true);
@@ -3696,6 +3699,9 @@ function saveToLmsDatabase() {
 
   localStorage.setItem('asdos_builder_card_' + newCardId, JSON.stringify(courseModel));
   window.LMS_DB.saveModuleCategories(categories);
+  if (window.LMS_DB && window.LMS_DB.saveGlobalSettingToSupabase) {
+    window.LMS_DB.saveGlobalSettingToSupabase('builder_card_' + newCardId, courseModel);
+  }
 
   initStudioModuleSelector();
   triggerSaveSuccessAnimation();

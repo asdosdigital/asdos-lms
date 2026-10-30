@@ -922,6 +922,9 @@
         <button type="button" class="btn-subtle" onclick="uploadLocalWhitelistToSb()">
           Unggah Whitelist ke Cloud
         </button>
+        <button type="button" class="btn-subtle" onclick="uploadAllSettingsToSb()" style="background:#EBF5F1;border-color:#C8E3CF;color:var(--brand-dark);font-weight:750">
+          Unggah Seluruh Pengaturan &amp; Kurikulum ke Cloud
+        </button>
       </div>
       <div id="sbStatusNotice" style="margin-top:12px;font-size:13px;color:var(--muted);display:none;padding:10px 14px;border-radius:8px;background:var(--bg);border:1px solid var(--line);"></div>
       <div style="margin-top:16px">
@@ -2240,6 +2243,32 @@ async function uploadLocalWhitelistToSb() {
     }
     window.showToast(`Gagal: ${res.reason || 'Periksa koneksi.'}`);
   }
+}
+
+async function uploadAllSettingsToSb() {
+  const notice = document.getElementById('sbStatusNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = 'Mengunggah kurikulum, link, tools, dan pengaturan ke Supabase...';
+    notice.style.borderColor = 'var(--line)';
+    notice.style.color = 'var(--muted)';
+    notice.style.background = 'var(--bg)';
+  }
+  const res = await window.LMS_DB.pushAllSettingsToSupabase();
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = res.message;
+    if (res.success) {
+      notice.style.borderColor = 'var(--leaf-line)';
+      notice.style.color = 'var(--go-dark)';
+      notice.style.background = 'var(--leaf)';
+    } else {
+      notice.style.borderColor = 'var(--danger-ink)';
+      notice.style.color = 'var(--danger-ink)';
+      notice.style.background = 'var(--danger-bg)';
+    }
+  }
+  window.showToast(res.message);
 }
 
 // Init

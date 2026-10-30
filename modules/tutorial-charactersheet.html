@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
@@ -1209,14 +1209,14 @@ shadow, cast shadow, facial shadow, background shadow, floor shadow, gradient ba
 <div class="toast-pill" id="toastPill" role="status" aria-live="polite"></div>
 
 <!-- CORE SCRIPTS -->
-<script src="../lms-db.js?v=20261030-v4"></script>
-<script src="../lms-core.js?v=20261030-v4"></script>
+<script src="../lms-db.js?v=20261030-v7"></script>
+<script src="../lms-core.js?v=20261030-v7"></script>
 <script>
 // State Modul
 const CARD_ID = 'card-character-sheet';
 let currentCard = 0;
-const totalCards = 6;
-const cardTitles = [
+let totalCards = 6;
+let cardTitles = [
   'Konsep Dasar',
   '5 Langkah Praktik',
   'Formula Universal',
@@ -1504,7 +1504,166 @@ document.addEventListener('touchend', e => {
   }
 }, { passive: true });
 
+function extractYouTubeId(url) {
+  if (!url) return '';
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : '';
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function checkCustomQuiz(btn, isCorrect, feedbackCorrect, feedbackWrong) {
+  const parent = btn.closest('.quiz-card');
+  if (!parent) return;
+  const feedback = parent.querySelector('.quiz-feedback');
+  parent.querySelectorAll('.quiz-opt').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.7';
+  });
+  if (isCorrect) {
+    btn.style.background = '#E8F5E9';
+    btn.style.borderColor = '#81C784';
+    btn.style.color = '#1B5E20';
+    btn.style.opacity = '1';
+    playSuccessTone();
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.color = 'var(--go-dark)';
+      feedback.textContent = feedbackCorrect || 'Jawaban Benar!';
+    }
+  } else {
+    btn.style.background = '#FFEBEE';
+    btn.style.borderColor = '#E57373';
+    btn.style.color = '#B71C1C';
+    btn.style.opacity = '1';
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.color = '#B71C1C';
+      feedback.textContent = feedbackWrong || 'Jawaban kurang tepat. Coba periksa materi kembali.';
+    }
+  }
+}
+
+function checkAndApplyCustomBuilderContent() {
+  try {
+    const raw = localStorage.getItem('asdos_builder_card_' + CARD_ID);
+    if (!raw) return;
+    const model = JSON.parse(raw);
+    if (!model || !Array.isArray(model.cards) || model.cards.length === 0) return;
+
+    if (model.title) {
+      document.title = `${model.title} - Asdos Digital Academy`;
+    }
+
+    const deckContainer = document.getElementById('deckViewport');
+    if (!deckContainer) return;
+
+    let deckHtml = '';
+    model.cards.forEach((card, idx) => {
+      const activeClass = idx === 0 ? 'active' : '';
+      let blocksHtml = '';
+      (card.blocks || []).forEach((b, bIdx) => {
+        if (b.type === 'text') {
+          blocksHtml += `
+            <div style="background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px">
+              <h3 style="margin:0 0 6px;font-size:16px;color:var(--brand-dark)">${escapeHtml(b.heading || '')}</h3>
+              <p style="margin:0;font-size:14px;color:var(--muted);line-height:1.5">${escapeHtml(b.body || '')}</p>
+            </div>
+          `;
+        } else if (b.type === 'image') {
+          blocksHtml += `
+            <div class="image-showcase" style="margin-bottom:14px">
+              <img src="${b.imageUrl}" alt="" loading="lazy">
+            </div>
+            ${b.caption ? `<p class="image-caption">${escapeHtml(b.caption)}</p>` : ''}
+          `;
+        } else if (b.type === 'video') {
+          const ytId = extractYouTubeId(b.videoUrl);
+          blocksHtml += `
+            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-bottom:14px">
+              <iframe src="https://www.youtube-nocookie.com/embed/${ytId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else if (b.type === 'prompt') {
+          const pid = 'custom_p_' + idx + '_' + bIdx;
+          blocksHtml += `
+            <div class="prompt-card" style="margin-bottom:14px">
+              <div class="prompt-card-header">
+                <span class="prompt-card-title">${escapeHtml(b.tool || 'Prompt Formula')}</span>
+                <span class="prompt-card-badge">Siap Salin</span>
+              </div>
+              <div class="prompt-content-code" id="${pid}">${escapeHtml(b.formula || '')}</div>
+              <button type="button" class="btn-copy-main" onclick="copySnippetPrompt('${pid}', 'Formula Prompt')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Salin Prompt</span>
+              </button>
+            </div>
+          `;
+        } else if (b.type === 'callout') {
+          blocksHtml += `
+            <div class="goal-box" style="margin-bottom:14px">
+              <b>${escapeHtml(b.title || 'Catatan Penting:')}</b> ${escapeHtml(b.body || '')}
+            </div>
+          `;
+        } else if (b.type === 'trouble') {
+          const tipsHtml = (b.tips || []).map(t => `<li>${escapeHtml(t)}</li>`).join('');
+          blocksHtml += `
+            <div class="trouble-card" style="margin-bottom:14px">
+              <h4>${escapeHtml(b.title || 'Troubleshooting')}</h4>
+              <ul>${tipsHtml}</ul>
+            </div>
+          `;
+        } else if (b.type === 'steps') {
+          const itemsHtml = (b.items || []).map((it, i) => `
+            <div class="step-item">
+              <div class="step-num">${i+1}</div>
+              <div class="step-body"><p style="margin:0">${escapeHtml(it)}</p></div>
+            </div>
+          `).join('');
+          blocksHtml += `
+            <div class="step-list" style="margin-bottom:14px">
+              <strong style="display:block;margin-bottom:8px">${escapeHtml(b.title || 'Langkah-Langkah:')}</strong>
+              ${itemsHtml}
+            </div>
+          `;
+        } else if (b.type === 'quiz') {
+          const qOpts = (b.options || []).map((opt, oIdx) => `
+            <button type="button" class="quiz-opt" style="width:100%;text-align:left;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;margin-bottom:6px;cursor:pointer;font-weight:700;font-size:13.5px" onclick="checkCustomQuiz(this, ${oIdx === b.correctIndex}, '${escapeHtml(b.feedbackCorrect || 'Bagus!')}', '${escapeHtml(b.feedbackWrong || 'Kurang tepat.')}')">
+              ${escapeHtml(opt)}
+            </button>
+          `).join('');
+          blocksHtml += `
+            <div class="quiz-card" style="margin-bottom:14px;padding:16px;background:#FAF8F5;border:1.5px solid var(--line);border-radius:14px">
+              <p style="margin:0 0 10px;font-weight:800;font-size:14.5px;color:var(--brand-dark)">${escapeHtml(b.question || '')}</p>
+              <div class="quiz-options">${qOpts}</div>
+              <div class="quiz-feedback" style="display:none;margin-top:8px;font-size:12.5px;font-weight:750"></div>
+            </div>
+          `;
+        }
+      });
+
+      deckHtml += `
+        <section class="mission-card ${activeClass}" id="card-${idx}" aria-label="Materi ${idx+1}">
+          <span class="card-badge">${escapeHtml(card.stepBadge || ('Langkah ' + (idx + 1)))}</span>
+          <h2 class="card-title">${escapeHtml(card.title || '')}</h2>
+          <p class="card-desc">${escapeHtml(card.desc || '')}</p>
+          ${blocksHtml}
+        </section>
+      `;
+    });
+
+    deckContainer.innerHTML = deckHtml;
+    totalCards = model.cards.length;
+    cardTitles = model.cards.map(c => c.title || c.stepBadge || 'Langkah');
+  } catch(e) {
+    console.warn('Gagal memuat editan custom builder:', e);
+  }
+}
+
 // Init
+checkAndApplyCustomBuilderContent();
 updateCustomPromptPreview();
 updateDeckView();
 </script>

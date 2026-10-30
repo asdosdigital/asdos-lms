@@ -1051,6 +1051,7 @@
 
   function saveModuleCategories(categories) {
     localStorage.setItem(KEY_COURSES, JSON.stringify(categories));
+    try { saveGlobalSettingToSupabase('courses', categories); } catch(e){}
     return categories;
   }
 
@@ -1358,6 +1359,7 @@
 
   function saveInfoSettings(data) {
     localStorage.setItem(KEY_INFO, JSON.stringify(data));
+    try { saveGlobalSettingToSupabase('info_settings', data); } catch(e){}
     return data;
   }
 
@@ -1465,6 +1467,7 @@
 
   function savePrompts(list) {
     localStorage.setItem(KEY_PROMPTS, JSON.stringify(list));
+    try { saveGlobalSettingToSupabase('prompts', list); } catch(e){}
     return list;
   }
 
@@ -1530,7 +1533,7 @@
     if (!cfg || !cfg.url || !cfg.anonKey) return false;
     try {
       const cleanUrl = cleanSupabaseUrl(cfg.url);
-      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=email,note,created_at`, {
+      const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?select=email,username,note,created_at`, {
         headers: {
           'apikey': cfg.anonKey,
           'Authorization': `Bearer ${cfg.anonKey}`
@@ -1540,16 +1543,24 @@
       const data = await resp.json();
       if (Array.isArray(data) && data.length > 0) {
         const cur = getWhitelist();
-        const existing = new Set(cur.map(x => x.email.toLowerCase()));
         let changed = false;
         data.forEach(item => {
-          if (item.email && !existing.has(item.email.toLowerCase())) {
+          if (!item.email) return;
+          const cleanEmail = item.email.toLowerCase();
+          const found = cur.find(x => x.email.toLowerCase() === cleanEmail);
+          if (found) {
+            // Perbarui username jika di Supabase sudah ada
+            if (item.username && found.username !== item.username) {
+              found.username = item.username;
+              changed = true;
+            }
+          } else {
             cur.push({
-              email: item.email.toLowerCase(),
+              email: cleanEmail,
+              username: item.username || '',
               dateAdded: item.created_at || new Date().toISOString(),
               note: item.note || 'Supabase Cloud'
             });
-            existing.add(item.email.toLowerCase());
             changed = true;
           }
         });
@@ -1580,10 +1591,14 @@
         return { success: true, count: 0, message: 'Tidak ada email valid untuk diunggah.' };
       }
 
-      const payload = validEmails.map(em => ({
-        email: em,
-        note: note
-      }));
+      const payload = validEmails.map(em => {
+        const itemObj = (emailsArray || []).find(x => (typeof x === 'object' && x && x.email && x.email.toLowerCase() === em));
+        return {
+          email: em,
+          username: (itemObj && itemObj.username) ? itemObj.username : null,
+          note: (itemObj && itemObj.note) ? itemObj.note : note
+        };
+      });
 
       const resp = await fetch(`${cleanUrl}/rest/v1/whitelist_students?on_conflict=email`, {
         method: 'POST',
@@ -1591,7 +1606,7 @@
           'apikey': cfg.anonKey,
           'Authorization': `Bearer ${cfg.anonKey}`,
           'Content-Type': 'application/json',
-          'Prefer': 'resolution=ignore-duplicates'
+          'Prefer': 'resolution=merge-duplicates'
         },
         body: JSON.stringify(payload)
       });
@@ -1606,6 +1621,113 @@
     } catch(e) {
       console.error('Supabase push exception:', e);
       return { success: false, reason: e.message };
+    }
+  }
+
+  // ==========================================================================
+  // CLOUD SETTINGS SYNC (KURIKULUM, INFO, TOOLS, LINKS, BUILDER MODUL)
+  // ==========================================================================
+  async function saveGlobalSettingToSupabase(key, value) {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey || !key) return false;
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      fetch(`${cleanUrl}/rest/v1/lms_global_settings?on_conflict=key`, {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          key: key,
+          value: value,
+          updated_at: new Date().toISOString()
+        })
+      }).catch(() => {});
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async function syncGlobalSettingsFromSupabase() {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) return false;
+    try {
+      const cleanUrl = cleanSupabaseUrl(cfg.url);
+      const resp = await fetch(`${cleanUrl}/rest/v1/lms_global_settings?select=key,value,updated_at`, {
+        headers: {
+          'apikey': cfg.anonKey,
+          'Authorization': `Bearer ${cfg.anonKey}`
+        }
+      });
+      if (!resp.ok) return false;
+      const rows = await resp.json();
+      if (!Array.isArray(rows) || rows.length === 0) return false;
+
+      let hasUpdatedCourses = false;
+      let hasUpdatedInfo = false;
+
+      rows.forEach(row => {
+        if (!row || !row.key) return;
+        if (row.key === 'courses' && Array.isArray(row.value) && row.value.length > 0) {
+          localStorage.setItem(KEY_COURSES, JSON.stringify(row.value));
+          hasUpdatedCourses = true;
+        } else if (row.key === 'info_settings' && row.value && typeof row.value === 'object') {
+          localStorage.setItem(KEY_INFO, JSON.stringify(row.value));
+          hasUpdatedInfo = true;
+        } else if (row.key === 'prompts' && Array.isArray(row.value)) {
+          localStorage.setItem(KEY_PROMPTS, JSON.stringify(row.value));
+        } else if (row.key.startsWith('builder_card_') && row.value) {
+          localStorage.setItem('asdos_' + row.key, JSON.stringify(row.value));
+        }
+      });
+
+      if (hasUpdatedCourses || hasUpdatedInfo) {
+        if (typeof window !== 'undefined') {
+          if (typeof window.renderDashboard === 'function') window.renderDashboard();
+          if (typeof window.renderCurriculum === 'function') window.renderCurriculum();
+          if (typeof window.renderCourseCategoriesAdmin === 'function') window.renderCourseCategoriesAdmin();
+        }
+      }
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async function pushAllSettingsToSupabase() {
+    const cfg = getSupabaseConfig();
+    if (!cfg || !cfg.url || !cfg.anonKey) {
+      return { success: false, message: 'URL atau Anon Key Supabase belum diisi.' };
+    }
+    try {
+      const courses = getModuleCategories();
+      const info = getInfoSettings();
+      const prompts = getPrompts();
+
+      await saveGlobalSettingToSupabase('courses', courses);
+      await saveGlobalSettingToSupabase('info_settings', info);
+      await saveGlobalSettingToSupabase('prompts', prompts);
+
+      if (typeof localStorage !== 'undefined') {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('asdos_builder_card_')) {
+            const subKey = k.replace('asdos_', '');
+            try {
+              const val = JSON.parse(localStorage.getItem(k));
+              await saveGlobalSettingToSupabase(subKey, val);
+            } catch(e){}
+          }
+        }
+      }
+
+      return { success: true, message: 'Seluruh kurikulum, tools, link, dan modul berhasil diunggah ke Supabase Cloud!' };
+    } catch(e) {
+      return { success: false, message: 'Gagal mengunggah ke Supabase: ' + e.message };
     }
   }
 
@@ -1639,9 +1761,10 @@
     return await pushWhitelistToSupabase(list, 'Sinkronisasi Awal');
   }
 
-  // Auto-sync whitelist on load
+  // Auto-sync whitelist & global settings on load
   if (typeof window !== 'undefined') {
-    setTimeout(syncWhitelistFromSupabase, 400);
+    setTimeout(syncWhitelistFromSupabase, 300);
+    setTimeout(syncGlobalSettingsFromSupabase, 600);
   }
 
   const SUPABASE_SQL_SCHEMA = `-- =====================================================================
@@ -1661,6 +1784,25 @@ CREATE TABLE IF NOT EXISTS public.whitelist_students (
 ALTER TABLE public.whitelist_students ADD COLUMN IF NOT EXISTS username TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_whitelist_email ON public.whitelist_students(email);
+
+-- Tabel Pengaturan Global LMS (Kurikulum, Thumbnail, Tools, Links, Modul)
+CREATE TABLE IF NOT EXISTS public.lms_global_settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.trusted_devices (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_email TEXT NOT NULL,
+  device_token TEXT UNIQUE NOT NULL,
+  device_name TEXT,
+  expires_at TIMESTAMPTZ NOT NULL,
+  last_active TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_trusted_email ON public.trusted_devices(student_email);
+CREATE INDEX IF NOT EXISTS idx_trusted_token ON public.trusted_devices(device_token);
 
 CREATE TABLE IF NOT EXISTS public.course_categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1693,6 +1835,8 @@ CREATE TABLE IF NOT EXISTS public.student_progress (
 );
 
 ALTER TABLE public.whitelist_students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.lms_global_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.trusted_devices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.course_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.course_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.student_progress ENABLE ROW LEVEL SECURITY;
@@ -1700,6 +1844,17 @@ ALTER TABLE public.student_progress ENABLE ROW LEVEL SECURITY;
 -- Kebijakan Akses Publik (Aman dengan Anon Key)
 CREATE POLICY "Akses publik baca whitelist" ON public.whitelist_students FOR SELECT USING (true);
 CREATE POLICY "Akses publik tulis whitelist" ON public.whitelist_students FOR INSERT WITH CHECK (true);
+CREATE POLICY "Akses publik update whitelist" ON public.whitelist_students FOR UPDATE USING (true);
+
+CREATE POLICY "Akses publik baca settings" ON public.lms_global_settings FOR SELECT USING (true);
+CREATE POLICY "Akses publik tulis settings" ON public.lms_global_settings FOR INSERT WITH CHECK (true);
+CREATE POLICY "Akses publik update settings" ON public.lms_global_settings FOR UPDATE USING (true);
+
+CREATE POLICY "Akses publik baca devices" ON public.trusted_devices FOR SELECT USING (true);
+CREATE POLICY "Akses publik tulis devices" ON public.trusted_devices FOR INSERT WITH CHECK (true);
+CREATE POLICY "Akses publik hapus devices" ON public.trusted_devices FOR DELETE USING (true);
+CREATE POLICY "Akses publik update devices" ON public.trusted_devices FOR UPDATE USING (true);
+
 CREATE POLICY "Akses publik untuk kategori kursus" ON public.course_categories FOR SELECT USING (true);
 CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELECT USING (true);
 `;
@@ -1919,6 +2074,9 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     saveSupabaseConfig,
     syncWhitelistFromSupabase,
     pushWhitelistToSupabase,
+    saveGlobalSettingToSupabase,
+    syncGlobalSettingsFromSupabase,
+    pushAllSettingsToSupabase,
     testSupabaseConnection,
     syncAllLocalWhitelistToSupabase,
     SUPABASE_SQL_SCHEMA,
