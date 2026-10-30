@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
@@ -611,6 +611,7 @@
             <tr>
               <th style="width:40px">No</th>
               <th>Email Pembeli</th>
+              <th>Username Publik (Hall of Fame)</th>
               <th>Catatan</th>
               <th>Tanggal Daftar</th>
               <th style="text-align:right">Tindakan</th>
@@ -1146,8 +1147,8 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="lms-db.js?v=20261030-v6"></script>
-<script src="lms-core.js?v=20261030-v6"></script>
+<script src="lms-db.js?v=20261030-v7"></script>
+<script src="lms-core.js?v=20261030-v7"></script>
 <script>
 // ==========================================================================
 // 1. ADMIN AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
@@ -1290,16 +1291,25 @@ function renderWhitelistTable() {
   if (!tbody) return;
 
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Belum ada email yang didaftarkan.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">Belum ada email yang didaftarkan.</td></tr>';
     return;
   }
 
   tbody.innerHTML = list.map((item, idx) => {
     const d = item.dateAdded ? new Date(item.dateAdded).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+    const usernameBadge = item.username 
+      ? `<span style="font-weight:750;color:var(--brand-dark);background:#EBF5F1;border:1px solid #C8E3CF;padding:2px 8px;border-radius:6px;font-size:12px">${item.username}</span>` 
+      : `<span style="color:var(--muted);font-size:11.5px;font-style:italic">Belum atur nama</span>`;
     return `
       <tr>
         <td style="color:var(--muted)">${idx + 1}</td>
         <td><strong>${item.email}</strong></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${usernameBadge}
+            <button type="button" class="btn-action-mini" style="padding:1px 6px;font-size:10.5px" onclick="editStudentUsernameAdmin('${item.email}', '${item.username || ''}')" title="Ubah Username Siswa">Ubah</button>
+          </div>
+        </td>
         <td><span style="background:var(--sun);color:#7A4B00;border:1px solid #E8CF6A;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:750">${item.note || 'Lynk.id'}</span></td>
         <td style="color:var(--muted)">${d}</td>
         <td style="text-align:right">
@@ -1308,6 +1318,21 @@ function renderWhitelistTable() {
       </tr>
     `;
   }).join('');
+}
+
+async function editStudentUsernameAdmin(email, currentUsername) {
+  const newName = prompt(`Ubah Username Publik untuk siswa (${email}):`, currentUsername);
+  if (newName === null) return;
+  const trimmed = newName.trim();
+  if (!trimmed) {
+    window.showToast('Nama tidak boleh kosong.');
+    return;
+  }
+  const res = await window.LMS_DB.saveStudentUsername(email, trimmed);
+  if (res.success) {
+    window.showToast(`Username untuk ${email} berhasil diubah menjadi "${trimmed}".`);
+    renderWhitelistTable();
+  }
 }
 
 function handleBatchSubmit() {
@@ -1340,8 +1365,8 @@ function applyFilterEmail() {
 
 function downloadWhitelistCsv() {
   const list = window.LMS_DB.getWhitelist();
-  let csv = 'Email,Catatan,Tanggal\n';
-  list.forEach(i => csv += `"${i.email}","${i.note || ''}","${i.dateAdded || ''}"\n`);
+  let csv = 'Email,Username Publik,Catatan,Tanggal\n';
+  list.forEach(i => csv += `"${i.email}","${i.username || ''}","${i.note || ''}","${i.dateAdded || ''}"\n`);
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);

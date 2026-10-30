@@ -22,9 +22,9 @@
 
   // Default Seed Whitelist (Contoh pembeli Lynk.id untuk testing)
   const DEFAULT_WHITELIST = [
-    { email: 'peserta@gmail.com', dateAdded: '2026-10-20T08:00:00.000Z', note: 'Pembeli Lynk.id Batch 1' },
-    { email: 'alumni@asdosdigital.com', dateAdded: '2026-10-21T10:30:00.000Z', note: 'Early Bird Lynk.id' },
-    { email: 'demo@lynk.id', dateAdded: '2026-10-22T14:15:00.000Z', note: 'Akun Demo Review' }
+    { email: 'peserta@gmail.com', username: 'Budi Pratama', dateAdded: '2026-10-20T08:00:00.000Z', note: 'Pembeli Lynk.id Batch 1' },
+    { email: 'alumni@asdosdigital.com', username: 'Dewi Kreatif', dateAdded: '2026-10-21T10:30:00.000Z', note: 'Early Bird Lynk.id' },
+    { email: 'demo@lynk.id', username: 'Member Demo', dateAdded: '2026-10-22T14:15:00.000Z', note: 'Akun Demo Review' }
   ];
 
   // Default Seed Info & Tools Asdos (Sesuai Database Notion Akademi Animasi Asdos)
@@ -477,7 +477,10 @@
     if (!email) return { success: false, reason: 'Email wajib diisi.' };
     const cleanEmail = email.trim().toLowerCase();
 
-    if (!isEmailWhitelisted(cleanEmail)) {
+    const whitelist = getWhitelist();
+    const whitelistItem = whitelist.find(item => item.email.toLowerCase() === cleanEmail);
+
+    if (!whitelistItem) {
       return {
         success: false,
         reason: 'not_whitelisted',
@@ -485,7 +488,8 @@
       };
     }
 
-    let displayName = name.trim();
+    const hasSetUsername = !!(whitelistItem.username && whitelistItem.username.trim());
+    let displayName = hasSetUsername ? whitelistItem.username.trim() : name.trim();
     if (!displayName) {
       const parts = cleanEmail.split('@')[0].replace(/[._-]+/g, ' ');
       displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
@@ -494,6 +498,8 @@
     const studentSession = {
       email: cleanEmail,
       name: displayName,
+      username: hasSetUsername ? whitelistItem.username.trim() : '',
+      hasSetUsername: hasSetUsername,
       loggedInAt: new Date().toISOString()
     };
 
@@ -501,7 +507,77 @@
       localStorage.setItem(KEY_SESSION, JSON.stringify(studentSession));
     } catch(e){}
 
-    return { success: true, student: studentSession };
+    return { success: true, student: studentSession, hasSetUsername: hasSetUsername };
+  }
+
+  function getStudentUsername(email) {
+    if (!email) return '';
+    const cleanEmail = email.trim().toLowerCase();
+    const whitelist = getWhitelist();
+    const item = whitelist.find(it => it.email.toLowerCase() === cleanEmail);
+    return (item && item.username) ? item.username : '';
+  }
+
+  async function saveStudentUsername(email, username) {
+    if (!email || !username) {
+      return { success: false, message: 'Email dan Username wajib diisi.' };
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanUsername = username.trim();
+
+    if (cleanUsername.length < 2) {
+      return { success: false, message: 'Username minimal 2 karakter.' };
+    }
+
+    // 1. Perbarui pada whitelist lokal
+    const list = getWhitelist();
+    let found = false;
+    list.forEach(item => {
+      if (item.email.toLowerCase() === cleanEmail) {
+        item.username = cleanUsername;
+        item.hasSetUsername = true;
+        found = true;
+      }
+    });
+
+    if (found) {
+      saveWhitelist(list);
+    }
+
+    // 2. Perbarui pada sesi siswa lokal
+    let currentSession = getCurrentStudent();
+    if (!currentSession || currentSession.email.toLowerCase() === cleanEmail) {
+      currentSession = {
+        email: cleanEmail,
+        name: cleanUsername,
+        username: cleanUsername,
+        hasSetUsername: true,
+        loggedInAt: currentSession ? currentSession.loggedInAt : new Date().toISOString()
+      };
+      try {
+        localStorage.setItem(KEY_SESSION, JSON.stringify(currentSession));
+      } catch(e){}
+    }
+
+    // 3. Sinkronkan ke Supabase jika terhubung (Background sync)
+    const cfg = getSupabaseConfig();
+    if (cfg && cfg.url && cfg.anonKey) {
+      try {
+        const cleanUrl = cleanSupabaseUrl(cfg.url);
+        fetch(`${cleanUrl}/rest/v1/whitelist_students?email=eq.${encodeURIComponent(cleanEmail)}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': cfg.anonKey,
+            'Authorization': `Bearer ${cfg.anonKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ username: cleanUsername })
+        }).catch(() => {});
+      } catch(e){}
+    }
+
+    return { success: true, username: cleanUsername, student: currentSession };
   }
 
   async function logoutStudent() {
@@ -1576,9 +1652,13 @@
 CREATE TABLE IF NOT EXISTS public.whitelist_students (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT UNIQUE NOT NULL,
+  username TEXT,
   note TEXT DEFAULT 'Pembelian Lynk.id',
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Pastikan kolom username tersedia jika tabel sudah pernah dibuat sebelumnya
+ALTER TABLE public.whitelist_students ADD COLUMN IF NOT EXISTS username TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_whitelist_email ON public.whitelist_students(email);
 
@@ -1792,6 +1872,8 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     getCurrentStudent,
     loginStudent,
     logoutStudent,
+    saveStudentUsername,
+    getStudentUsername,
     requestStudentOtp,
     verifyStudentOtp,
     checkTrustedDeviceSession,
