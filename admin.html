@@ -1,10 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#FFF9F0">
   <title>Admin LMS — Asdos Digital Academy</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
   <link rel="icon" type="image/png" href="asdos-square.png">
   <link rel="apple-touch-icon" href="asdos-square.png">
   <link rel="stylesheet" href="lms-core.css">
@@ -732,24 +734,84 @@
   <!-- =================================================================== -->
   <section id="sec-info" class="tab-section">
     <div class="panel-box">
-      <h3>Kelola Informasi Penting Pengajar</h3>
-      <p class="pdesc">Teks pengumuman yang muncul di Tab "Informasi" dashboard siswa.</p>
+      <h3>Kelola Informasi Pengajar &amp; Kontak WhatsApp Mentor</h3>
+      <p class="pdesc">Teks pengumuman dan 2 tombol kontak WhatsApp pengajar yang muncul di Tab Informasi dashboard siswa.</p>
 
-      <div class="form-group">
-        <label for="editAnnounce1">Pengumuman 1:</label>
-        <input type="text" id="editAnnounce1">
+      <div style="background:#FAF8F5;border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:18px">
+        <h4 style="margin:0 0 12px;font-size:14.5px;color:var(--brand-dark);font-weight:800">Pengumuman Informasi Berjalan</h4>
+        <div class="form-group" style="margin-bottom:10px">
+          <label for="editAnnounce1" style="font-size:12.5px;font-weight:700">Pengumuman 1:</label>
+          <input type="text" id="editAnnounce1" placeholder="misal: Untuk membeli 1000 Flow Credit/Bulan silahkan hubungi Admin Haniyo">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="editAnnounce2" style="font-size:12.5px;font-weight:700">Pengumuman 2:</label>
+          <input type="text" id="editAnnounce2" placeholder="misal: Untuk Program Affiliate Akademi Animasi Asdos silahkan hubungi Admin Haniyo">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="editAnnounce2">Pengumuman 2:</label>
-        <input type="text" id="editAnnounce2">
-      </div>
-      <div class="form-group">
-        <label for="editMemberHub">Link Asdos Member Hub:</label>
-        <input type="text" id="editMemberHub">
+
+      <!-- Konfigurasi 2 WhatsApp Mentor -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:18px">
+        <!-- Mentor 1 Box -->
+        <div style="background:#FFFFFF;border:1.5px solid #25D36640;border-radius:14px;padding:16px;box-shadow:0 3px 10px rgba(37,211,102,0.06)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #eef6f0">
+            <div style="width:32px;height:32px;border-radius:10px;background:#e8f8ee;color:#25D366;display:grid;place-items:center;flex-shrink:0">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.52 3.48A11.93 11.93 0 0012.04 0C5.46 0 .1 5.36.1 11.94c0 2.1.55 4.16 1.6 5.97L0 24l6.26-1.64a11.9 11.9 0 005.78 1.48h.01c6.58 0 11.94-5.36 11.94-11.94 0-3.19-1.24-6.19-3.47-8.42zM12.04 21.82c-1.78 0-3.52-.48-5.04-1.39l-.36-.21-3.72.98.99-3.63-.24-.38a9.92 9.92 0 01-1.52-5.25c0-5.48 4.46-9.94 9.95-9.94 2.65 0 5.15 1.03 7.03 2.91a9.88 9.88 0 012.91 7.03c0 5.49-4.46 9.94-9.96 9.94zm5.45-7.44c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.17-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.68-1.64-.93-2.25-.24-.59-.49-.51-.68-.52-.18-.01-.38-.01-.58-.01s-.53.08-.8.38c-.28.3-1.05 1.03-1.05 2.51s1.08 2.91 1.23 3.11c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.13-.28-.2-.58-.35z"/></svg>
+            </div>
+            <div>
+              <strong style="font-size:14px;color:var(--brand-dark);display:block">WhatsApp Mentor 1</strong>
+              <small style="color:var(--muted);font-size:11.5px">Pengaturan kontak mentor pertama</small>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM1Role" style="font-size:12px;font-weight:700">Label Tombol / Peran:</label>
+            <input type="text" id="editM1Role" placeholder="misal: WhatsApp Mentor 1 (Flow Credit &amp; Materi)">
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM1Name" style="font-size:12px;font-weight:700">Nama Mentor:</label>
+            <input type="text" id="editM1Name" placeholder="misal: Admin Haniyo">
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM1Phone" style="font-size:12px;font-weight:700">Nomor WhatsApp (Contoh: 081289795589):</label>
+            <input type="text" id="editM1Phone" placeholder="081289795589">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label for="editM1Msg" style="font-size:12px;font-weight:700">Template Pesan WhatsApp Otomatis:</label>
+            <input type="text" id="editM1Msg" placeholder="Halo Admin Haniyo, saya peserta Akademi Animasi Asdos...">
+          </div>
+        </div>
+
+        <!-- Mentor 2 Box -->
+        <div style="background:#FFFFFF;border:1.5px solid #25D36640;border-radius:14px;padding:16px;box-shadow:0 3px 10px rgba(37,211,102,0.06)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #eef6f0">
+            <div style="width:32px;height:32px;border-radius:10px;background:#e8f8ee;color:#25D366;display:grid;place-items:center;flex-shrink:0">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.52 3.48A11.93 11.93 0 0012.04 0C5.46 0 .1 5.36.1 11.94c0 2.1.55 4.16 1.6 5.97L0 24l6.26-1.64a11.9 11.9 0 005.78 1.48h.01c6.58 0 11.94-5.36 11.94-11.94 0-3.19-1.24-6.19-3.47-8.42zM12.04 21.82c-1.78 0-3.52-.48-5.04-1.39l-.36-.21-3.72.98.99-3.63-.24-.38a9.92 9.92 0 01-1.52-5.25c0-5.48 4.46-9.94 9.95-9.94 2.65 0 5.15 1.03 7.03 2.91a9.88 9.88 0 012.91 7.03c0 5.49-4.46 9.94-9.96 9.94zm5.45-7.44c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.17-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.68-1.64-.93-2.25-.24-.59-.49-.51-.68-.52-.18-.01-.38-.01-.58-.01s-.53.08-.8.38c-.28.3-1.05 1.03-1.05 2.51s1.08 2.91 1.23 3.11c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.13-.28-.2-.58-.35z"/></svg>
+            </div>
+            <div>
+              <strong style="font-size:14px;color:var(--brand-dark);display:block">WhatsApp Mentor 2</strong>
+              <small style="color:var(--muted);font-size:11.5px">Pengaturan kontak mentor kedua</small>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM2Role" style="font-size:12px;font-weight:700">Label Tombol / Peran:</label>
+            <input type="text" id="editM2Role" placeholder="misal: WhatsApp Mentor 2 (Program Affiliate &amp; Komunitas)">
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM2Name" style="font-size:12px;font-weight:700">Nama Mentor:</label>
+            <input type="text" id="editM2Name" placeholder="misal: Admin Hamisesa">
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label for="editM2Phone" style="font-size:12px;font-weight:700">Nomor WhatsApp (Contoh: 081289795589):</label>
+            <input type="text" id="editM2Phone" placeholder="081289795589">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label for="editM2Msg" style="font-size:12px;font-weight:700">Template Pesan WhatsApp Otomatis:</label>
+            <input type="text" id="editM2Msg" placeholder="Halo Admin Hamisesa, saya peserta Akademi Animasi Asdos...">
+          </div>
+        </div>
       </div>
 
       <button type="button" class="btn-save" onclick="saveInfoEdits()">
-        Simpan Informasi Pengajar
+        Simpan Informasi &amp; Kontak Mentor
       </button>
     </div>
 
@@ -984,7 +1046,7 @@
 
 <!-- MODAL EDIT IMPORTANT LINK -->
 <div id="modalEditImportantLink" class="admin-modal-overlay">
-  <div class="admin-modal-box" style="max-width:480px">
+  <div class="admin-modal-box" style="max-width:500px">
     <div class="admin-modal-head">
       <h3 id="modalImportantLinkHeading">Tambah / Edit Link Praktik</h3>
       <button type="button" class="admin-modal-close" onclick="closeImportantLinkModal()" aria-label="Tutup">
@@ -1005,6 +1067,25 @@
         <label for="inLinkUrl">URL / Tautan Lengkap:</label>
         <input type="text" id="inLinkUrl" placeholder="https://..." required>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label for="inLinkPlatform">Platform / Ikon:</label>
+          <select id="inLinkPlatform">
+            <option value="Auto">Otomatis (Auto-Detect)</option>
+            <option value="Google Labs">Google Labs / Flow</option>
+            <option value="Voice Studio">Voice Studio / Audio</option>
+            <option value="Gemini">Gemini AI</option>
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Leonardo AI">Leonardo AI</option>
+            <option value="Figma">Figma</option>
+            <option value="Umum">Umum / Web Tool</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inLinkBadge">Badge Tag (Opsional):</label>
+          <input type="text" id="inLinkBadge" placeholder="misal: Google Labs">
+        </div>
+      </div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
         <button type="button" class="btn-subtle" onclick="closeImportantLinkModal()">Batal</button>
         <button type="submit" class="btn-save">Simpan Link Praktik</button>
@@ -1015,7 +1096,7 @@
 
 <!-- MODAL EDIT TOOL ASDOS -->
 <div id="modalEditToolAsdos" class="admin-modal-overlay">
-  <div class="admin-modal-box" style="max-width:480px">
+  <div class="admin-modal-box" style="max-width:500px">
     <div class="admin-modal-head">
       <h3 id="modalToolAsdosHeading">Tambah / Edit Tool Asdos</h3>
       <button type="button" class="admin-modal-close" onclick="closeToolAsdosModal()" aria-label="Tutup">
@@ -1036,6 +1117,25 @@
         <label for="inToolUrl">URL / Link Akses Tool:</label>
         <input type="text" id="inToolUrl" placeholder="https://..." required>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label for="inToolPlatform">Platform / Ikon:</label>
+          <select id="inToolPlatform">
+            <option value="Auto">Otomatis (Auto-Detect)</option>
+            <option value="Gemini">Gemini Gem</option>
+            <option value="ChatGPT">ChatGPT Custom GPT</option>
+            <option value="Google Labs">Google Labs / Flow</option>
+            <option value="Voice Studio">Voice Studio / Audio</option>
+            <option value="Leonardo AI">Leonardo AI</option>
+            <option value="Figma">Figma</option>
+            <option value="Umum">Umum / Web Tool</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inToolBadge">Badge Tag (Opsional):</label>
+          <input type="text" id="inToolBadge" placeholder="misal: Gemini Gem">
+        </div>
+      </div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)">
         <button type="button" class="btn-subtle" onclick="closeToolAsdosModal()">Batal</button>
         <button type="submit" class="btn-save">Simpan Tool Asdos</button>
@@ -1046,8 +1146,8 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="lms-db.js?v=20261030-v4"></script>
-<script src="lms-core.js?v=20261030-v4"></script>
+<script src="lms-db.js?v=20261030-v5"></script>
+<script src="lms-core.js?v=20261030-v5"></script>
 <script>
 // ==========================================================================
 // 1. ADMIN AUTHENTICATION (PASSWORD-BASED VIA SUPABASE)
@@ -1618,13 +1718,89 @@ function handleAddCardSubmit() {
 }
 
 // ==========================================================================
-// 5. INFORMASI & TOOLS LOGIC (PENGUMUMAN, LINK PRAKTIK & TOOLS ASDOS)
+// 5. INFORMASI & TOOLS LOGIC (PENGUMUMAN, WHATSAPP MENTOR, LINK PRAKTIK & TOOLS ASDOS)
 // ==========================================================================
+function getPlatformMeta(platform) {
+  const p = (platform || '').toLowerCase();
+  if (p.includes('gemini')) {
+    return {
+      name: 'Gemini',
+      bg: '#EBF4FE',
+      text: '#1A73E8',
+      border: '#D2E3FC',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2L14.4 8.6L21 11L14.4 13.4L12 20L9.6 13.4L3 11L9.6 8.6L12 2Z"/></svg>'
+    };
+  }
+  if (p.includes('chatgpt') || p.includes('gpt') || p.includes('openai')) {
+    return {
+      name: 'ChatGPT',
+      bg: '#EAF8F0',
+      text: '#0D8C68',
+      border: '#C5EEDB',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>'
+    };
+  }
+  if (p.includes('flow') || p.includes('google labs')) {
+    return {
+      name: 'Google Labs',
+      bg: '#FEF3E8',
+      text: '#B45309',
+      border: '#FDE0B4',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>'
+    };
+  }
+  if (p.includes('voice') || p.includes('audio') || p.includes('speech')) {
+    return {
+      name: 'Voice Studio',
+      bg: '#E0F2FE',
+      text: '#0369A1',
+      border: '#BAE6FD',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'
+    };
+  }
+  if (p.includes('leonardo')) {
+    return {
+      name: 'Leonardo AI',
+      bg: '#F3E8FF',
+      text: '#7E22CE',
+      border: '#E9D5FF',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18v-9z"/></svg>'
+    };
+  }
+  if (p.includes('figma')) {
+    return {
+      name: 'Figma',
+      bg: '#FCE7F3',
+      text: '#BE185D',
+      border: '#FBCFE8',
+      iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/></svg>'
+    };
+  }
+  return {
+    name: 'Web Tool',
+    bg: '#F4F1EA',
+    text: '#5E544C',
+    border: '#E2DBD0',
+    iconSvg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+  };
+}
+
 function loadInfoData() {
   const info = window.LMS_DB.getInfoSettings();
   if (info.announcements && info.announcements[0]) document.getElementById('editAnnounce1').value = info.announcements[0];
   if (info.announcements && info.announcements[1]) document.getElementById('editAnnounce2').value = info.announcements[1];
-  if (info.memberHubUrl) document.getElementById('editMemberHub').value = info.memberHubUrl;
+
+  const m1 = info.mentor1 || {};
+  document.getElementById('editM1Role').value = m1.role || 'WhatsApp Mentor 1 (Flow Credit & Materi)';
+  document.getElementById('editM1Name').value = m1.name || 'Admin Haniyo';
+  document.getElementById('editM1Phone').value = m1.phone || '081289795589';
+  document.getElementById('editM1Msg').value = m1.message || 'Halo Admin Haniyo, saya peserta Akademi Animasi Asdos...';
+
+  const m2 = info.mentor2 || {};
+  document.getElementById('editM2Role').value = m2.role || 'WhatsApp Mentor 2 (Program Affiliate & Komunitas)';
+  document.getElementById('editM2Name').value = m2.name || 'Admin Hamisesa';
+  document.getElementById('editM2Phone').value = m2.phone || '081289795589';
+  document.getElementById('editM2Msg').value = m2.message || 'Halo Admin Hamisesa, saya peserta Akademi Animasi Asdos...';
 
   renderAdminImportantLinks();
   renderAdminToolsAsdos();
@@ -1634,9 +1810,23 @@ function saveInfoEdits() {
   const info = window.LMS_DB.getInfoSettings();
   info.announcements[0] = document.getElementById('editAnnounce1').value.trim();
   info.announcements[1] = document.getElementById('editAnnounce2').value.trim();
-  info.memberHubUrl = document.getElementById('editMemberHub').value.trim();
+
+  info.mentor1 = {
+    role: document.getElementById('editM1Role').value.trim() || 'WhatsApp Mentor 1',
+    name: document.getElementById('editM1Name').value.trim() || 'Admin Haniyo',
+    phone: document.getElementById('editM1Phone').value.trim() || '081289795589',
+    message: document.getElementById('editM1Msg').value.trim()
+  };
+
+  info.mentor2 = {
+    role: document.getElementById('editM2Role').value.trim() || 'WhatsApp Mentor 2',
+    name: document.getElementById('editM2Name').value.trim() || 'Admin Hamisesa',
+    phone: document.getElementById('editM2Phone').value.trim() || '081289795589',
+    message: document.getElementById('editM2Msg').value.trim()
+  };
+
   window.LMS_DB.saveInfoSettings(info);
-  window.showToast('Informasi penting pengajar berhasil diperbarui!');
+  window.showToast('Informasi & kontak WhatsApp mentor berhasil disimpan!');
 }
 
 // LINK PENTING PRAKTIK
@@ -1654,12 +1844,19 @@ function renderAdminImportantLinks() {
   container.innerHTML = list.map((item, idx) => {
     const isFirst = idx === 0;
     const isLast = idx === list.length - 1;
+    const meta = getPlatformMeta(item.platform || item.badge || item.title);
+    const badgeText = item.badge || item.platform || meta.name;
 
     return `
-      <div class="placement-card-item">
+      <div class="placement-card-item" style="border-left:4px solid ${meta.text}">
         <div style="flex:1;min-width:240px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:750;background:${meta.bg};color:${meta.text};border:1px solid ${meta.border}">
+              ${meta.iconSvg} ${badgeText}
+            </span>
+          </div>
           <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${item.title}</strong>
-          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:5px;line-height:1.4">${item.desc}</div>
           <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
         </div>
         <div class="placement-card-actions">
@@ -1686,6 +1883,8 @@ function openAddImportantLinkModal() {
   document.getElementById('inLinkTitle').value = '';
   document.getElementById('inLinkDesc').value = '';
   document.getElementById('inLinkUrl').value = 'https://';
+  document.getElementById('inLinkPlatform').value = 'Auto';
+  document.getElementById('inLinkBadge').value = '';
   document.getElementById('modalImportantLinkHeading').textContent = 'Tambah Link Praktik Baru';
   const modal = document.getElementById('modalEditImportantLink');
   if (modal) modal.classList.add('open');
@@ -1700,6 +1899,8 @@ function openEditImportantLinkModal(idx) {
   document.getElementById('inLinkTitle').value = item.title || '';
   document.getElementById('inLinkDesc').value = item.desc || '';
   document.getElementById('inLinkUrl').value = item.url || '';
+  document.getElementById('inLinkPlatform').value = item.platform || 'Auto';
+  document.getElementById('inLinkBadge').value = item.badge || '';
   document.getElementById('modalImportantLinkHeading').textContent = 'Edit Link Praktik';
   const modal = document.getElementById('modalEditImportantLink');
   if (modal) modal.classList.add('open');
@@ -1715,10 +1916,19 @@ function saveImportantLinkModal() {
   const title = document.getElementById('inLinkTitle').value.trim();
   const desc = document.getElementById('inLinkDesc').value.trim();
   const url = document.getElementById('inLinkUrl').value.trim();
+  let platform = document.getElementById('inLinkPlatform').value;
+  let badge = document.getElementById('inLinkBadge').value.trim();
 
   if (!title || !url) return;
 
-  const linkObj = { title, desc, url };
+  if (platform === 'Auto') {
+    platform = window.LMS_DB.detectPlatform({ title, desc, url });
+  }
+  if (!badge) {
+    badge = platform;
+  }
+
+  const linkObj = { title, desc, url, platform, badge };
 
   if (idx >= 0) {
     window.LMS_DB.updateImportantLink(idx, linkObj);
@@ -1767,12 +1977,19 @@ function renderAdminToolsAsdos() {
     const isFirst = idx === 0;
     const isLast = idx === list.length - 1;
     const toolName = item.name || item.title || 'Tool Asdos';
+    const meta = getPlatformMeta(item.platform || item.badge || toolName);
+    const badgeText = item.badge || item.platform || meta.name;
 
     return `
-      <div class="placement-card-item">
+      <div class="placement-card-item" style="border-left:4px solid ${meta.text}">
         <div style="flex:1;min-width:240px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:750;background:${meta.bg};color:${meta.text};border:1px solid ${meta.border}">
+              ${meta.iconSvg} ${badgeText}
+            </span>
+          </div>
           <strong style="font-size:14.5px;color:var(--brand-dark);display:block;margin-bottom:3px">${toolName}</strong>
-          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">${item.desc}</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:5px;line-height:1.4">${item.desc}</div>
           <a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--brand);text-decoration:underline;word-break:break-all">${item.url} &rarr;</a>
         </div>
         <div class="placement-card-actions">
@@ -1799,6 +2016,8 @@ function openAddToolAsdosModal() {
   document.getElementById('inToolName').value = '';
   document.getElementById('inToolDesc').value = '';
   document.getElementById('inToolUrl').value = 'https://';
+  document.getElementById('inToolPlatform').value = 'Auto';
+  document.getElementById('inToolBadge').value = '';
   document.getElementById('modalToolAsdosHeading').textContent = 'Tambah Tool Asdos Baru';
   const modal = document.getElementById('modalEditToolAsdos');
   if (modal) modal.classList.add('open');
@@ -1813,6 +2032,8 @@ function openEditToolAsdosModal(idx) {
   document.getElementById('inToolName').value = item.name || item.title || '';
   document.getElementById('inToolDesc').value = item.desc || '';
   document.getElementById('inToolUrl').value = item.url || '';
+  document.getElementById('inToolPlatform').value = item.platform || 'Auto';
+  document.getElementById('inToolBadge').value = item.badge || '';
   document.getElementById('modalToolAsdosHeading').textContent = 'Edit Tool Asdos';
   const modal = document.getElementById('modalEditToolAsdos');
   if (modal) modal.classList.add('open');
@@ -1828,10 +2049,19 @@ function saveToolAsdosModal() {
   const name = document.getElementById('inToolName').value.trim();
   const desc = document.getElementById('inToolDesc').value.trim();
   const url = document.getElementById('inToolUrl').value.trim();
+  let platform = document.getElementById('inToolPlatform').value;
+  let badge = document.getElementById('inToolBadge').value.trim();
 
   if (!name || !url) return;
 
-  const toolObj = { name, desc, url };
+  if (platform === 'Auto') {
+    platform = window.LMS_DB.detectPlatform({ name, desc, url });
+  }
+  if (!badge) {
+    badge = platform;
+  }
+
+  const toolObj = { name, desc, url, platform, badge };
 
   if (idx >= 0) {
     window.LMS_DB.updateToolAsdos(idx, toolObj);
@@ -2008,3 +2238,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+

@@ -1,9 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#FFF9F0">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="asdos-square.png">
   <title>Day 7 - Panggung Karya & Sertifikat Kelulusan - Asdos Digital Academy</title>
   <link rel="stylesheet" href="lms-core.css">
   <style>
@@ -1715,7 +1718,10 @@ Pastikan karakter dan gaya visualnya konsisten di semua adegan.</pre>
       console.warn('Direct download link diblokir browser, membuka fallback tab baru:', err3);
       const newWin = window.open();
       if (newWin) {
-        newWin.document.write(`<title>Kartu Prestasi - ${studentName}</title><body style="margin:0;background:#0e261d;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${dataUrl}" style="max-width:100%;height:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);"><p style="position:fixed;bottom:20px;color:#fff;background:rgba(0,0,0,0.8);padding:10px 18px;border-radius:24px;font-family:sans-serif;font-size:14px">Sentuh dan tahan gambar untuk menyimpan ke Galeri HP</p></body>`);
+        newWin.document.write(`<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="asdos-square.png">
+  <title>Kartu Prestasi - ${studentName}</title><body style="margin:0;background:#0e261d;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${dataUrl}" style="max-width:100%;height:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);"><p style="position:fixed;bottom:20px;color:#fff;background:rgba(0,0,0,0.8);padding:10px 18px;border-radius:24px;font-family:sans-serif;font-size:14px">Sentuh dan tahan gambar untuk menyimpan ke Galeri HP</p></body>`);
         showToast('Gambar terbuka. Sentuh & tahan gambar untuk menyimpan.');
       }
     }
@@ -1785,3 +1791,4 @@ Pastikan karakter dan gaya visualnya konsisten di semua adegan.</pre>
 </script>
 </body>
 </html>
+

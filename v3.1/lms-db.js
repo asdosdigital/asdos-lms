@@ -30,28 +30,122 @@
   // Default Seed Info & Tools Asdos (Sesuai Database Notion Akademi Animasi Asdos)
   const DEFAULT_INFO = {
     announcements: [
-      'Untuk membeli 1000 Flow Credit/Bulan silahkan hubungi Admin Haniyo',
-      'Untuk Program Affiliate Akademi Animasi Asdos silahkan hubungi Admin Haniyo'
+      'Untuk membeli 1000 Flow Credit/Bulan silahkan hubungi Admin Haniyo (081289795589)',
+      'Untuk Program Affiliate Akademi Animasi Asdos silahkan hubungi Admin Haniyo (081289795589)'
     ],
-    memberHubUrl: 'http://s.id/AsdosMemberHub',
+    mentor1: {
+      name: 'Admin Haniyo',
+      phone: '081289795589',
+      role: 'WhatsApp Mentor 1 (Flow Credit & Materi Belajar)',
+      message: 'Halo Mentor Haniyo, saya peserta Akademi Animasi Asdos ingin bertanya seputar Flow Credit dan materi belajar...'
+    },
+    mentor2: {
+      name: 'Admin Hamisesa',
+      phone: '081289795589',
+      role: 'WhatsApp Mentor 2 (Program Affiliate & Komunitas)',
+      message: 'Halo Mentor Hamisesa, saya peserta Akademi Animasi Asdos ingin bertanya seputar Program Affiliate...'
+    },
     importantLinks: [
-      { title: 'Asdos Member Hub', desc: 'Komunitas & Hub Anggota Asdos', url: 'http://s.id/AsdosMemberHub' },
-      { title: 'Google Flow (Generator Gambar & Video)', desc: 'labs.google/fx/tools/flow', url: 'https://labs.google/fx/tools/flow' },
-      { title: 'Google AI Studio (Voice Over)', desc: 'aistudio.google.com/generate-speech', url: 'https://aistudio.google.com/generate-speech' },
-      { title: 'Leonardo.AI', desc: 'Platform generator alternatif', url: 'https://leonardo.ai/' },
-      { title: 'Figma AI Weave', desc: 'Alat bantu visual layout', url: 'https://weave.figma.com/' },
-      { title: 'Firefox Relay', desc: 'Pembuat email sementara untuk testing akun', url: 'https://relay.firefox.com/' }
+      {
+        title: 'Google Flow (Generator Gambar & Video)',
+        desc: 'labs.google/fx/tools/flow',
+        url: 'https://labs.google/fx/tools/flow',
+        platform: 'Google Labs',
+        badge: 'Google Labs'
+      },
+      {
+        title: 'Google AI Studio (Voice Over)',
+        desc: 'aistudio.google.com/generate-speech',
+        url: 'https://aistudio.google.com/generate-speech',
+        platform: 'Voice Studio',
+        badge: 'Google Audio'
+      },
+      {
+        title: 'Leonardo.AI',
+        desc: 'Platform generator alternatif untuk visual dan aset gerak',
+        url: 'https://leonardo.ai/',
+        platform: 'Leonardo AI',
+        badge: 'AI Generator'
+      },
+      {
+        title: 'Figma AI Weave',
+        desc: 'Alat bantu visual layout dan perancangan storyboard',
+        url: 'https://weave.figma.com/',
+        platform: 'Figma',
+        badge: 'Design Layout'
+      },
+      {
+        title: 'Firefox Relay',
+        desc: 'Pembuat email sementara untuk testing akun',
+        url: 'https://relay.firefox.com/',
+        platform: 'Umum',
+        badge: 'Privasi Akun'
+      }
     ],
     toolsAsdos: [
-      { name: 'Asdos Fakta Unik (Gemini)', desc: 'Gemini Gem generator topik fakta unik otomatis', url: 'https://gemini.google.com/gem/12VPsc6TiZUe32hk7rYj4bVVtRLjAhTfw?usp=sharing' },
-      { name: 'Asdos Fakta Unik GPT (ChatGPT)', desc: 'Custom GPT pembuat skrip 3 adegan terstruktur', url: 'https://chatgpt.com/g/g-6a2018b9bbf8819197fc5ecc837a99d6-asdos-fakta-unik' },
-      { name: 'Asdos Design', desc: 'Panduan visual, palet warna, dan aset desain', url: 'https://gemini.google.com/gem/1boLNPNZyXk_QMPV_MVNSzQ5ECg6uf5KM?usp=sharing' },
-      { name: 'Asdos Object Talk', desc: 'Generator animasi benda mati berbicara', url: 'https://chatgpt.com/g/g-6a2014888bc88191961fbe2e19ba5544-asdos-object-talk' },
-      { name: 'Asdos Cerita', desc: 'Penyusun narasi dongeng & dialog karakter', url: 'https://chatgpt.com/g/g-6a1f84d222d881918f218e22f5984311-asdos-cerita' },
-      { name: 'Asdos Affiliate GPT', desc: 'Generator storyboard video promosi & UGC', url: 'https://chatgpt.com/g/g-6a20679037848191a01befec4b0e6e8d-asdos-affiliate-ugc' },
-      { name: 'Asdos Video Edukasi', desc: 'Formula skrip konten pengetahuan & edukasi', url: 'https://chatgpt.com/g/g-6a35126955948191ab28a9f7283eedd4-asdos-video-edukasi' },
-      { name: 'Asdos Podcast', desc: 'Generator konsep percakapan & podcast 2 arah', url: 'https://chatgpt.com/g/g-6a23d5cef6948191a91a7ce570e58e5b-asdos-podcast' },
-      { name: 'Asdos Iklan 1.5 (Gemini)', desc: 'Penyusun panel storyboard iklan komersial', url: 'https://gemini.google.com/gem/1BGY1PuBHfHl80Uy_lRZ9vAzidZ3hLtbi?usp=sharing' }
+      {
+        name: 'Asdos Fakta Unik (Gemini)',
+        desc: 'Gemini Gem generator topik fakta unik otomatis',
+        url: 'https://gemini.google.com/gem/12VPsc6TiZUe32hk7rYj4bVVtRLjAhTfw?usp=sharing',
+        platform: 'Gemini',
+        badge: 'Gemini Gem'
+      },
+      {
+        name: 'Asdos Fakta Unik GPT (ChatGPT)',
+        desc: 'Custom GPT pembuat skrip 3 adegan terstruktur',
+        url: 'https://chatgpt.com/g/g-6a2018b9bbf8819197fc5ecc837a99d6-asdos-fakta-unik',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Design',
+        desc: 'Panduan visual, palet warna, dan aset desain',
+        url: 'https://gemini.google.com/gem/1boLNPNZyXk_QMPV_MVNSzQ5ECg6uf5KM?usp=sharing',
+        platform: 'Gemini',
+        badge: 'Gemini Gem'
+      },
+      {
+        name: 'Asdos Object Talk',
+        desc: 'Generator animasi benda mati berbicara',
+        url: 'https://chatgpt.com/g/g-6a2014888bc88191961fbe2e19ba5544-asdos-object-talk',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Cerita',
+        desc: 'Penyusun narasi dongeng & dialog karakter',
+        url: 'https://chatgpt.com/g/g-6a1f84d222d881918f218e22f5984311-asdos-cerita',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Affiliate GPT',
+        desc: 'Generator storyboard video promosi & UGC',
+        url: 'https://chatgpt.com/g/g-6a20679037848191a01befec4b0e6e8d-asdos-affiliate-ugc',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Video Edukasi',
+        desc: 'Formula skrip konten pengetahuan & edukasi',
+        url: 'https://chatgpt.com/g/g-6a35126955948191ab28a9f7283eedd4-asdos-video-edukasi',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Podcast',
+        desc: 'Generator konsep percakapan & podcast 2 arah',
+        url: 'https://chatgpt.com/g/g-6a23d5cef6948191a91a7ce570e58e5b-asdos-podcast',
+        platform: 'ChatGPT',
+        badge: 'Custom GPT'
+      },
+      {
+        name: 'Asdos Iklan 1.5 (Gemini)',
+        desc: 'Penyusun panel storyboard iklan komersial',
+        url: 'https://gemini.google.com/gem/1BGY1PuBHfHl80Uy_lRZ9vAzidZ3hLtbi?usp=sharing',
+        platform: 'Gemini',
+        badge: 'Gemini Gem'
+      }
     ]
   };
 
@@ -1070,6 +1164,32 @@
   // ==========================================================================
   // INFORMASI & TOOLS SETTINGS
   // ==========================================================================
+  function detectPlatform(item) {
+    if (!item) return 'Web Tool';
+    if (item.platform && item.platform !== 'Auto' && item.platform !== 'Otomatis') {
+      return item.platform;
+    }
+    const text = ((item.title || item.name || '') + ' ' + (item.url || '') + ' ' + (item.desc || '')).toLowerCase();
+    if (text.includes('gemini')) return 'Gemini';
+    if (text.includes('chatgpt') || text.includes('openai') || text.includes('custom gpt')) return 'ChatGPT';
+    if (text.includes('flow') || text.includes('labs.google')) return 'Google Labs';
+    if (text.includes('aistudio') || text.includes('speech') || text.includes('voice')) return 'Voice Studio';
+    if (text.includes('leonardo')) return 'Leonardo AI';
+    if (text.includes('figma')) return 'Figma';
+    if (text.includes('relay') || text.includes('firefox')) return 'Firefox Relay';
+    return 'Web Tool';
+  }
+
+  function formatWhatsAppLink(phone, message) {
+    if (!phone) return '#';
+    let clean = String(phone).replace(/[^\d]/g, '');
+    if (clean.startsWith('0')) {
+      clean = '62' + clean.slice(1);
+    }
+    const textParam = message ? ('?text=' + encodeURIComponent(message)) : '';
+    return 'https://wa.me/' + clean + textParam;
+  }
+
   function getInfoSettings() {
     try {
       const raw = localStorage.getItem(KEY_INFO);
@@ -1079,18 +1199,78 @@
       }
       const data = JSON.parse(raw);
       let changed = false;
-      if (!Array.isArray(data.announcements)) {
-        data.announcements = DEFAULT_INFO.announcements;
+
+      // Mentor 1 Migration / Fallback
+      if (!data.mentor1 || typeof data.mentor1 !== 'object') {
+        data.mentor1 = Object.assign({}, DEFAULT_INFO.mentor1);
+        changed = true;
+      } else {
+        if (!data.mentor1.name) data.mentor1.name = DEFAULT_INFO.mentor1.name;
+        if (!data.mentor1.phone) data.mentor1.phone = DEFAULT_INFO.mentor1.phone;
+        if (!data.mentor1.role) data.mentor1.role = DEFAULT_INFO.mentor1.role;
+      }
+
+      // Mentor 2 Migration / Fallback
+      if (!data.mentor2 || typeof data.mentor2 !== 'object') {
+        data.mentor2 = Object.assign({}, DEFAULT_INFO.mentor2);
+        changed = true;
+      } else {
+        if (!data.mentor2.name) data.mentor2.name = DEFAULT_INFO.mentor2.name;
+        if (!data.mentor2.phone) data.mentor2.phone = DEFAULT_INFO.mentor2.phone;
+        if (!data.mentor2.role) data.mentor2.role = DEFAULT_INFO.mentor2.role;
+      }
+
+      // Announcements Migration / Fallback
+      if (!Array.isArray(data.announcements) || data.announcements.length === 0) {
+        data.announcements = DEFAULT_INFO.announcements.slice();
         changed = true;
       }
-      if (!Array.isArray(data.importantLinks)) {
-        data.importantLinks = DEFAULT_INFO.importantLinks;
+
+      // Important Links Normalization
+      if (!Array.isArray(data.importantLinks) || data.importantLinks.length === 0) {
+        data.importantLinks = JSON.parse(JSON.stringify(DEFAULT_INFO.importantLinks));
         changed = true;
+      } else {
+        // Hapus link legacy 'Asdos Member Hub' jika masih tersisa
+        const filtered = data.importantLinks.filter(l => {
+          const t = (l.title || '').toLowerCase();
+          const u = (l.url || '').toLowerCase();
+          return !t.includes('asdos member hub') && !u.includes('asdosmemberhub');
+        });
+        if (filtered.length !== data.importantLinks.length) {
+          data.importantLinks = filtered;
+          changed = true;
+        }
+        // Pastikan setiap link punya platform & badge
+        data.importantLinks.forEach(link => {
+          if (!link.platform) {
+            link.platform = detectPlatform(link);
+            changed = true;
+          }
+          if (!link.badge) {
+            link.badge = link.platform;
+            changed = true;
+          }
+        });
       }
-      if (!Array.isArray(data.toolsAsdos)) {
-        data.toolsAsdos = DEFAULT_INFO.toolsAsdos;
+
+      // Tools Asdos Normalization
+      if (!Array.isArray(data.toolsAsdos) || data.toolsAsdos.length === 0) {
+        data.toolsAsdos = JSON.parse(JSON.stringify(DEFAULT_INFO.toolsAsdos));
         changed = true;
+      } else {
+        data.toolsAsdos.forEach(tool => {
+          if (!tool.platform) {
+            tool.platform = detectPlatform(tool);
+            changed = true;
+          }
+          if (!tool.badge) {
+            tool.badge = tool.platform;
+            changed = true;
+          }
+        });
       }
+
       if (changed) {
         localStorage.setItem(KEY_INFO, JSON.stringify(data));
       }
@@ -1103,6 +1283,14 @@
   function saveInfoSettings(data) {
     localStorage.setItem(KEY_INFO, JSON.stringify(data));
     return data;
+  }
+
+  function saveMentorsConfig(mentor1, mentor2) {
+    const info = getInfoSettings();
+    if (mentor1) info.mentor1 = Object.assign(info.mentor1 || {}, mentor1);
+    if (mentor2) info.mentor2 = Object.assign(info.mentor2 || {}, mentor2);
+    saveInfoSettings(info);
+    return { mentor1: info.mentor1, mentor2: info.mentor2 };
   }
 
   function addImportantLink(linkObj) {
@@ -1630,6 +1818,9 @@ CREATE POLICY "Akses publik untuk kartu materi" ON public.course_cards FOR SELEC
     compressAndReadImage,
     getInfoSettings,
     saveInfoSettings,
+    saveMentorsConfig,
+    detectPlatform,
+    formatWhatsAppLink,
     addImportantLink,
     updateImportantLink,
     deleteImportantLink,
