@@ -276,6 +276,43 @@
       margin-top: 18px;
       flex-wrap: wrap;
     }
+    .auth-nav-tabs {
+      display: flex;
+      background: #F0E8DC;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      gap: 4px;
+    }
+    .auth-nav-tab {
+      flex: 1;
+      padding: 9px 10px;
+      font-size: 13.5px;
+      font-weight: 850;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s ease;
+      font-family: inherit;
+    }
+    .auth-nav-tab.active {
+      background: #ffffff;
+      color: var(--brand-dark);
+      box-shadow: 0 2px 8px rgba(42,36,32,0.08);
+    }
+    .auth-hint-box {
+      background: #EBF7EE;
+      border: 1px solid #B8E4C3;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      font-size: 12.5px;
+      color: #1F6B38;
+      text-align: left;
+      line-height: 1.5;
+    }
     .auth-pill {
       font-size: 11px;
       font-weight: 750;
@@ -1218,27 +1255,69 @@ function renderDashboard() {
     } else {
       main.innerHTML = `
         <div class="auth-box-wrap">
-          <h2>Masuk ke Ruang Belajar</h2>
-          <p>Gunakan email pembelian kelas di Lynk.id. Kode OTP verifikasi akan dikirim ke email Anda.</p>
-          
-          <form onsubmit="event.preventDefault(); submitRequestOtp();">
-            <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus value="${escapeHtml(authState.email || '')}">
-            <button type="submit" id="btnRequestOtp" class="btn-auth-submit">
-              <span>Kirim Kode OTP Masuk &rarr;</span>
+          <div class="auth-nav-tabs">
+            <button type="button" class="auth-nav-tab ${authState.authMode !== 'activate' ? 'active' : ''}" onclick="switchAuthMode('email')">
+              Login Member
             </button>
-            <div id="authErrorMsgEmail" class="auth-notice danger" style="display:none"></div>
-          </form>
-
-          <div class="auth-badge-row">
-            <span class="auth-pill">Bebas Password</span>
-            <span class="auth-pill">Maksimal 2 Perangkat</span>
-            <span class="auth-pill">Sesi Aktif 60 Hari</span>
+            <button type="button" class="auth-nav-tab ${authState.authMode === 'activate' ? 'active' : ''}" onclick="switchAuthMode('activate')">
+              Saya Sudah Member
+            </button>
           </div>
 
-          <div class="auth-footer-help">
-            <p><strong>Belum terdaftar?</strong> <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20tertarik%20ikut%20Kelas%20Animasi%20AI%207%20Hari" target="_blank" rel="noopener">Hubungi Tim Asdos di WhatsApp</a></p>
-            <p style="margin:0"><strong>Ingin coba dulu?</strong> <a href="v3.1/day1-v3.1.html" style="color:var(--go);font-weight:750">Buka Day 1 Gratis (Tanpa Akun) &rarr;</a></p>
-          </div>
+          ${authState.authMode === 'activate' ? `
+            <h2>Aktivasi Akun Member</h2>
+            <p>Punya kode akses dari Admin? Masukkan email dan kode Anda untuk aktivasi akun dan menerima kode OTP masuk.</p>
+            
+            <form onsubmit="event.preventDefault(); submitActivateWithCode();">
+              <div style="text-align:left;margin-bottom:4px">
+                <label for="inputStudentEmail" style="font-size:12px;font-weight:750;color:var(--brand-dark)">Alamat Email Anda:</label>
+              </div>
+              <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus value="${escapeHtml(authState.email || '')}">
+              
+              <div style="text-align:left;margin-bottom:4px">
+                <label for="inputActivationCode" style="font-size:12px;font-weight:750;color:var(--brand-dark)">Kode Akses / Voucher Member:</label>
+              </div>
+              <input type="text" id="inputActivationCode" class="auth-input" placeholder="contoh: MEMBER2026" style="text-transform:uppercase;font-weight:850;letter-spacing:1.5px;font-family:monospace" required>
+              
+              <button type="submit" id="btnActivateCode" class="btn-auth-submit" style="background:var(--go);box-shadow:0 4px 0 var(--go-dark)">
+                <span>Aktivasi Akun & Dapatkan OTP &rarr;</span>
+              </button>
+              <div id="authErrorMsgEmail" class="auth-notice danger" style="display:none"></div>
+            </form>
+
+            <div class="auth-hint-box">
+              <strong>Catatan Aktivasi:</strong> Setelah aktivasi berhasil, email Anda akan otomatis tercatat resmi sebagai member di database LMS. Untuk login selanjutnya, Anda cukup masuk dengan email saja tanpa perlu memasukkan kode ini lagi.
+            </div>
+
+            <div style="margin-top:18px;font-size:13px">
+              <button type="button" class="btn-text-link" onclick="switchAuthMode('email')">
+                &larr; Sudah terdaftar di whitelist? Kembali ke Login Member
+              </button>
+            </div>
+          ` : `
+            <h2>Masuk ke Ruang Belajar</h2>
+            <p>Gunakan email pembelian kelas di Lynk.id. Kode OTP verifikasi akan dikirim ke email Anda.</p>
+            
+            <form onsubmit="event.preventDefault(); submitRequestOtp();">
+              <input type="email" id="inputStudentEmail" class="auth-input" placeholder="contoh: nama@gmail.com" required autofocus value="${escapeHtml(authState.email || '')}">
+              <button type="submit" id="btnRequestOtp" class="btn-auth-submit">
+                <span>Kirim Kode OTP Masuk &rarr;</span>
+              </button>
+              <div id="authErrorMsgEmail" class="auth-notice danger" style="display:none"></div>
+            </form>
+
+            <div class="auth-badge-row">
+              <span class="auth-pill">Bebas Password</span>
+              <span class="auth-pill">Maksimal 2 Perangkat</span>
+              <span class="auth-pill">Sesi Aktif 60 Hari</span>
+            </div>
+
+            <div class="auth-footer-help">
+              <p style="margin-bottom:6px"><strong>Sudah beli di luar Lynk.id?</strong> <button type="button" class="btn-text-link" onclick="switchAuthMode('activate')">Aktivasi dengan Kode Member &rarr;</button></p>
+              <p><strong>Belum terdaftar?</strong> <a href="https://wa.me/6281289795589?text=Halo%20Tim%20Asdos%2C%20saya%20tertarik%20ikut%20Kelas%20Animasi%20AI%207%20Hari" target="_blank" rel="noopener">Hubungi Tim Asdos di WhatsApp</a></p>
+              <p style="margin:0"><strong>Ingin coba dulu?</strong> <a href="v3.1/day1-v3.1.html" style="color:var(--go);font-weight:750">Buka Day 1 Gratis (Tanpa Akun) &rarr;</a></p>
+            </div>
+          `}
         </div>
       `;
     }
@@ -1727,10 +1806,16 @@ function escapeHtml(str) {
 // ==========================================================================
 let authState = {
   step: 'email',
+  authMode: 'email',
   email: '',
   timerInterval: null,
   countdownSeconds: 60
 };
+
+function switchAuthMode(mode) {
+  authState.authMode = mode;
+  renderDashboard();
+}
 
 async function submitRequestOtp() {
   const input = document.getElementById('inputStudentEmail');
@@ -1770,7 +1855,58 @@ async function submitRequestOtp() {
     }
   } else {
     if (err) {
-      err.textContent = res.message || 'Email belum terdaftar di whitelist Lynk.id.';
+      if (res.reason === 'not_whitelisted') {
+        err.innerHTML = `Email ini belum terdaftar di whitelist Lynk.id.<br>Sudah beli kelas via transfer/admin? <button type="button" onclick="switchAuthMode('activate')" style="margin-top:6px;background:none;border:none;color:var(--brand);font-weight:850;cursor:pointer;text-decoration:underline;font-size:12.5px;display:inline-block">Aktivasi Akun dengan Kode Member di Sini &rarr;</button>`;
+      } else {
+        err.textContent = res.message || 'Email belum terdaftar di whitelist Lynk.id.';
+      }
+      err.style.display = 'block';
+    }
+  }
+}
+
+async function submitActivateWithCode() {
+  const emailInput = document.getElementById('inputStudentEmail');
+  const codeInput = document.getElementById('inputActivationCode');
+  const btn = document.getElementById('btnActivateCode');
+  const err = document.getElementById('authErrorMsgEmail');
+
+  const email = (emailInput ? emailInput.value : '').trim();
+  const code = (codeInput ? codeInput.value : '').trim();
+
+  if (!email || !code) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Memverifikasi kode &amp; mendaftarkan email...</span>';
+  }
+  if (err) err.style.display = 'none';
+
+  const res = await window.LMS_DB.registerStudentWithActivationCode(email, code);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Aktivasi Akun &amp; Dapatkan OTP &rarr;</span>';
+  }
+
+  if (res.success) {
+    authState.email = res.email;
+    authState.step = 'otp';
+    renderDashboard();
+    startOtpCountdown();
+    playSuccessTone();
+    window.showToast(res.message);
+
+    if (res.isDemo && res.demoOtp) {
+      window.showToast('Kode OTP Percobaan: ' + res.demoOtp);
+      const notice = document.getElementById('authNoticeOtp');
+      if (notice) {
+        notice.style.display = 'block';
+        notice.textContent = res.message;
+      }
+    }
+  } else {
+    if (err) {
+      err.textContent = res.message || 'Gagal aktivasi kode akses.';
       err.style.display = 'block';
     }
   }
@@ -2020,6 +2156,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       await window.LMS_DB.syncGlobalSettingsFromSupabase();
     } catch(e){}
   }
+
+  // 3. Deteksi URL parameter aktivasi mandiri
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'activate' || urlParams.has('activate')) {
+      authState.authMode = 'activate';
+    }
+  } catch(e){}
 
   renderDashboard();
 });

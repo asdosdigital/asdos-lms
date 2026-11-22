@@ -477,6 +477,124 @@
     }
   }
 
+  // ==========================================================================
+  // MEMBER ACTIVATION CODE MANAGEMENT (SELF-REGISTRATION)
+  // ==========================================================================
+  const KEY_ACTIVATION_CONFIG = 'asdos_lms_activation_config_v1';
+  const DEFAULT_ACTIVATION_CONFIG = {
+    isEnabled: true,
+    code: 'MEMBER2026',
+    note: 'Aktivasi Mandiri Member'
+  };
+
+  function getActivationConfig() {
+    try {
+      const raw = localStorage.getItem(KEY_ACTIVATION_CONFIG);
+      if (!raw) return DEFAULT_ACTIVATION_CONFIG;
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, DEFAULT_ACTIVATION_CONFIG, parsed);
+    } catch(e) {
+      return DEFAULT_ACTIVATION_CONFIG;
+    }
+  }
+
+  function saveActivationConfig(config) {
+    try {
+      const merged = Object.assign({}, getActivationConfig(), config);
+      localStorage.setItem(KEY_ACTIVATION_CONFIG, JSON.stringify(merged));
+      try {
+        saveGlobalSettingToSupabase('activation_code_config', merged);
+      } catch(e){}
+      return merged;
+    } catch(e) {
+      return getActivationConfig();
+    }
+  }
+
+  async function registerStudentWithActivationCode(email, inputCode) {
+    if (!email || !inputCode) {
+      return { success: false, message: 'Email dan Kode Akses wajib diisi.' };
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanCode = inputCode.trim().toUpperCase();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      return { success: false, message: 'Format alamat email tidak valid.' };
+    }
+
+    const config = getActivationConfig();
+    if (!config.isEnabled) {
+      return {
+        success: false,
+        message: 'Fitur aktivasi mandiri saat ini dinonaktifkan oleh administrator. Silakan hubungi admin.'
+      };
+    }
+
+    const expectedCode = (config.code || 'MEMBER2026').trim().toUpperCase();
+    if (cleanCode !== expectedCode) {
+      return {
+        success: false,
+        message: 'Kode akses tidak valid. Pastikan kode yang dimasukkan tepat atau hubungi admin.'
+      };
+    }
+
+    // 1. Daftarkan email ke Whitelist lokal
+    const currentList = getWhitelist();
+    let existing = currentList.find(item => item.email.toLowerCase() === cleanEmail);
+    const noteText = `Aktivasi Mandiri (Kode: ${cleanCode})`;
+    if (!existing) {
+      currentList.push({
+        email: cleanEmail,
+        username: '',
+        hasSetUsername: false,
+        dateAdded: new Date().toISOString(),
+        note: noteText
+      });
+      saveWhitelist(currentList);
+    }
+
+    // 2. Daftarkan email ke Supabase whitelist_students
+    const cfg = getSupabaseConfig();
+    if (cfg.url && cfg.anonKey) {
+      try {
+        const cleanUrl = cleanSupabaseUrl(cfg.url);
+        await fetch(`${cleanUrl}/rest/v1/whitelist_students?on_conflict=email`, {
+          method: 'POST',
+          headers: {
+            'apikey': cfg.anonKey,
+            'Authorization': `Bearer ${cfg.anonKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify({
+            email: cleanEmail,
+            note: noteText
+          })
+        });
+      } catch(e) {
+        console.warn('Gagal sinkron aktivasi mandiri ke Supabase:', e);
+      }
+    }
+
+    // 3. Minta kirim OTP
+    const otpRes = await requestStudentOtp(cleanEmail);
+    if (otpRes.success) {
+      return {
+        success: true,
+        email: cleanEmail,
+        message: 'Kode aktivasi valid! Kode OTP masuk telah dikirim ke email Anda.',
+        demoOtp: otpRes.demoOtp,
+        isDemo: otpRes.isDemo
+      };
+    } else {
+      return {
+        success: false,
+        message: otpRes.message || 'Gagal mengirim kode OTP ke email. Silakan coba lagi.'
+      };
+    }
+  }
+
   function addWhitelistBatch(inputString, defaultNote = 'Input Admin Lynk.id') {
     if (!inputString) return { added: 0, total: 0 };
     const rawTokens = inputString.split(/[\r\n,;\s]+/);
@@ -1762,6 +1880,8 @@
           hasUpdatedInfo = true;
         } else if (row.key === 'prompts' && Array.isArray(row.value)) {
           localStorage.setItem(KEY_PROMPTS, JSON.stringify(row.value));
+        } else if (row.key === 'activation_code_config' && row.value && typeof row.value === 'object') {
+          localStorage.setItem(KEY_ACTIVATION_CONFIG, JSON.stringify(row.value));
         } else if (row.key.startsWith('builder_card_') && row.value) {
           localStorage.setItem('asdos_' + row.key, JSON.stringify(row.value));
         }
@@ -1793,6 +1913,8 @@
       await saveGlobalSettingToSupabase('courses', courses);
       await saveGlobalSettingToSupabase('info_settings', info);
       await saveGlobalSettingToSupabase('prompts', prompts);
+      const actCfg = getActivationConfig();
+      await saveGlobalSettingToSupabase('activation_code_config', actCfg);
 
       if (typeof localStorage !== 'undefined') {
         for (let i = 0; i < localStorage.length; i++) {
@@ -2209,6 +2331,9 @@ CREATE POLICY "Akses publik hapus settings" ON public.lms_global_settings FOR DE
     saveSupabaseConfig,
     syncWhitelistFromSupabase,
     pushWhitelistToSupabase,
+    getActivationConfig,
+    saveActivationConfig,
+    registerStudentWithActivationCode,
     saveGlobalSettingToSupabase,
     syncGlobalSettingsFromSupabase,
     pushAllSettingsToSupabase,

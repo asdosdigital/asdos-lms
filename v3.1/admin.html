@@ -600,6 +600,51 @@
       </div>
     </div>
 
+    <div class="panel-box" style="border-left: 4px solid var(--brand)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+        <div>
+          <h3 style="margin:0">Aktivasi Mandiri Siswa (Kode Akses Khusus)</h3>
+          <p class="pdesc" style="margin:4px 0 0">Opsi ini memungkinkan siswa yang membeli di luar Lynk.id (misal transfer langsung) mendaftar sendiri dari halaman login dengan memasukkan Email dan Kode Akses yang Anda tetapkan.</p>
+        </div>
+        <span id="actStatusBadge" style="padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:700;background:rgba(46,125,50,0.12);color:#2E7D32">
+          Status: Aktif
+        </span>
+      </div>
+
+      <div class="form-row" style="margin-top:14px">
+        <div>
+          <label for="adminActivationCodeInput">Kode Akses Member:</label>
+          <input type="text" id="adminActivationCodeInput" placeholder="misal: MEMBER2026" style="font-weight:800;letter-spacing:1px;text-transform:uppercase">
+          <small style="color:var(--muted);font-size:11.5px;display:block;margin-top:4px">
+            Bagikan kode ini kepada pembeli yang belum terdata emailnya agar mereka bisa aktivasi mandiri di tab &quot;Saya Sudah Member&quot;.
+          </small>
+        </div>
+        <div>
+          <label for="adminActivationNoteInput">Label Catatan di Whitelist:</label>
+          <input type="text" id="adminActivationNoteInput" placeholder="Aktivasi Mandiri Member">
+          <small style="color:var(--muted);font-size:11.5px;display:block;margin-top:4px">
+            Catatan ini akan otomatis tersemat di tabel whitelist saat siswa mengaktifkan akunnya.
+          </small>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin:14px 0">
+        <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink)">
+          <input type="checkbox" id="adminActivationEnabledCheck" style="width:16px;height:16px;accent-color:var(--brand);cursor:pointer">
+          Aktifkan Fitur Pendaftaran Mandiri via Kode Akses
+        </label>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn-save" onclick="saveAdminActivationCode()">
+          Simpan Pengaturan Kode Akses
+        </button>
+        <button type="button" class="btn-subtle" onclick="copyActivationShareText()">
+          Salin Format Pesan ke Siswa
+        </button>
+      </div>
+    </div>
+
     <div class="panel-box">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h3 style="margin:0">Daftar Siswa Terverifikasi</h3>
@@ -1375,6 +1420,70 @@ function downloadWhitelistCsv() {
   a.href = URL.createObjectURL(blob);
   a.download = `whitelist-lynk-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
+}
+
+function loadAdminActivationCode() {
+  if (!window.LMS_DB || !window.LMS_DB.getActivationConfig) return;
+  const cfg = window.LMS_DB.getActivationConfig();
+  const codeIn = document.getElementById('adminActivationCodeInput');
+  const noteIn = document.getElementById('adminActivationNoteInput');
+  const checkIn = document.getElementById('adminActivationEnabledCheck');
+  const badge = document.getElementById('actStatusBadge');
+
+  if (codeIn) codeIn.value = cfg.code || 'MEMBER2026';
+  if (noteIn) noteIn.value = cfg.note || 'Aktivasi Mandiri Member';
+  if (checkIn) checkIn.checked = cfg.isEnabled !== false;
+  if (badge) {
+    if (cfg.isEnabled !== false) {
+      badge.textContent = 'Status: Aktif';
+      badge.style.background = 'rgba(46,125,50,0.12)';
+      badge.style.color = '#2E7D32';
+    } else {
+      badge.textContent = 'Status: Nonaktif';
+      badge.style.background = 'rgba(198,40,40,0.12)';
+      badge.style.color = '#C62828';
+    }
+  }
+}
+
+async function saveAdminActivationCode() {
+  if (!window.LMS_DB || !window.LMS_DB.saveActivationConfig) return;
+  const codeIn = document.getElementById('adminActivationCodeInput');
+  const noteIn = document.getElementById('adminActivationNoteInput');
+  const checkIn = document.getElementById('adminActivationEnabledCheck');
+
+  const codeVal = (codeIn ? codeIn.value : '').trim().toUpperCase();
+  const noteVal = (noteIn ? noteIn.value : '').trim() || 'Aktivasi Mandiri Member';
+  const isEnabled = checkIn ? checkIn.checked : true;
+
+  if (!codeVal) {
+    window.showToast('Kode akses tidak boleh kosong.');
+    return;
+  }
+
+  const updated = window.LMS_DB.saveActivationConfig({
+    isEnabled: isEnabled,
+    code: codeVal,
+    note: noteVal
+  });
+
+  loadAdminActivationCode();
+  window.showToast(`Pengaturan kode akses berhasil disimpan: "${updated.code}" (${updated.isEnabled ? 'Aktif' : 'Nonaktif'}).`);
+}
+
+function copyActivationShareText() {
+  const codeIn = document.getElementById('adminActivationCodeInput');
+  const codeVal = (codeIn && codeIn.value ? codeIn.value.trim().toUpperCase() : 'MEMBER2026');
+  const msg = `Halo! Untuk aktivasi akun member kelas Anda:\n1. Buka website kelas kita\n2. Klik tab "Saya Sudah Member"\n3. Masukkan email Anda dan Kode Akses: ${codeVal}\n4. Masukkan kode OTP verifikasi yang masuk ke email Anda.\nSelamat belajar!`;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(msg).then(() => {
+      window.showToast('Teks instruksi berhasil disalin ke clipboard!');
+    }).catch(() => {
+      prompt('Salin teks instruksi berikut untuk siswa:', msg);
+    });
+  } else {
+    prompt('Salin teks instruksi berikut untuk siswa:', msg);
+  }
 }
 
 // ==========================================================================
@@ -2286,6 +2395,7 @@ async function uploadAllSettingsToSb() {
 document.addEventListener('DOMContentLoaded', () => {
   checkAdminAuth();
   renderWhitelistTable();
+  loadAdminActivationCode();
   refreshCategorySelect();
   loadInfoData();
   renderAdminPrompts();
