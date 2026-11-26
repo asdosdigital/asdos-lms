@@ -1260,13 +1260,13 @@ function renderDashboard() {
               Login Member
             </button>
             <button type="button" class="auth-nav-tab ${authState.authMode === 'activate' ? 'active' : ''}" onclick="switchAuthMode('activate')">
-              Saya Sudah Member
+              Aktivasi Member Baru
             </button>
           </div>
 
           ${authState.authMode === 'activate' ? `
             <h2>Aktivasi Akun Member</h2>
-            <p>Punya kode akses dari Admin? Masukkan email dan kode Anda untuk aktivasi akun dan menerima kode OTP masuk.</p>
+            <p>Sudah melakukan pembelian akses dari admin? Masukkan email dan kode Anda untuk aktivasi akun dan menerima kode OTP masuk.</p>
             
             <form onsubmit="event.preventDefault(); submitActivateWithCode();">
               <div style="text-align:left;margin-bottom:4px">
